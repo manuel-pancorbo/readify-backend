@@ -1,0 +1,11 @@
+rootProject.name = 'readify-backend'
+
+include ':search'
+project(':search').projectDir = new File('src/search')
+
+include ':shared'
+project(':shared').projectDir = new File('src/shared')
+
+rootProject.children.each { subproject ->
+    subproject.buildFileName = "${subproject.name}.gradle"
+}
