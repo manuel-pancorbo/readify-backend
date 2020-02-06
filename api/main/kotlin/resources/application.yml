@@ -1,0 +1,5 @@
+server:
+  port: 8000
+  compression:
+    enabled: true
+    mime-types: application/json
