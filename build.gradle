@@ -1,13 +1,13 @@
 plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.3.61'
     id "org.jetbrains.kotlin.plugin.spring" version "1.3.61"
+    id 'org.jetbrains.kotlin.plugin.jpa' version '1.3.50'
 }
 
 group 'com.readify'
 version '1.0-SNAPSHOT'
 
 apply plugin: 'application'
-apply plugin: 'kotlin-spring'
 
 sourceSets {
     main {
@@ -23,6 +23,8 @@ sourceSets {
 
 allprojects {
     apply plugin: 'kotlin'
+    apply plugin: 'kotlin-jpa'
+    apply plugin: 'kotlin-spring'
 
     repositories {
         mavenCentral()
@@ -90,6 +92,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web:2.2.2.RELEASE'
     implementation 'org.jetbrains.kotlin:kotlin-reflect'
     implementation 'org.springframework.boot:spring-boot-starter-actuator:2.2.2.RELEASE'
+    implementation 'javax.persistence:javax.persistence-api:2.2'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.2.4.RELEASE'
+    implementation 'org.postgresql:postgresql:42.2.5'
 
     // Test
     testImplementation 'io.rest-assured:rest-assured:4.2.0'

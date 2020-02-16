@@ -40,12 +40,10 @@ class SignUpServiceShould {
     }
 
     @Test
-    fun `register a valid user`() {
+    fun `sign up a valid user`() {
         val request = SignUpRequest("manuel.pancorbo", "manuel.pancorbo@gmail.com", "dummypass")
         every { userRepository.findByUsername("manuel.pancorbo") } returns null
         every { userRepository.findByEmail("manuel.pancorbo@gmail.com") } returns null
-        every { userRepository.save(any()) }
-            .returns(buildUser("manuel.pancorbo", "manuel.pancorbo@gmail.com"))
 
         val response = signUpService.execute(request)
 

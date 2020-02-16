@@ -18,7 +18,9 @@ class SignUpService(private val userRepository: UserRepository) {
         userRepository.findByEmail(request.email)
             ?.let { throw EmailAlreadyRegisteredException(request.email) }
 
-        return userRepository.save(request.toDomain()).toResponse()
+        return request.toDomain()
+            .let { userRepository.save(it) }
+            .toResponse()
     }
 }
 
