@@ -2,30 +2,33 @@ package com.readify.userprofile.application
 
 import com.readify.userprofile.domain.user.Email
 import com.readify.userprofile.domain.user.EmailAlreadyRegisteredException
-import com.readify.userprofile.domain.user.Password
 import com.readify.userprofile.domain.user.User
+import com.readify.userprofile.domain.user.UserFactory
 import com.readify.userprofile.domain.user.UserId
 import com.readify.userprofile.domain.user.UserRepository
 import com.readify.userprofile.domain.user.Username
-import com.readify.userprofile.domain.user.UsernameAlreadyRegisteredException
+import com.readify.userprofile.domain.usercredentials.PlainPassword
+import com.readify.userprofile.domain.usercredentials.UserCredentials
 import java.util.UUID
 
-class SignUpService(private val userRepository: UserRepository) {
+class SignUpService(private val userFactory: UserFactory, private val userRepository: UserRepository) {
     fun execute(request: SignUpRequest): SignUpResponse {
-        userRepository.findByUsername(request.username)
-            ?.let { throw UsernameAlreadyRegisteredException(request.username) }
+        val user = userFactory.create(Username(request.username), Email(request.email))
+        val userCredentials = request.toUserCredentials()
 
-        userRepository.findByEmail(request.email)
-            ?.let { throw EmailAlreadyRegisteredException(request.email) }
+        userRepository.save(user)
 
-        return request.toDomain()
-            .let { userRepository.save(it) }
-            .toResponse()
+        return user.toResponse()
     }
 }
 
-private fun SignUpRequest.toDomain() =
-    User(UserId(UUID.randomUUID().toString()), Username(this.username), Email(this.email), Password(this.password))
+private fun SignUpRequest.toUserCredentials() =
+    UserCredentials(
+        UserId(UUID.randomUUID().toString()),
+        Email(this.email),
+        Username(this.username),
+        PlainPassword(this.password)
+    )
 
 private fun User.toResponse() =
     SignUpResponse(this.id.value, this.username.value, this.email.value)

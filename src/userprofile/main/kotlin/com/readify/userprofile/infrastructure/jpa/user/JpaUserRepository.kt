@@ -1,6 +1,7 @@
 package com.readify.userprofile.infrastructure.jpa.user
 
-import com.readify.userprofile.domain.user.*
+import com.readify.userprofile.domain.user.User
+import com.readify.userprofile.domain.user.UserRepository
 
 class JpaUserRepository(private val jpaJpaUserDataSource: JpaUserDataSource): UserRepository {
     override fun save(user: User): User {
@@ -15,4 +16,4 @@ class JpaUserRepository(private val jpaJpaUserDataSource: JpaUserDataSource): Us
         jpaJpaUserDataSource.findByEmail(email)?.toDomain()
 }
 
-private fun User.toJpa() = JpaUser(id.value, username.value, email.value, password.value)
+private fun User.toJpa() = JpaUser(id.value, username.value, email.value)

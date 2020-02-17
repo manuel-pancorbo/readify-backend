@@ -13,14 +13,15 @@ import java.util.UUID
 
 class SignUpServiceShould {
 
-    private val userRepository: UserRepository = mockk()
-    private val signUpService = SignUpService(userRepository)
+    private val userRepository: UserRepository = mockk(relaxed = true)
+    private val userFactory: UserFactory = mockk()
+    private val signUpService = SignUpService(userFactory, userRepository)
 
     @Test
     fun `throw exception when username is already registered`() {
         val request = SignUpRequest("manuel.pancorbo", "manuel.pancorbo@gmail.com", "dummypass")
-        every { userRepository.findByUsername("manuel.pancorbo") }
-            .returns(buildUser("manuel.pancorbo", "othermail@gmail.com"))
+        every { userFactory.create(Username("manuel.pancorbo"), Email("manuel.pancorbo@gmail.com")) }
+            .throws(UsernameAlreadyRegisteredException("manuel.pancorbo"))
 
         assertThat { signUpService.execute(request) }
             .isFailure()
@@ -30,9 +31,8 @@ class SignUpServiceShould {
     @Test
     fun `throw exception when mail is already registered`() {
         val request = SignUpRequest("manu", "manuel.pancorbo@gmail.com", "dummypass")
-        every { userRepository.findByUsername("manu") } returns null
-        every { userRepository.findByEmail("manuel.pancorbo@gmail.com") }
-            .returns(buildUser("manu", "manuel.pancorbo@gmail.com"))
+        every { userFactory.create(Username("manu"), Email("manuel.pancorbo@gmail.com")) }
+            .throws(EmailAlreadyRegisteredException("manuel.pancorbo@gmail.com"))
 
         assertThat { signUpService.execute(request) }
             .isFailure()
@@ -42,8 +42,10 @@ class SignUpServiceShould {
     @Test
     fun `sign up a valid user`() {
         val request = SignUpRequest("manuel.pancorbo", "manuel.pancorbo@gmail.com", "dummypass")
-        every { userRepository.findByUsername("manuel.pancorbo") } returns null
-        every { userRepository.findByEmail("manuel.pancorbo@gmail.com") } returns null
+        val user = User(UserId(UUID.randomUUID().toString()),
+            Username("manuel.pancorbo"), Email("manuel.pancorbo@gmail.com"))
+        every { userFactory.create(Username("manuel.pancorbo"), Email("manuel.pancorbo@gmail.com")) }
+            .returns(user)
 
         val response = signUpService.execute(request)
 
@@ -51,13 +53,4 @@ class SignUpServiceShould {
         assertThat(response.username).isEqualTo("manuel.pancorbo")
         assertThat(response.email).isEqualTo("manuel.pancorbo@gmail.com")
     }
-
-
-    private fun buildUser(username: String, email: String, password: String = "dummy-password") =
-        User(
-            id = UserId(UUID.randomUUID().toString()),
-            username = Username(username),
-            email = Email(email),
-            password = Password(password)
-        )
 }
