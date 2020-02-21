@@ -5,7 +5,15 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isFailure
 import assertk.assertions.isInstanceOf
 import assertk.assertions.isNotNull
-import com.readify.userprofile.domain.user.*
+import com.readify.userprofile.domain.user.Email
+import com.readify.userprofile.domain.user.EmailAlreadyRegisteredException
+import com.readify.userprofile.domain.user.User
+import com.readify.userprofile.domain.user.UserFactory
+import com.readify.userprofile.domain.user.UserId
+import com.readify.userprofile.domain.user.UserRepository
+import com.readify.userprofile.domain.user.Username
+import com.readify.userprofile.domain.user.UsernameAlreadyRegisteredException
+import com.readify.userprofile.domain.usercredentials.PlainPassword
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Test
@@ -20,7 +28,13 @@ class SignUpServiceShould {
     @Test
     fun `throw exception when username is already registered`() {
         val request = SignUpRequest("manuel.pancorbo", "manuel.pancorbo@gmail.com", "dummypass")
-        every { userFactory.create(Username("manuel.pancorbo"), Email("manuel.pancorbo@gmail.com")) }
+        every {
+            userFactory.create(
+                Username("manuel.pancorbo"),
+                Email("manuel.pancorbo@gmail.com"),
+                PlainPassword("dummypass")
+            )
+        }
             .throws(UsernameAlreadyRegisteredException("manuel.pancorbo"))
 
         assertThat { signUpService.execute(request) }
@@ -31,7 +45,13 @@ class SignUpServiceShould {
     @Test
     fun `throw exception when mail is already registered`() {
         val request = SignUpRequest("manu", "manuel.pancorbo@gmail.com", "dummypass")
-        every { userFactory.create(Username("manu"), Email("manuel.pancorbo@gmail.com")) }
+        every {
+            userFactory.create(
+                Username("manu"),
+                Email("manuel.pancorbo@gmail.com"),
+                PlainPassword("dummypass")
+            )
+        }
             .throws(EmailAlreadyRegisteredException("manuel.pancorbo@gmail.com"))
 
         assertThat { signUpService.execute(request) }
@@ -42,9 +62,18 @@ class SignUpServiceShould {
     @Test
     fun `sign up a valid user`() {
         val request = SignUpRequest("manuel.pancorbo", "manuel.pancorbo@gmail.com", "dummypass")
-        val user = User(UserId(UUID.randomUUID().toString()),
-            Username("manuel.pancorbo"), Email("manuel.pancorbo@gmail.com"))
-        every { userFactory.create(Username("manuel.pancorbo"), Email("manuel.pancorbo@gmail.com")) }
+        val user = User(
+            UserId(UUID.randomUUID().toString()),
+            Username("manuel.pancorbo"), Email("manuel.pancorbo@gmail.com"),
+            null
+        )
+        every {
+            userFactory.create(
+                Username("manuel.pancorbo"),
+                Email("manuel.pancorbo@gmail.com"),
+                PlainPassword("dummypass")
+            )
+        }
             .returns(user)
 
         val response = signUpService.execute(request)

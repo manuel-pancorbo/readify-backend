@@ -8,5 +8,5 @@ import javax.persistence.Table
 @Entity
 @Table(name = "userprofile", schema = "userprofiles")
 data class JpaUser (@Id val id: String, val username: String, val email: String) {
-    fun toDomain() = User(UserId(id), Username(username), Email(email))
+    fun toDomain() = User(UserId(id), Username(username), Email(email), null)
 }

@@ -4,6 +4,6 @@ import com.readify.userprofile.domain.user.Email
 import com.readify.userprofile.domain.user.UserId
 import com.readify.userprofile.domain.user.Username
 
-data class UserCredentials(val id: UserId, val email: Email, val username: Username, val password: PlainPassword)
+data class PlainUserCredentials(val id: UserId, val email: Email, val username: Username, val password: PlainPassword)
 
 data class PlainPassword(val value: String)
