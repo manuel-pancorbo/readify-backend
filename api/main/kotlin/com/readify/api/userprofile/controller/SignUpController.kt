@@ -13,7 +13,7 @@ class SignUpController(private val signUpService: SignUpService) {
     fun signUp(@RequestBody body: SignUpHttpRequest): ResponseEntity<SignUpHttpResponse> =
         signUpService.execute(SignUpRequest(body.username, body.email, body.password))
             .let { ResponseEntity.ok(
-                SignUpHttpResponse("2382824", "username", "username@gmail.com")
+                SignUpHttpResponse(it.id, it.username, it.email)
             ) }
 }
 
