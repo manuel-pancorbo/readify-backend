@@ -6,6 +6,9 @@ project(':search').projectDir = new File('src/search')
 include ':userprofile'
 project(':userprofile').projectDir = new File('src/userprofile')
 
+include ':authentication'
+project(':authentication').projectDir = new File('src/authentication')
+
 include ':shared'
 project(':shared').projectDir = new File('src/shared')
 

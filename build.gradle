@@ -85,6 +85,7 @@ dependencies {
     // Bounded contexts
     implementation project(":search")
     implementation project(":userprofile")
+    implementation project(":authentication")
 
     // Shared kernel
     implementation project(":shared")
