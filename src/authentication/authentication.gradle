@@ -1,3 +1,5 @@
 dependencies {
     implementation 'org.springframework.security:spring-security-web:4.2.14.RELEASE'
+    implementation 'javax.persistence:javax.persistence-api:2.2'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.2.4.RELEASE'
 }

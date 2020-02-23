@@ -18,6 +18,7 @@ class SignUpServiceConfiguration {
     fun jdbcUserRepository(jpaJpaUserDataSource: JpaUserDataSource) =
         JpaUserRepository(jpaJpaUserDataSource)
 
-    @Bean fun userFactory(userRepository: JpaUserRepository, eventBus: EventBus) =
+    @Bean
+    fun userFactory(userRepository: JpaUserRepository, eventBus: EventBus) =
         UserFactory(userRepository, eventBus)
 }
