@@ -5,5 +5,5 @@ import javax.persistence.Id
 import javax.persistence.Table
 
 @Entity
-@Table(name = "usercredentials", schema = "authentication")
+@Table(name = "usercredential", schema = "authentication")
 data class JpaUserCredentials(@Id val id: String, val username: String, val email: String, val password: String)
