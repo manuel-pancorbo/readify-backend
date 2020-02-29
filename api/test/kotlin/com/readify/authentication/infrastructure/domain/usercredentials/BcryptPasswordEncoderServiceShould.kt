@@ -3,18 +3,18 @@ package com.readify.authentication.infrastructure.domain.usercredentials
 import assertk.assertThat
 import assertk.assertions.isFalse
 import assertk.assertions.isTrue
-import com.readify.authentication.domain.usercredentials.EncryptedPassword
+import com.readify.authentication.domain.usercredentials.EncodedPassword
 import org.junit.jupiter.api.Test
 
 private const val ANY_PASSWORD_PLAIN = "anypassword"
 
-class BcryptPasswordEncrypterServiceShould {
+class BcryptPasswordEncoderServiceShould {
 
-    private val service = BcryptPasswordEncrypterService()
+    private val service = BcryptPasswordEncoderService()
 
     @Test
     fun `encrypted password should match with its plain version`() {
-        val encryptedPassword = service.encrypt(ANY_PASSWORD_PLAIN)
+        val encryptedPassword = service.encode(ANY_PASSWORD_PLAIN)
 
         assertThat(service.match(ANY_PASSWORD_PLAIN, encryptedPassword)).isTrue()
     }
@@ -24,7 +24,7 @@ class BcryptPasswordEncrypterServiceShould {
         assertThat(
             service.match(
                 ANY_PASSWORD_PLAIN,
-                EncryptedPassword("\$2a\$11\$JFAkuJKGL96vgNEv/tyG7.D.UjWmF4mO683VXIIv1EV7UXcLThd7S")
+                EncodedPassword("\$2a\$11\$JFAkuJKGL96vgNEv/tyG7.D.UjWmF4mO683VXIIv1EV7UXcLThd7S")
             )
         ).isFalse()
     }

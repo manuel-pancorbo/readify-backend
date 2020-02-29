@@ -1,29 +1,29 @@
 package com.readify.authentication.application.service.usercredentials
 
 import com.readify.authentication.domain.usercredentials.Email
-import com.readify.authentication.domain.usercredentials.PasswordEncrypterService
+import com.readify.authentication.domain.usercredentials.PasswordEncoderService
 import com.readify.authentication.domain.usercredentials.UserCredentials
 import com.readify.authentication.domain.usercredentials.UserCredentialsRepository
 import com.readify.authentication.domain.usercredentials.UserId
 import com.readify.authentication.domain.usercredentials.Username
 
 class CreateUserCredentialsService(
-    private val passwordEncrypterService: PasswordEncrypterService,
+    private val passwordEncoderService: PasswordEncoderService,
     private val userCredentialsRepository: UserCredentialsRepository
 ) {
     fun execute(request: CreateUserCredentialsRequest) {
-        request.toDomain(passwordEncrypterService)
+        request.toDomain(passwordEncoderService)
             .let { userCredentialsRepository.save(it) }
     }
 
 }
 
-private fun CreateUserCredentialsRequest.toDomain(passwordEncrypterService: PasswordEncrypterService) =
+private fun CreateUserCredentialsRequest.toDomain(passwordEncoderService: PasswordEncoderService) =
     UserCredentials(
         UserId(this.userId),
         Username(this.username),
         Email(this.email),
-        passwordEncrypterService.encrypt(this.plainPassword)
+        passwordEncoderService.encode(this.plainPassword)
     )
 
 data class CreateUserCredentialsRequest(
