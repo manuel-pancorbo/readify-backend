@@ -4,6 +4,8 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFailure
 import assertk.assertions.isInstanceOf
+import com.readify.authentication.application.service.createaccesstoken.CreateAccessTokenRequest
+import com.readify.authentication.application.service.createaccesstoken.CreateAccessTokenService
 import com.readify.authentication.domain.accesstoken.AccessTokenGenerator
 import com.readify.authentication.domain.usercredentials.Email
 import com.readify.authentication.domain.usercredentials.EncodedPassword
@@ -24,13 +26,22 @@ class CreateAccessTokenServiceShould {
     private val passwordEncoderService: PasswordEncoderService = mockk(relaxed = true)
     private val accessTokenGenerator: AccessTokenGenerator = mockk()
     private val createAccessTokenService =
-        CreateAccessTokenService(userCredentialsRepository, passwordEncoderService, accessTokenGenerator)
+        CreateAccessTokenService(
+            userCredentialsRepository,
+            passwordEncoderService,
+            accessTokenGenerator
+        )
 
     @Test
     fun `throw exception when credentials provided are not valid`() {
         every { userCredentialsRepository.findByUserIdentifierAndPassword(UserIdentifier("manu"), any()) } returns null
 
-        assertThat { createAccessTokenService.execute(CreateAccessTokenRequest("manu", "password")) }
+        assertThat { createAccessTokenService.execute(
+            CreateAccessTokenRequest(
+                "manu",
+                "password"
+            )
+        ) }
             .isFailure()
             .isInstanceOf(InvalidUserCredentialsException::class)
     }
@@ -41,7 +52,12 @@ class CreateAccessTokenServiceShould {
             .returns(anyUserCredentials())
         every { accessTokenGenerator.generate(anyUserCredentials()) } returns "anytoken"
 
-        val response = createAccessTokenService.execute(CreateAccessTokenRequest("manu", "any plain password"))
+        val response = createAccessTokenService.execute(
+            CreateAccessTokenRequest(
+                "manu",
+                "any plain password"
+            )
+        )
 
         assertThat(response.token).isEqualTo("anytoken")
     }
