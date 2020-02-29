@@ -29,9 +29,4 @@ class BcryptPasswordEncoderServiceShould {
             )
         ).isFalse()
     }
-
-    @Test
-    internal fun test() {
-        assertThat(BcryptPasswordEncoderService().encode("something")).isEqualTo(BcryptPasswordEncoderService().encode("something"))
-    }
 }
