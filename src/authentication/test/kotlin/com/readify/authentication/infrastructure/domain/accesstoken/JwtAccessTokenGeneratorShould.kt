@@ -3,6 +3,7 @@ package com.readify.authentication.infrastructure.domain.accesstoken
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isGreaterThan
+import assertk.assertions.isLessThan
 import assertk.assertions.isNotNull
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
@@ -12,8 +13,10 @@ import com.readify.authentication.domain.usercredentials.EncodedPassword
 import com.readify.authentication.domain.usercredentials.UserCredentials
 import com.readify.authentication.domain.usercredentials.UserId
 import com.readify.authentication.domain.usercredentials.Username
+import com.readify.shared.domain.clock.Clock
+import io.mockk.every
+import io.mockk.mockk
 import org.junit.jupiter.api.Test
-import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.Date
 
@@ -23,9 +26,14 @@ private const val EMAIL = "manuelpancorbo@gmail.com"
 private const val PASSWORD = "any encoded password"
 
 class JwtAccessTokenGeneratorShould {
+    private val clock: Clock = mockk()
+    private val jwtAccessTokenGenerator = JwtAccessTokenGenerator(clock)
+
     @Test
     fun `generate a token based on given credentials`() {
-        val token = JwtAccessTokenGenerator().generate(
+        val now = ZonedDateTime.now()
+        every { clock.now() } returns now
+        val token = jwtAccessTokenGenerator.generate(
             UserCredentials(
                 UserId(USER_ID),
                 Username(USERNAME),
@@ -33,19 +41,21 @@ class JwtAccessTokenGeneratorShould {
                 EncodedPassword(PASSWORD)
             )
         )
-        val now = Date.from(ZonedDateTime.now(ZoneId.of("Europe/Madrid")).toInstant())
 
         assertThat(token).isNotNull()
         val decodedToken = JWT.decode(token)
         assertThat(decodedToken.issuer).isEqualTo(USER_ID)
         assertThat(decodedToken.username()).isEqualTo(USERNAME)
         assertThat(decodedToken.email()).isEqualTo(EMAIL)
-        assertThat(decodedToken.expiresAt).isGreaterThan(now)
+        assertThat(decodedToken.expiresAt).isGreaterThan(now.plusHours(23).toDate())
+        assertThat(decodedToken.expiresAt).isLessThan(now.plusHours(25).toDate())
     }
 
     @Test
     fun `ensure that token has been generated with proper algorithm (fail only if an exception is thrown)`() {
-        val token = JwtAccessTokenGenerator().generate(
+        every { clock.now() } returns ZonedDateTime.now()
+
+        val token = jwtAccessTokenGenerator.generate(
             UserCredentials(
                 UserId(USER_ID),
                 Username(USERNAME),
@@ -59,4 +69,5 @@ class JwtAccessTokenGeneratorShould {
 
     private fun DecodedJWT.username() = this.claims["username"]?.asString()
     private fun DecodedJWT.email() = this.claims["email"]?.asString()
+    private fun ZonedDateTime.toDate() = this.toInstant().let { Date.from(it) }
 }
