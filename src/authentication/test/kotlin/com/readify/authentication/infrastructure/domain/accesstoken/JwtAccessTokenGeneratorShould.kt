@@ -24,10 +24,11 @@ private const val USER_ID = "747ffcd7-67be-4640-84e9-1f80aba1d102"
 private const val USERNAME = "manu"
 private const val EMAIL = "manuelpancorbo@gmail.com"
 private const val PASSWORD = "any encoded password"
+private const val SIGNING_SECRET_KEY = "secretkey"
 
 class JwtAccessTokenGeneratorShould {
     private val clock: Clock = mockk()
-    private val jwtAccessTokenGenerator = JwtAccessTokenGenerator(clock)
+    private val jwtAccessTokenGenerator = JwtAccessTokenGenerator(SIGNING_SECRET_KEY, clock)
 
     @Test
     fun `generate a token based on given credentials`() {
@@ -64,7 +65,7 @@ class JwtAccessTokenGeneratorShould {
             )
         )
 
-        JWT.require(Algorithm.HMAC256("secret")).build().verify(token)
+        JWT.require(Algorithm.HMAC256(SIGNING_SECRET_KEY)).build().verify(token)
     }
 
     private fun DecodedJWT.username() = this.claims["username"]?.asString()
