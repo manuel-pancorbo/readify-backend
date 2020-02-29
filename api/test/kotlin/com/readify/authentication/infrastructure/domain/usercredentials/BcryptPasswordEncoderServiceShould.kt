@@ -1,6 +1,7 @@
 package com.readify.authentication.infrastructure.domain.usercredentials
 
 import assertk.assertThat
+import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import assertk.assertions.isTrue
 import com.readify.authentication.domain.usercredentials.EncodedPassword
@@ -27,5 +28,10 @@ class BcryptPasswordEncoderServiceShould {
                 EncodedPassword("\$2a\$11\$JFAkuJKGL96vgNEv/tyG7.D.UjWmF4mO683VXIIv1EV7UXcLThd7S")
             )
         ).isFalse()
+    }
+
+    @Test
+    internal fun test() {
+        assertThat(BcryptPasswordEncoderService().encode("something")).isEqualTo(BcryptPasswordEncoderService().encode("something"))
     }
 }

@@ -13,7 +13,8 @@ class CreateAccessTokenService(
 ) {
     fun execute(request: CreateAccessTokenRequest): CreateAccessTokenResponse =
         userCredentialsRepository
-            .findByUserIdentifierAndPassword(UserIdentifier(request.userIdentifier), passwordEncoderService.encode(request.plainPassword))
+            .findByUserIdentifier(UserIdentifier(request.userIdentifier))
+            ?.takeIf { passwordEncoderService.match(request.plainPassword, it.encodedPassword) }
             ?.let {CreateAccessTokenResponse(accessTokenGenerator.generate(it))  }
             ?: throw InvalidUserCredentialsException()
 

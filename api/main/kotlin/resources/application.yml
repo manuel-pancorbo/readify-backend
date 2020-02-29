@@ -19,3 +19,7 @@ spring.authentication.username: postgres
 spring.authentication.password: readify
 spring.authentication.platform: postgres
 spring.authentication.driver-class-name: org.postgresql.Driver
+
+authentication:
+  hmac256:
+    secret: "secret"

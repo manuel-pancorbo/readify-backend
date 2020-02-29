@@ -4,8 +4,6 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFailure
 import assertk.assertions.isInstanceOf
-import com.readify.authentication.application.service.createaccesstoken.CreateAccessTokenRequest
-import com.readify.authentication.application.service.createaccesstoken.CreateAccessTokenService
 import com.readify.authentication.domain.accesstoken.AccessTokenGenerator
 import com.readify.authentication.domain.usercredentials.Email
 import com.readify.authentication.domain.usercredentials.EncodedPassword
@@ -34,7 +32,7 @@ class CreateAccessTokenServiceShould {
 
     @Test
     fun `throw exception when credentials provided are not valid`() {
-        every { userCredentialsRepository.findByUserIdentifierAndPassword(UserIdentifier("manu"), any()) } returns null
+        every { userCredentialsRepository.findByUserIdentifier(UserIdentifier("manu")) } returns null
 
         assertThat { createAccessTokenService.execute(
             CreateAccessTokenRequest(
@@ -48,8 +46,9 @@ class CreateAccessTokenServiceShould {
 
     @Test
     fun `return a valid access token when credentials are valid`() {
-        every { userCredentialsRepository.findByUserIdentifierAndPassword(UserIdentifier("manu"), any()) }
+        every { userCredentialsRepository.findByUserIdentifier(UserIdentifier("manu")) }
             .returns(anyUserCredentials())
+        every { passwordEncoderService.match(any(), any()) } returns true
         every { accessTokenGenerator.generate(anyUserCredentials()) } returns "anytoken"
 
         val response = createAccessTokenService.execute(
