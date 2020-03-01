@@ -1,9 +1,0 @@
-POST http://localhost:8000/v1/auth/token
-Content-Type: application/json
-
-{
-  "userIdentifier": "mpp00017",
-  "password": "123456"
-}
-
-###
