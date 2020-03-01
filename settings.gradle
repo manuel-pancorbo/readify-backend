@@ -12,6 +12,9 @@ project(':authentication').projectDir = new File('src/authentication')
 include ':shared'
 project(':shared').projectDir = new File('src/shared')
 
+include ':bookpublishing'
+project(':bookpublishing').projectDir = new File('src/bookpublishing')
+
 rootProject.children.each { subproject ->
     subproject.buildFileName = "${subproject.name}.gradle"
 }

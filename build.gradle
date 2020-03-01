@@ -87,6 +87,7 @@ dependencies {
     implementation project(":search")
     implementation project(":userprofile")
     implementation project(":authentication")
+    implementation project(":bookpublishing")
 
     // Shared kernel
     implementation project(":shared")
