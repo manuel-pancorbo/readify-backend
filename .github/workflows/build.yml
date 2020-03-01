@@ -17,3 +17,5 @@ jobs:
       run: chmod +x gradlew
     - name: Build with Gradle
       run: ./gradlew build
+    - name: Run ktlint with reviewdog
+      uses: ScaCap/action-ktlint@v1.0
