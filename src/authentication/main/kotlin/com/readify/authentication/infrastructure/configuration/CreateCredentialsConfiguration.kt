@@ -10,9 +10,9 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-class CreateUserCredentialsConfiguration {
+class CreateUserCredentialsServiceConfiguration {
     @Bean
-    fun service(
+    fun createUserCredentialsService(
         passwordEncoderService: PasswordEncoderService,
         userCredentialsRepository: UserCredentialsRepository
     ) =
