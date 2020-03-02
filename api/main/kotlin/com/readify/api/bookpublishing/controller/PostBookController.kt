@@ -3,9 +3,9 @@ package com.readify.api.bookpublishing.controller
 import com.readify.authentication.domain.AnonymousUser
 import com.readify.authentication.domain.LoggedUser
 import com.readify.authentication.domain.Requester
-import com.readify.bookpublishing.application.service.createbook.CreateBookRequest
-import com.readify.bookpublishing.application.service.createbook.CreateBookResponse
-import com.readify.bookpublishing.application.service.createbook.CreateBookService
+import com.readify.bookpublishing.application.service.createbook.PublishBookRequest
+import com.readify.bookpublishing.application.service.createbook.PublishBookResponse
+import com.readify.bookpublishing.application.service.createbook.PublishBookService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/v1")
-class PostBookController(private val createBookService: CreateBookService) {
+class PostBookController(private val publishBookService: PublishBookService) {
     @PostMapping("/books")
     fun generateToken(
         @RequestBody httpBookRequest: HttpBookRequest,
@@ -24,7 +24,7 @@ class PostBookController(private val createBookService: CreateBookService) {
         when (requester) {
             is AnonymousUser -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
             is LoggedUser -> {
-                createBookService
+                publishBookService
                     .execute(httpBookRequest.toCreateBookRequest(requester))
                     .toHttpResponse()
             }
@@ -32,7 +32,7 @@ class PostBookController(private val createBookService: CreateBookService) {
 }
 
 private fun HttpBookRequest.toCreateBookRequest(requester: LoggedUser) =
-    CreateBookRequest(requester.id, this.title, this.summary, this.cover, this.tags)
+    PublishBookRequest(requester.id, this.title, this.summary, this.cover, this.tags)
 
-private fun CreateBookResponse.toHttpResponse() =
-    ResponseEntity.ok(HttpBookResponse(this.id, this.title, this.summary, this.cover, this.tags))
+private fun PublishBookResponse.toHttpResponse() =
+    ResponseEntity.ok(HttpBookResponse(this.bookId, this.title, this.summary, this.cover, this.tags))

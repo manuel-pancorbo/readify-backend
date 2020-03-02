@@ -5,9 +5,9 @@ import com.readify.api.Application
 import com.readify.authentication.application.service.verifyaccesstoken.VerifyAccessTokenRequest
 import com.readify.authentication.application.service.verifyaccesstoken.VerifyAccessTokenResponse
 import com.readify.authentication.application.service.verifyaccesstoken.VerifyAccessTokenService
-import com.readify.bookpublishing.application.service.createbook.CreateBookRequest
-import com.readify.bookpublishing.application.service.createbook.CreateBookResponse
-import com.readify.bookpublishing.application.service.createbook.CreateBookService
+import com.readify.bookpublishing.application.service.createbook.PublishBookRequest
+import com.readify.bookpublishing.application.service.createbook.PublishBookResponse
+import com.readify.bookpublishing.application.service.createbook.PublishBookService
 import io.mockk.every
 import io.mockk.junit5.MockKExtension
 import io.restassured.RestAssured
@@ -23,7 +23,7 @@ import org.springframework.boot.web.server.LocalServerPort
 @SpringBootTest(classes = [Application::class], webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class PostBookControllerShould {
     @MockkBean(relaxed = true)
-    private lateinit var createBookService: CreateBookService
+    private lateinit var publishBookService: PublishBookService
 
     @MockkBean(relaxed = true)
     private lateinit var verifyAccessTokenService: VerifyAccessTokenService
@@ -52,8 +52,8 @@ class PostBookControllerShould {
     fun `returns ok when book has been successfully created`() {
         every { verifyAccessTokenService.execute(VerifyAccessTokenRequest("anytoken")) }
             .returns(VerifyAccessTokenResponse("any-author-id", "jkrowling", "jkrowling@gmail.com"))
-        every { createBookService.execute(CreateBookRequest("any-author-id", TITLE, SUMMARY, COVER, tags)) }
-            .returns(CreateBookResponse("any-id", TITLE, SUMMARY, COVER, tags))
+        every { publishBookService.execute(PublishBookRequest("any-author-id", TITLE, SUMMARY, COVER, tags)) }
+            .returns(PublishBookResponse("any-id", TITLE, SUMMARY, COVER, tags))
 
         RestAssured.given()
             .`when`()
