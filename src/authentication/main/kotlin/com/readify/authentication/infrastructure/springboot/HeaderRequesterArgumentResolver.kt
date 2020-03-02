@@ -5,6 +5,7 @@ import com.readify.authentication.application.service.verifyaccesstoken.VerifyAc
 import com.readify.authentication.application.service.verifyaccesstoken.VerifyAccessTokenService
 import com.readify.authentication.domain.AnonymousUser
 import com.readify.authentication.domain.LoggedUser
+import com.readify.authentication.domain.Requester
 import com.readify.authentication.domain.accesstoken.ExpiredAccessTokenException
 import com.readify.authentication.domain.accesstoken.InvalidAccessTokenException
 import org.springframework.core.MethodParameter
@@ -17,7 +18,8 @@ private const val AUTHORIZATION_HEADER = "Authorization"
 
 class HeaderRequesterArgumentResolver(private val tokenVerifierService: VerifyAccessTokenService) :
     HandlerMethodArgumentResolver {
-    override fun supportsParameter(parameter: MethodParameter) = true
+    override fun supportsParameter(parameter: MethodParameter) =
+        parameter.parameterType == Requester::class.java
 
     override fun resolveArgument(
         parameter: MethodParameter?,

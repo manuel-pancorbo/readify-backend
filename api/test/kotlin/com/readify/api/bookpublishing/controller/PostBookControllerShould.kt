@@ -12,7 +12,6 @@ import io.mockk.every
 import io.mockk.junit5.MockKExtension
 import io.restassured.RestAssured
 import org.hamcrest.CoreMatchers
-import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -23,10 +22,10 @@ import org.springframework.boot.web.server.LocalServerPort
 @ExtendWith(MockKExtension::class)
 @SpringBootTest(classes = [Application::class], webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class PostBookControllerShould {
-    @MockkBean
+    @MockkBean(relaxed = true)
     private lateinit var createBookService: CreateBookService
 
-    @MockkBean
+    @MockkBean(relaxed = true)
     private lateinit var verifyAccessTokenService: VerifyAccessTokenService
 
     @LocalServerPort
@@ -43,14 +42,7 @@ class PostBookControllerShould {
             .`when`()
             .contentType("application/json")
             .and()
-            .body(
-                """{
-                            "title": "Harry Potter and the philosopher's stone",
-                            "summary": "Harry hasn't had a birthday party in eleven years - but all that is about to change when a mysterious letter arrives with an invitation to an incredible place.",
-                            "cover": "https://images-na.ssl-images-amazon.com/images/I/51HSkTKlauL._SX346_BO1,204,203,200_.jpg",
-                            "tags: ["fantasy", "magic"]
-                        }"""
-            )
+            .body(bookBody())
             .post("/v1/books")
             .then()
             .statusCode(401)
@@ -68,14 +60,7 @@ class PostBookControllerShould {
             .contentType("application/json")
             .and()
             .header("Authorization", "Bearer anytoken")
-            .body(
-                """{
-                            "title": "$TITLE",
-                            "summary": "$SUMMARY",
-                            "cover": "$COVER",
-                            "tags": ["${tags[0]}", "${tags[1]}"]
-                        }"""
-            )
+            .body(bookBody())
             .post("/v1/books")
             .then()
             .statusCode(200)
@@ -85,6 +70,14 @@ class PostBookControllerShould {
             .body("cover", equalTo(COVER))
             .body("tags", CoreMatchers.hasItems(tags[0], tags[1]))
     }
+
+    private fun bookBody() =
+        """{
+                    "title": "$TITLE",
+                    "summary": "$SUMMARY",
+                    "cover": "$COVER",
+                    "tags": ["${tags[0]}", "${tags[1]}"]
+                }"""
 
     companion object {
         const val TITLE = "Harry Potter and the philosopher's stone"
