@@ -9,6 +9,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2
     "com.readify.api",
     "com.readify.userprofile.infrastructure",
     "com.readify.authentication.infrastructure",
+    "com.readify.bookpublishing.infrastructure",
     "com.readify.shared.infrastructure"
 ])
 class Application {
