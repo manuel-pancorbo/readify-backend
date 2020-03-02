@@ -1,4 +1,4 @@
-package com.readify.authentication.infrastructure.jpa.usercredentials
+package com.readify.bookpublishing.infrastructure.jpa.bookpublishing
 
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.context.properties.ConfigurationProperties
@@ -17,28 +17,28 @@ import javax.sql.DataSource
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(
-    basePackages = ["com.readify.authentication.infrastructure.jpa.usercredentials"],
-    entityManagerFactoryRef = "authenticationEntityManagerFactory",
-    transactionManagerRef = "authenticationTransactionManager"
+    basePackages = ["com.readify.bookpublishing.infrastructure.jpa.bookpublishing"],
+    entityManagerFactoryRef = "bookPublishingEntityManagerFactory",
+    transactionManagerRef = "bookPublishingTransactionManager"
 )
-class UserCredentialsDatabaseConfiguration {
-    @Bean("authenticationEntityManagerFactory")
+class BookPublishingDatabaseConfiguration {
+    @Bean("bookPublishingEntityManagerFactory")
     fun entityManagerFactory(
         builder: EntityManagerFactoryBuilder,
-        @Qualifier("authenticationDataSource") dataSource: DataSource?
+        @Qualifier("bookPublishingDataSource") dataSource: DataSource?
     ): LocalContainerEntityManagerFactoryBean =
         builder
             .dataSource(dataSource)
-            .packages("com.readify.authentication.infrastructure.jpa.usercredentials")
-            .persistenceUnit("authentication")
+            .packages("com.readify.bookpublishing.infrastructure.jpa.bookpublishing")
+            .persistenceUnit("bookpublishing")
             .build()
 
-    @Bean("authenticationDataSource")
-    @ConfigurationProperties(prefix = "spring.authentication")
+    @Bean("bookPublishingDataSource")
+    @ConfigurationProperties(prefix = "spring.bookpublishing")
     fun userDataSource(): DataSource = DataSourceBuilder.create().build()
 
-    @Bean("authenticationTransactionManager")
+    @Bean("bookPublishingTransactionManager")
     fun userTransactionManager(
-        @Qualifier("authenticationEntityManagerFactory") entityManagerFactory: EntityManagerFactory
+        @Qualifier("bookPublishingEntityManagerFactory") entityManagerFactory: EntityManagerFactory
     ): PlatformTransactionManager = JpaTransactionManager(entityManagerFactory)
 }

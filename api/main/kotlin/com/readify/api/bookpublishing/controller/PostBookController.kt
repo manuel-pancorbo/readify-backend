@@ -32,7 +32,7 @@ class PostBookController(private val publishBookService: PublishBookService) {
 }
 
 private fun HttpBookRequest.toCreateBookRequest(requester: LoggedUser) =
-    PublishBookRequest(requester.id, this.title, this.summary, this.cover, this.tags)
+    PublishBookRequest(requester.id, title, summary, cover, tags)
 
 private fun PublishBookResponse.toHttpResponse() =
-    ResponseEntity.ok(HttpBookResponse(this.bookId, this.title, this.summary, this.cover, this.tags))
+    ResponseEntity.ok(HttpBookResponse(bookId, authorId, title, summary, cover, tags))

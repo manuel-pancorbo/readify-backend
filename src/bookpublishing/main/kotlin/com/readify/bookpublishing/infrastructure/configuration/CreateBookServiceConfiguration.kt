@@ -4,6 +4,8 @@ import com.readify.bookpublishing.application.service.createbook.PublishBookServ
 import com.readify.bookpublishing.domain.book.Book
 import com.readify.bookpublishing.domain.book.BookFactory
 import com.readify.bookpublishing.domain.book.BookRepository
+import com.readify.bookpublishing.infrastructure.domain.book.JpaBookRepository
+import com.readify.bookpublishing.infrastructure.jpa.bookpublishing.JpaBookDataSource
 import com.readify.shared.domain.event.bus.EventBus
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -18,9 +20,5 @@ class CreateBookServiceConfiguration {
     fun bookFactory(eventBus: EventBus) = BookFactory(eventBus)
 
     @Bean
-    fun bookRepository() = object : BookRepository {
-        override fun save(book: Book) {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        }
-    }
+    fun bookRepository(jpaBookDataSource: JpaBookDataSource) = JpaBookRepository(jpaBookDataSource)
 }

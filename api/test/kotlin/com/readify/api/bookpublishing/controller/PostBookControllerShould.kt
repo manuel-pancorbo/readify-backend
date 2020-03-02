@@ -53,7 +53,7 @@ class PostBookControllerShould {
         every { verifyAccessTokenService.execute(VerifyAccessTokenRequest("anytoken")) }
             .returns(VerifyAccessTokenResponse("any-author-id", "jkrowling", "jkrowling@gmail.com"))
         every { publishBookService.execute(PublishBookRequest("any-author-id", TITLE, SUMMARY, COVER, tags)) }
-            .returns(PublishBookResponse("any-id", TITLE, SUMMARY, COVER, tags))
+            .returns(PublishBookResponse("any-author-id", "any-id", TITLE, SUMMARY, COVER, tags))
 
         RestAssured.given()
             .`when`()

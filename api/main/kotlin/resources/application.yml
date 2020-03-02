@@ -13,12 +13,19 @@ spring.datasource.password: readify
 spring.datasource.platform: postgres
 spring.datasource.driver-class-name: org.postgresql.Driver
 
-# Search Database
+# Authentication Database
 spring.authentication.jdbcUrl: jdbc:postgresql://localhost:5432/postgres?currentSchema=authentication
 spring.authentication.username: postgres
 spring.authentication.password: readify
 spring.authentication.platform: postgres
 spring.authentication.driver-class-name: org.postgresql.Driver
+
+# Book publishing Database
+spring.bookpublishing.jdbcUrl: jdbc:postgresql://localhost:5432/postgres?currentSchema=bookpublishing
+spring.bookpublishing.username: postgres
+spring.bookpublishing.password: readify
+spring.bookpublishing.platform: postgres
+spring.bookpublishing.driver-class-name: org.postgresql.Driver
 
 authentication:
   hmac256:

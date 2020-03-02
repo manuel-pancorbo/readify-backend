@@ -11,3 +11,4 @@ services:
     volumes:
       - ./src/userprofile/main/kotlin/resources/user-profile-init.sql:/docker-entrypoint-initdb.d/1-user-profiles-init.sql
       - ./src/authentication/main/kotlin/resources/authentication-init.sql:/docker-entrypoint-initdb.d/2-authentication-init.sql
+      - ./src/bookpublishing/main/kotlin/resources/book-publishing-init.sql:/docker-entrypoint-initdb.d/2-bookpublishing-init.sql
