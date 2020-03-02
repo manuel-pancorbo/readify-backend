@@ -4,6 +4,7 @@ import com.readify.bookpublishing.application.service.createbook.PublishBookServ
 import com.readify.bookpublishing.domain.book.Book
 import com.readify.bookpublishing.domain.book.BookFactory
 import com.readify.bookpublishing.domain.book.BookRepository
+import com.readify.shared.domain.event.bus.EventBus
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -14,7 +15,7 @@ class CreateBookServiceConfiguration {
         PublishBookService(bookFactory, bookRepository)
 
     @Bean
-    fun bookFactory() = BookFactory()
+    fun bookFactory(eventBus: EventBus) = BookFactory(eventBus)
 
     @Bean
     fun bookRepository() = object : BookRepository {

@@ -16,7 +16,9 @@ data class Book(
     companion object {
         fun create(id: BookId, authorId: AuthorId, title: Title, cover: Cover, summary: Summary, tags: Tags) =
             Book(id, authorId, title, cover, summary, tags)
-                .also { it.record(BookPublished(id.value, authorId.value, title.value, cover.value, summary.value, tags.value)) }
+                .also { it.record(
+                    BookPublished(id.value, authorId.value, title.value, cover.value, summary.value, tags.value)
+                ) }
     }
 }
 
