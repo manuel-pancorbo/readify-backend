@@ -5,23 +5,18 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
 import assertk.assertions.isNull
 import assertk.assertions.isTrue
-import com.readify.api.Application
+import com.readify.IntegrationTest
 import com.readify.userprofile.domain.user.Email
 import com.readify.userprofile.domain.user.User
 import com.readify.userprofile.domain.user.UserId
 import com.readify.userprofile.domain.user.Username
 import com.readify.userprofile.domain.usercredentials.PlainPassword
-import io.mockk.junit5.MockKExtension
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 import java.util.UUID
 
-@ExtendWith(MockKExtension::class)
-@SpringBootTest(classes = [Application::class], webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class JpaUserRepositoryShould {
+class JpaUserRepositoryShould : IntegrationTest() {
     @Autowired
     private lateinit var repository: JpaUserRepository
 

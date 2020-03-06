@@ -4,23 +4,18 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNull
 import assertk.assertions.isTrue
-import com.readify.api.Application
+import com.readify.IntegrationTest
 import com.readify.authentication.domain.usercredentials.Email
 import com.readify.authentication.domain.usercredentials.EncodedPassword
 import com.readify.authentication.domain.usercredentials.UserCredentials
 import com.readify.authentication.domain.usercredentials.UserId
 import com.readify.authentication.domain.usercredentials.UserIdentifier
 import com.readify.authentication.domain.usercredentials.Username
-import io.mockk.junit5.MockKExtension
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 
-@ExtendWith(MockKExtension::class)
-@SpringBootTest(classes = [Application::class], webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class JpaUserCredentialsRepositoryShould {
+class JpaUserCredentialsRepositoryShould : IntegrationTest() {
     @Autowired
     private lateinit var repository: JpaUserCredentialsRepository
 

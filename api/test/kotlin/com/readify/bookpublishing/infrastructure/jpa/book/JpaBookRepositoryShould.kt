@@ -3,7 +3,7 @@ package com.readify.bookpublishing.infrastructure.jpa.book
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isTrue
-import com.readify.api.Application
+import com.readify.IntegrationTest
 import com.readify.bookpublishing.domain.book.AuthorId
 import com.readify.bookpublishing.domain.book.Book
 import com.readify.bookpublishing.domain.book.BookId
@@ -13,16 +13,11 @@ import com.readify.bookpublishing.domain.book.Tags
 import com.readify.bookpublishing.domain.book.Title
 import com.readify.bookpublishing.infrastructure.domain.book.JpaBookRepository
 import com.readify.bookpublishing.infrastructure.jpa.bookpublishing.JpaBookDataSource
-import io.mockk.junit5.MockKExtension
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 
-@ExtendWith(MockKExtension::class)
-@SpringBootTest(classes = [Application::class], webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class JpaBookRepositoryShould {
+class JpaBookRepositoryShould : IntegrationTest() {
     @Autowired
     private lateinit var repository: JpaBookRepository
 
