@@ -6,5 +6,6 @@ CREATE TABLE bookpublishing.book
     title    VARCHAR(150) NOT NULL,
     summary  TEXT,
     cover    VARCHAR(200),
+    tags     VARCHAR(20)[],
     PRIMARY KEY (id)
 );

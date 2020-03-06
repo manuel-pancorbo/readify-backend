@@ -11,4 +11,4 @@ class JpaBookRepository(private val jpaBookDataSource: JpaBookDataSource) : Book
     }
 }
 
-private fun Book.toJpa() = JpaBook(id.value, authorId.value, title.value, cover.value, summary.value)
+private fun Book.toJpa() = JpaBook(id.value, authorId.value, title.value, cover.value, summary.value, tags.value)
