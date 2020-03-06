@@ -1,8 +1,7 @@
 version: '3'
 
 services:
-  postgres:
-    container_name: userprofile-postgresql
+  postgresql:
     image: postgres:11-alpine
     ports:
       - "5432:5432"
