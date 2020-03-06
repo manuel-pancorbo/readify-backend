@@ -3,6 +3,7 @@ package com.readify.authentication.infrastructure.jpa.usercredentials
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNull
+import assertk.assertions.isTrue
 import com.readify.api.Application
 import com.readify.authentication.domain.usercredentials.Email
 import com.readify.authentication.domain.usercredentials.EncodedPassword
@@ -38,7 +39,7 @@ class JpaUserCredentialsRepositoryShould {
         repository.save(userCredentials)
 
         val actual = jpaUserCredentialsDataSource.findById("any-user-id")
-        assertThat(actual.isPresent)
+        assertThat(actual.isPresent).isTrue()
         assertThat(actual.get().id).isEqualTo(userCredentials.userId.value)
         assertThat(actual.get().username).isEqualTo(userCredentials.username.value)
         assertThat(actual.get().email).isEqualTo(userCredentials.email.value)
