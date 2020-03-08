@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/v1")
 class PostBookController(private val publishBookService: PublishBookService) {
     @PostMapping("/books")
-    fun generateToken(
+    fun createBook(
         @RequestBody httpBookRequest: HttpBookRequest,
         requester: Requester
     ): ResponseEntity<HttpBookResponse> =

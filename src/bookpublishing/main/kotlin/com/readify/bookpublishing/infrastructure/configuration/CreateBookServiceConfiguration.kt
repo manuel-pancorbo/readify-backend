@@ -1,7 +1,6 @@
 package com.readify.bookpublishing.infrastructure.configuration
 
 import com.readify.bookpublishing.application.service.createbook.PublishBookService
-import com.readify.bookpublishing.domain.book.Book
 import com.readify.bookpublishing.domain.book.BookFactory
 import com.readify.bookpublishing.domain.book.BookRepository
 import com.readify.bookpublishing.infrastructure.domain.book.JpaBookRepository
