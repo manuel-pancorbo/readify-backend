@@ -1,7 +1,7 @@
 package com.readify.api.bookpublishing.controller
 
 import com.ninjasquad.springmockk.MockkBean
-import com.readify.api.Application
+import com.readify.ContractTest
 import com.readify.authentication.application.service.verifyaccesstoken.VerifyAccessTokenRequest
 import com.readify.authentication.application.service.verifyaccesstoken.VerifyAccessTokenResponse
 import com.readify.authentication.application.service.verifyaccesstoken.VerifyAccessTokenService
@@ -9,32 +9,17 @@ import com.readify.bookpublishing.application.service.createbook.PublishBookRequ
 import com.readify.bookpublishing.application.service.createbook.PublishBookResponse
 import com.readify.bookpublishing.application.service.createbook.PublishBookService
 import io.mockk.every
-import io.mockk.junit5.MockKExtension
 import io.restassured.RestAssured
 import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.equalTo
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.web.server.LocalServerPort
 
-@ExtendWith(MockKExtension::class)
-@SpringBootTest(classes = [Application::class], webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class PostBookControllerShould {
+class PostBookControllerShould : ContractTest() {
     @MockkBean(relaxed = true)
     private lateinit var publishBookService: PublishBookService
 
     @MockkBean(relaxed = true)
     private lateinit var verifyAccessTokenService: VerifyAccessTokenService
-
-    @LocalServerPort
-    private val port = 0
-
-    @BeforeEach
-    fun setUp() {
-        RestAssured.port = port
-    }
 
     @Test
     fun `returns unauthorized when user is not authenticated`() {

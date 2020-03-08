@@ -1,38 +1,22 @@
 package com.readify.api.userprofile.controller
 
 import com.ninjasquad.springmockk.MockkBean
-import com.readify.api.Application
+import com.readify.ContractTest
 import com.readify.userprofile.application.SignUpResponse
 import com.readify.userprofile.application.SignUpService
 import com.readify.userprofile.domain.user.EmailAlreadyRegisteredException
 import com.readify.userprofile.domain.user.UsernameAlreadyRegisteredException
 import io.mockk.every
-import io.mockk.junit5.MockKExtension
-import io.restassured.RestAssured
 import io.restassured.RestAssured.given
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.notNullValue
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.web.server.LocalServerPort
 import java.util.UUID
 
-@ExtendWith(MockKExtension::class)
-@SpringBootTest(classes = [Application::class], webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class SignUpControllerShould {
+class SignUpControllerShould : ContractTest() {
     @MockkBean(relaxed = true)
     private lateinit var signUpService: SignUpService
-
-    @LocalServerPort
-    private val port = 0
-
-    @BeforeEach
-    fun setUp() {
-        RestAssured.port = port
-    }
 
     @Test
     fun `returns http ok after create an user`() {
