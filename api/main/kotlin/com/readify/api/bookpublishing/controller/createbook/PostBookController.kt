@@ -1,4 +1,4 @@
-package com.readify.api.bookpublishing.controller
+package com.readify.api.bookpublishing.controller.createbook
 
 import com.readify.authentication.domain.AnonymousUser
 import com.readify.authentication.domain.LoggedUser

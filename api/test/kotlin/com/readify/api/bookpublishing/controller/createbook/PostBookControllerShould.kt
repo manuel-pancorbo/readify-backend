@@ -1,4 +1,4 @@
-package com.readify.api.bookpublishing.controller
+package com.readify.api.bookpublishing.controller.createbook
 
 import com.ninjasquad.springmockk.MockkBean
 import com.readify.ContractTest
@@ -37,8 +37,18 @@ class PostBookControllerShould : ContractTest() {
     fun `returns ok when book has been successfully created`() {
         every { verifyAccessTokenService.execute(VerifyAccessTokenRequest("anytoken")) }
             .returns(VerifyAccessTokenResponse("any-author-id", "jkrowling", "jkrowling@gmail.com"))
-        every { publishBookService.execute(PublishBookRequest("any-author-id", TITLE, SUMMARY, COVER, tags)) }
-            .returns(PublishBookResponse("any-author-id", "any-id", TITLE, SUMMARY, COVER, tags))
+        every { publishBookService.execute(PublishBookRequest("any-author-id",
+            TITLE,
+            SUMMARY,
+            COVER,
+            tags
+        )) }
+            .returns(PublishBookResponse("any-author-id", "any-id",
+                TITLE,
+                SUMMARY,
+                COVER,
+                tags
+            ))
 
         RestAssured.given()
             .`when`()
