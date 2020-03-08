@@ -2,7 +2,6 @@ package com.readify.bookpublishing.infrastructure.jpa.book
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import assertk.assertions.isNotNull
 import assertk.assertions.isTrue
 import com.readify.IntegrationTest
 import com.readify.bookpublishing.domain.book.AuthorId
