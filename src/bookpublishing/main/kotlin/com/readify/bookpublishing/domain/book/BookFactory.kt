@@ -1,6 +1,5 @@
 package com.readify.bookpublishing.domain.book
 
-import com.readify.shared.domain.event.book.BookPublished
 import com.readify.shared.domain.event.bus.EventBus
 import java.util.UUID
 

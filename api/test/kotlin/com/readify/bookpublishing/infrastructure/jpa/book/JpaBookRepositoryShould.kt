@@ -2,6 +2,7 @@ package com.readify.bookpublishing.infrastructure.jpa.book
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import assertk.assertions.isNotNull
 import assertk.assertions.isTrue
 import com.readify.IntegrationTest
 import com.readify.bookpublishing.domain.book.AuthorId
@@ -43,6 +44,16 @@ class JpaBookRepositoryShould : IntegrationTest() {
         assertThat(actual.get().cover).isEqualTo(book.cover.value)
         assertThat(actual.get().summary).isEqualTo(book.summary.value)
         assertThat(actual.get().tags).isEqualTo(book.tags.value)
+    }
+
+    @Test
+    fun `return an existent book`() {
+        val book = anyBook()
+        repository.save(book)
+
+        val actual = repository.findById(book.id)
+
+        assertThat(actual).isEqualTo(book)
     }
 
     private fun anyBook() =

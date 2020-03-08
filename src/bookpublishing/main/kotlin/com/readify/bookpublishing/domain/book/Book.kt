@@ -13,6 +13,9 @@ data class Book(
     val tags: Tags
 ) :
     RootAggregate() {
+
+    fun sameAuthor(anotherAuthorId: AuthorId) = authorId == anotherAuthorId
+
     companion object {
         fun create(id: BookId, authorId: AuthorId, title: Title, cover: Cover, summary: Summary, tags: Tags) =
             Book(id, authorId, title, cover, summary, tags)

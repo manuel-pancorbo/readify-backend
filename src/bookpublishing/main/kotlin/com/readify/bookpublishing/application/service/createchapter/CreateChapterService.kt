@@ -1,23 +1,28 @@
 package com.readify.bookpublishing.application.service.createchapter
 
-import java.time.ZonedDateTime
+import com.readify.bookpublishing.domain.book.AuthorId
+import com.readify.bookpublishing.domain.book.BookId
+import com.readify.bookpublishing.domain.book.BookRepository
+import com.readify.bookpublishing.domain.chapter.Chapter
+import com.readify.bookpublishing.domain.chapter.ChapterFactory
+import com.readify.bookpublishing.domain.chapter.ChapterRepository
 
-class CreateChapterService {
+class CreateChapterService(
+    private val bookRepository: BookRepository,
+    private val chapterRepository: ChapterRepository,
+    private val chapterFactory: ChapterFactory
+) {
     fun execute(request: CreateChapterRequest): CreateChapterResponse {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val book = bookRepository.findById(BookId(request.bookId)) ?: return BookNotFoundResponse
+
+        return if (!book.sameAuthor(AuthorId(request.authorId)))
+            BookNotBelongToAuthorResponse
+        else
+            chapterFactory.create(book.authorId, book.id, request.title, request.content)
+                .also { chapterRepository.save(it) }
+                .toResponse()
     }
+
+    private fun Chapter.toResponse() =
+        ChapterCreatedResponse(id.value, title.value, content.value, modifiedAt, authorId.value, bookId.value)
 }
-
-data class CreateChapterRequest(val title: String, val content: String, val authorId: String, val bookId: String)
-
-sealed class CreateChapterResponse
-object BookNotFoundResponse : CreateChapterResponse()
-object BookNotBelongToAuthorResponse : CreateChapterResponse()
-data class ChapterCreatedResponse(
-    val id: String,
-    val title: String,
-    val content: String,
-    val modifiedAt: ZonedDateTime,
-    val authorId: String,
-    val bookId: String
-): CreateChapterResponse()
