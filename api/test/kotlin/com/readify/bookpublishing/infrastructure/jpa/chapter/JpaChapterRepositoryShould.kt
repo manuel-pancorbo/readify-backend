@@ -2,6 +2,7 @@ package com.readify.bookpublishing.infrastructure.jpa.chapter
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import assertk.assertions.isNotNull
 import assertk.assertions.isTrue
 import com.readify.IntegrationTest
 import com.readify.bookpublishing.domain.book.AuthorId
@@ -43,7 +44,7 @@ class JpaChapterRepositoryShould : IntegrationTest() {
         assertThat(actual.get().bookId).isEqualTo(chapter.bookId.value)
         assertThat(actual.get().title).isEqualTo(chapter.title.value)
         assertThat(actual.get().content).isEqualTo(chapter.content.value)
-        assertThat(actual.get().modifiedAt).isEqualTo(chapter.modifiedAt)
+        assertThat(actual.get().modifiedAt).isNotNull()
     }
 
     private fun anyChapter() =
