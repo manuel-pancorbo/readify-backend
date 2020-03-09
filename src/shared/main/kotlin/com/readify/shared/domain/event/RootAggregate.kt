@@ -5,7 +5,7 @@ abstract class RootAggregate {
 
     fun pullDomainEvents(): List<DomainEvent> = domainEvents.toList()
 
-    protected fun record(event: DomainEvent) {
+    fun record(event: DomainEvent) {
         domainEvents.add(event)
     }
 }

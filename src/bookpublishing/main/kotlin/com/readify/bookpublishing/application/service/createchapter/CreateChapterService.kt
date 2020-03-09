@@ -6,6 +6,8 @@ import com.readify.bookpublishing.domain.book.BookRepository
 import com.readify.bookpublishing.domain.chapter.Chapter
 import com.readify.bookpublishing.domain.chapter.ChapterFactory
 import com.readify.bookpublishing.domain.chapter.ChapterRepository
+import com.readify.bookpublishing.domain.chapter.DraftChapter
+import com.readify.bookpublishing.domain.chapter.PublishedChapter
 
 class CreateChapterService(
     private val bookRepository: BookRepository,
@@ -24,5 +26,10 @@ class CreateChapterService(
     }
 
     private fun Chapter.toResponse() =
-        ChapterCreatedResponse(id.value, title.value, content.value, modifiedAt, authorId.value, bookId.value)
+        when(this) {
+            is DraftChapter -> ChapterCreatedResponse(id.value, title.value, content.value, modifiedAt,
+                authorId.value, bookId.value, ChapterStatus.DRAFT)
+            is PublishedChapter -> ChapterCreatedResponse(id.value, title.value, content.value, modifiedAt,
+                authorId.value, bookId.value, ChapterStatus.PUBLISHED)
+        }
 }

@@ -38,7 +38,7 @@ private fun CreateChapterResponse.toHttpResponse(): ResponseEntity<PostBookChapt
     when (this) {
         is BookNotFoundResponse, BookNotBelongToAuthorResponse -> ResponseEntity.notFound().build()
         is ChapterCreatedResponse -> ResponseEntity.ok(
-            PostBookChapterHttpResponse(id, title, content, modifiedAt, bookId, authorId)
+            PostBookChapterHttpResponse(id, title, content, modifiedAt, bookId, authorId, status.toString())
         )
     }
 

@@ -6,6 +6,6 @@ import com.readify.shared.domain.event.bus.EventBus
 
 class ChapterFactory(private val eventBus: EventBus) {
     fun create(authorId: AuthorId, bookId: BookId, title: String, content: String) =
-        Chapter.create(Title(title), Content(content), authorId, bookId)
+        DraftChapter.create(Title(title), Content(content), authorId, bookId)
             .also { eventBus.publish(it.pullDomainEvents()) }
 }

@@ -11,5 +11,8 @@ data class ChapterCreatedResponse(
     val content: String,
     val modifiedAt: ZonedDateTime,
     val authorId: String,
-    val bookId: String
+    val bookId: String,
+    val status: ChapterStatus
 ) : CreateChapterResponse()
+
+enum class ChapterStatus { DRAFT, PUBLISHED }

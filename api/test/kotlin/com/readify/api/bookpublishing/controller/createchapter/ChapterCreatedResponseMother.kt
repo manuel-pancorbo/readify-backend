@@ -1,12 +1,13 @@
 package com.readify.api.bookpublishing.controller.createchapter
 
 import com.readify.bookpublishing.application.service.createchapter.ChapterCreatedResponse
+import com.readify.bookpublishing.application.service.createchapter.ChapterStatus
 import com.readify.shared.domain.clock.Clock
 import java.util.UUID
 
 class ChapterCreatedResponseMother {
     fun createWith(authorId: String, bookId: String) =
-        ChapterCreatedResponse(ID, TITLE, CONTENT, Clock().now(), authorId, bookId)
+        ChapterCreatedResponse(ID, TITLE, CONTENT, Clock().now(), authorId, bookId, ChapterStatus.DRAFT)
 
     companion object {
         private val ID = UUID.randomUUID().toString()

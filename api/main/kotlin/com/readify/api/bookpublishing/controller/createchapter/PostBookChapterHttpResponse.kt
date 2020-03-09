@@ -9,5 +9,6 @@ data class PostBookChapterHttpResponse(
     @JsonProperty("content") val content: String,
     @JsonProperty("modifiedAt") val modifiedAt: ZonedDateTime,
     @JsonProperty("book") val book: String,
-    @JsonProperty("author") val author: String
+    @JsonProperty("author") val author: String,
+    @JsonProperty("status") val status: String
 )

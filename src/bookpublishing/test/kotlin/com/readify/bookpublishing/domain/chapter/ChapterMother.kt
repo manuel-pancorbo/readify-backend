@@ -2,16 +2,18 @@ package com.readify.bookpublishing.domain.chapter
 
 import com.readify.bookpublishing.domain.book.AuthorId
 import com.readify.bookpublishing.domain.book.BookId
+import com.readify.shared.domain.clock.Clock
 import java.util.UUID
 
 class ChapterMother {
-    fun validOne(authorId: String, bookId: String) =
-        Chapter(
+    fun draftOne(authorId: String, bookId: String) =
+        DraftChapter(
             ChapterId(UUID.randomUUID().toString()),
             Title(TITLE),
             Content(CONTENT),
             AuthorId(authorId),
-            BookId(bookId)
+            BookId(bookId),
+            Clock().now()
         )
 
     companion object {

@@ -5,33 +5,40 @@ import com.readify.bookpublishing.domain.book.BookId
 import com.readify.shared.domain.clock.Clock
 import com.readify.shared.domain.event.RootAggregate
 import com.readify.shared.domain.event.book.ChapterCreated
-import java.lang.IllegalArgumentException
 import java.time.ZonedDateTime
 import java.util.StringTokenizer
 import java.util.UUID
 
-data class Chapter(
-    val id: ChapterId,
-    val title: Title,
-    val content: Content,
-    val authorId: AuthorId,
-    val bookId: BookId,
-    val modifiedAt: ZonedDateTime = Clock().now()
-) : RootAggregate() {
+sealed class Chapter : RootAggregate()
+
+class DraftChapter(
+    val id: ChapterId, val title: Title, val content: Content, val authorId: AuthorId,
+    val bookId: BookId, val modifiedAt: ZonedDateTime
+) : Chapter() {
     companion object {
         fun create(title: Title, content: Content, authorId: AuthorId, bookId: BookId) =
-            Chapter(ChapterId(UUID.randomUUID().toString()), title, content, authorId, bookId, Clock().now())
+            DraftChapter(ChapterId(UUID.randomUUID().toString()), title, content, authorId, bookId, Clock().now())
                 .also { it.record(ChapterCreated(it.id.value, it.title.value, it.authorId.value, it.bookId.value)) }
     }
+
+    fun publish() =
+        PublishedChapter(id, title, content, authorId, bookId, modifiedAt, Clock().now())
 }
+
+class PublishedChapter(
+    val id: ChapterId, val title: Title, val content: Content, val authorId: AuthorId,
+    val bookId: BookId, val modifiedAt: ZonedDateTime, val publishedAt: ZonedDateTime
+) : Chapter()
 
 data class Title(val value: String)
 data class Content(val value: String) {
     val wordCount: Int = StringTokenizer(value).countTokens()
+
     init {
         if (wordCount > 10000) throw IllegalArgumentException()
     }
 }
+
 data class ChapterId(val value: String) {
     init {
         UUID.fromString(value)
