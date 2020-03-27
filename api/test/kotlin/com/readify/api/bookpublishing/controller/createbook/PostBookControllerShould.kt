@@ -7,6 +7,7 @@ import com.readify.authentication.application.service.verifyaccesstoken.VerifyAc
 import com.readify.authentication.application.service.verifyaccesstoken.VerifyAccessTokenService
 import com.readify.bookpublishing.application.service.createbook.BookPublishedSuccessfullyResponse
 import com.readify.bookpublishing.application.service.createbook.BookStatus
+import com.readify.bookpublishing.application.service.createbook.BookVisibility
 import com.readify.bookpublishing.application.service.createbook.InvalidCurrencyResponse
 import com.readify.bookpublishing.application.service.createbook.PublishBookRequest
 import com.readify.bookpublishing.application.service.createbook.PublishBookService
@@ -97,6 +98,7 @@ class PostBookControllerShould : ContractTest() {
                     PRICE,
                     CURRENCY,
                     BookStatus.IN_PROGRESS,
+                    BookVisibility.NULL,
                     null,
                     0
                 )
@@ -113,6 +115,7 @@ class PostBookControllerShould : ContractTest() {
             .statusCode(200)
             .body("id", equalTo("any-id"))
             .body("status", equalTo("in_progress"))
+            .body("visibility", equalTo("null"))
             .body("title", equalTo(TITLE))
             .body("summary", equalTo(SUMMARY))
             .body("cover", equalTo(COVER))
@@ -136,8 +139,7 @@ class PostBookControllerShould : ContractTest() {
                 }"""
 
     companion object {
-        const val TITLE = "Harry Pot" +
-                "ter and the philosopher's stone"
+        const val TITLE = "Harry Potter and the philosopher's stone"
         const val SUMMARY =
             "Harry hasn't had a birthday party in eleven years - but all that is about to change when a mysterious letter arrives with an invitation to an incredible place."
         const val COVER = "https://images-na.ssl-images-amazon.com/images/I/51HSkTKlauL._SX346_BO1,204,203,200_.jpg"

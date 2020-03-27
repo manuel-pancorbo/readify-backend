@@ -3,7 +3,8 @@ CREATE TABLE bookpublishing.book
 (
     id                   VARCHAR(36)  NOT NULL,
     authorId             VARCHAR(36)  NOT NULL,
-    status               VARCHAR(10),
+    status               VARCHAR(15),
+    visibility           VARCHAR(15),
     title                VARCHAR(150) NOT NULL,
     summary              TEXT,
     cover                VARCHAR(200),

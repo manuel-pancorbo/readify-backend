@@ -13,6 +13,7 @@ data class HttpBookResponse(
     @JsonProperty("tags") val tags: List<String>,
     @JsonProperty("price") val price: HttpMoney,
     @JsonProperty("status") val status: String,
+    @JsonProperty("visibility") val visibility: String,
     @JsonProperty("completionPercentage") val completionPercentage: Int,
     @JsonProperty("finishedAt") val finishedAt: ZonedDateTime?
 )

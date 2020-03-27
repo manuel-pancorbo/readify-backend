@@ -14,6 +14,7 @@ import com.readify.bookpublishing.domain.book.Tags
 import com.readify.bookpublishing.domain.book.Title
 import com.readify.bookpublishing.infrastructure.domain.book.JpaBookRepository
 import com.readify.bookpublishing.infrastructure.jpa.bookpublishing.JpaBookDataSource
+import com.readify.bookpublishing.infrastructure.jpa.bookpublishing.JpaBookVisibility
 import com.readify.shared.domain.money.Currency
 import com.readify.shared.domain.money.Money
 import org.junit.jupiter.api.BeforeEach
@@ -50,6 +51,7 @@ class JpaBookRepositoryShould : IntegrationTest() {
         assertThat(actual.get().priceCurrency).isEqualTo(book.price.currency.toString())
         assertThat(actual.get().finishedAt).isNull()
         assertThat(actual.get().completionPercentage).isEqualTo(0)
+        assertThat(actual.get().visibility).isEqualTo(JpaBookVisibility.NULL)
     }
 
     @Test

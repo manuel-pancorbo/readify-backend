@@ -30,7 +30,10 @@ data class JpaBook(
     @Enumerated(EnumType.STRING)
     val status: JpaBookStatus,
     val completionPercentage: Int,
+    @Enumerated(EnumType.STRING)
+    val visibility: JpaBookVisibility,
     val finishedAt: ZonedDateTime?
 )
 
 enum class JpaBookStatus { IN_PROGRESS, FINISHED }
+enum class JpaBookVisibility { NULL, RESTRICTED, VISIBLE }

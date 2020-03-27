@@ -1,5 +1,6 @@
 package com.readify.bookpublishing.domain.book
 
+import com.readify.bookpublishing.domain.book.Visibility.NULL
 import com.readify.shared.domain.clock.Clock
 import com.readify.shared.domain.event.RootAggregate
 import com.readify.shared.domain.event.book.BookPublished
@@ -9,14 +10,17 @@ import java.util.UUID
 
 sealed class Book(
     open val id: BookId, open val authorId: AuthorId, open val title: Title, open val cover: Cover,
-    open val summary: Summary, open val tags: Tags, open val price: Money, open val completionPercentage: Int
+    open val summary: Summary, open val tags: Tags, open val price: Money, open val completionPercentage: Int,
+    open val visibility: Visibility
 ) : RootAggregate() {
 
     fun sameAuthor(anotherAuthorId: AuthorId) = authorId == anotherAuthorId
 
     companion object {
-        fun create(id: BookId, authorId: AuthorId, title: Title, cover: Cover, summary: Summary, tags: Tags,
-                   price: Money) =
+        fun create(
+            id: BookId, authorId: AuthorId, title: Title, cover: Cover, summary: Summary, tags: Tags,
+            price: Money
+        ) =
             InProgressBook(id, authorId, title, cover, summary, tags, price)
                 .also { it.record(BookPublished(id.value, authorId.value, title.value, cover.value, summary.value,
                     tags.value, price)) }
@@ -26,14 +30,14 @@ sealed class Book(
 data class InProgressBook(
     override val id: BookId, override val authorId: AuthorId, override val title: Title, override val cover: Cover,
     override val summary: Summary, override val tags: Tags, override val price: Money,
-    override val completionPercentage: Int = 0
-) : Book(id, authorId, title, cover, summary, tags, price, completionPercentage)
+    override val completionPercentage: Int = 0, override val visibility: Visibility = NULL
+) : Book(id, authorId, title, cover, summary, tags, price, completionPercentage, visibility)
 
 data class FinishedBook(
     override val id: BookId, override val authorId: AuthorId, override val title: Title, override val cover: Cover,
     override val summary: Summary, override val tags: Tags, override val price: Money,
-    override val completionPercentage: Int, val finishedAt: ZonedDateTime = Clock().now()
-) : Book(id, authorId, title, cover, summary, tags, price, completionPercentage)
+    override val visibility: Visibility, val finishedAt: ZonedDateTime = Clock().now()
+) : Book(id, authorId, title, cover, summary, tags, price, 100, visibility)
 
 data class BookId(val value: String) {
     init {
@@ -46,3 +50,4 @@ data class Title(val value: String)
 data class Summary(val value: String)
 data class Cover(val value: String)
 data class Tags(val value: List<String>)
+enum class Visibility { NULL, RESTRICTED, VISIBLE }

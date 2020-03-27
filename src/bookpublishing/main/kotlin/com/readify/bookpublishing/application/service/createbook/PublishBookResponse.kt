@@ -14,6 +14,7 @@ data class BookPublishedSuccessfullyResponse(
     val priceAmount: Float,
     val priceCurrency: String,
     val status: BookStatus,
+    val visibility: BookVisibility,
     val finishedAt: ZonedDateTime?,
     val completionPercentage: Int
 ) : PublishBookResponse()

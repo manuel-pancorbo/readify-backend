@@ -11,6 +11,7 @@ import com.readify.bookpublishing.domain.book.Cover
 import com.readify.bookpublishing.domain.book.Summary
 import com.readify.bookpublishing.domain.book.Tags
 import com.readify.bookpublishing.domain.book.Title
+import com.readify.bookpublishing.domain.book.Visibility
 import com.readify.shared.domain.money.Currency
 import com.readify.shared.domain.money.Money
 import io.mockk.every
@@ -51,9 +52,9 @@ class PublishBookServiceShould {
         PublishBookRequest(AUTHOR_ID, TITLE, SUMMARY, COVER, tags, PRICE_AMOUNT, currency)
     private fun expectedResponse() =
         BookPublishedSuccessfullyResponse(AUTHOR_ID, BOOK_ID, TITLE, SUMMARY, COVER, tags, PRICE_AMOUNT,
-            PRICE_CURRENCY, BookStatus.IN_PROGRESS, null, 0)
+            PRICE_CURRENCY, BookStatus.IN_PROGRESS, BookVisibility.RESTRICTED, null, 40)
     private fun book() = InProgressBook(BookId(BOOK_ID), AuthorId(AUTHOR_ID), Title(TITLE), Cover(COVER), Summary(SUMMARY),
-        Tags(tags), Money(PRICE_AMOUNT, Currency.EUR))
+        Tags(tags), Money(PRICE_AMOUNT, Currency.EUR), 40, Visibility.RESTRICTED)
 
     companion object {
         const val BOOK_ID = "71ede130-a7d2-4726-8702-90383dc5cd7d"
