@@ -37,18 +37,30 @@ class PostBookControllerShould : ContractTest() {
     fun `returns ok when book has been successfully created`() {
         every { verifyAccessTokenService.execute(VerifyAccessTokenRequest("anytoken")) }
             .returns(VerifyAccessTokenResponse("any-author-id", "jkrowling", "jkrowling@gmail.com"))
-        every { publishBookService.execute(PublishBookRequest("any-author-id",
-            TITLE,
-            SUMMARY,
-            COVER,
-            tags
-        )) }
-            .returns(PublishBookResponse("any-author-id", "any-id",
-                TITLE,
-                SUMMARY,
-                COVER,
-                tags
-            ))
+        every {
+            publishBookService.execute(
+                PublishBookRequest(
+                    "any-author-id",
+                    TITLE,
+                    SUMMARY,
+                    COVER,
+                    tags,
+                    PRICE,
+                    CURRENCY
+                )
+            )
+        }
+            .returns(
+                PublishBookResponse(
+                    "any-author-id", "any-id",
+                    TITLE,
+                    SUMMARY,
+                    COVER,
+                    tags,
+                    PRICE,
+                    CURRENCY
+                )
+            )
 
         RestAssured.given()
             .`when`()
@@ -64,6 +76,8 @@ class PostBookControllerShould : ContractTest() {
             .body("summary", equalTo(SUMMARY))
             .body("cover", equalTo(COVER))
             .body("tags", CoreMatchers.hasItems(tags[0], tags[1]))
+            .body("price.amount", equalTo(PRICE))
+            .body("price.currency", equalTo(CURRENCY))
     }
 
     private fun bookBody() =
@@ -71,7 +85,11 @@ class PostBookControllerShould : ContractTest() {
                     "title": "$TITLE",
                     "summary": "$SUMMARY",
                     "cover": "$COVER",
-                    "tags": ["${tags[0]}", "${tags[1]}"]
+                    "tags": ["${tags[0]}", "${tags[1]}"],
+                    "price": {
+                        "amount": 15,
+                        "currency": "EUR"
+                    }
                 }"""
 
     companion object {
@@ -79,6 +97,8 @@ class PostBookControllerShould : ContractTest() {
         const val SUMMARY =
             "Harry hasn't had a birthday party in eleven years - but all that is about to change when a mysterious letter arrives with an invitation to an incredible place."
         const val COVER = "https://images-na.ssl-images-amazon.com/images/I/51HSkTKlauL._SX346_BO1,204,203,200_.jpg"
+        const val PRICE = 15f
+        const val CURRENCY = "EUR"
         val tags = listOf("fantasy", "magic")
     }
 }

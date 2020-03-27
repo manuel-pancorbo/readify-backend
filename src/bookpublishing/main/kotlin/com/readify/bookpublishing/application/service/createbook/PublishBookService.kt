@@ -23,14 +23,16 @@ class PublishBookService(private val bookFactory: BookFactory, private val bookR
 }
 
 private fun Book.toResponse() =
-    PublishBookResponse(authorId.value, id.value, title.value, summary.value, cover.value, tags.value)
+    PublishBookResponse(authorId.value, id.value, title.value, summary.value, cover.value, tags.value, 0f, "")
 
 data class PublishBookRequest(
     val authorId: String,
     val title: String,
     val summary: String,
     val cover: String,
-    val tags: List<String>
+    val tags: List<String>,
+    val priceAmount: Float,
+    val priceCurrency: String
 )
 
 data class PublishBookResponse(
@@ -39,5 +41,7 @@ data class PublishBookResponse(
     val title: String,
     val summary: String,
     val cover: String,
-    val tags: List<String>
+    val tags: List<String>,
+    val priceAmount: Float,
+    val priceCurrency: String
 )

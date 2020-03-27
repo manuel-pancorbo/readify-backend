@@ -1,5 +1,6 @@
 package com.readify.api.bookpublishing.controller.createbook
 
+import com.readify.api.bookpublishing.controller.common.HttpMoney
 import com.readify.authentication.domain.AnonymousUser
 import com.readify.authentication.domain.LoggedUser
 import com.readify.authentication.domain.Requester
@@ -32,7 +33,7 @@ class PostBookController(private val publishBookService: PublishBookService) {
 }
 
 private fun HttpBookRequest.toCreateBookRequest(requester: LoggedUser) =
-    PublishBookRequest(requester.id, title, summary, cover, tags)
+    PublishBookRequest(requester.id, title, summary, cover, tags, price.amount, price.currency)
 
 private fun PublishBookResponse.toHttpResponse() =
-    ResponseEntity.ok(HttpBookResponse(bookId, authorId, title, summary, cover, tags))
+    ResponseEntity.ok(HttpBookResponse(bookId, authorId, title, summary, cover, tags, HttpMoney(priceAmount, priceCurrency)))
