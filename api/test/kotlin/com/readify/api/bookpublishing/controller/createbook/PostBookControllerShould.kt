@@ -7,6 +7,7 @@ import com.readify.authentication.application.service.verifyaccesstoken.VerifyAc
 import com.readify.authentication.application.service.verifyaccesstoken.VerifyAccessTokenService
 import com.readify.bookpublishing.application.service.createbook.PublishBookRequest
 import com.readify.bookpublishing.application.service.createbook.BookPublishedSuccessfullyResponse
+import com.readify.bookpublishing.application.service.createbook.InvalidCurrencyResponse
 import com.readify.bookpublishing.application.service.createbook.PublishBookService
 import io.mockk.every
 import io.restassured.RestAssured
@@ -27,10 +28,44 @@ class PostBookControllerShould : ContractTest() {
             .`when`()
             .contentType("application/json")
             .and()
-            .body(bookBody())
+            .body(bookBody("not-supported-currency"))
             .post("/v1/books")
             .then()
             .statusCode(401)
+    }
+
+    @Test
+    fun `returns bad request when currency is not supported`() {
+        every { verifyAccessTokenService.execute(VerifyAccessTokenRequest("anytoken")) }
+            .returns(VerifyAccessTokenResponse("any-author-id", "jkrowling", "jkrowling@gmail.com"))
+
+        every {
+            publishBookService.execute(
+                PublishBookRequest(
+                    "any-author-id",
+                    TITLE,
+                    SUMMARY,
+                    COVER,
+                    tags,
+                    PRICE,
+                    "not-supported-currency"
+                )
+            )
+        }
+            .returns(InvalidCurrencyResponse)
+
+        RestAssured.given()
+            .`when`()
+            .contentType("application/json")
+            .and()
+            .header("Authorization", "Bearer anytoken")
+            .body(bookBody(currency = "not-supported-currency"))
+            .post("/v1/books")
+            .then()
+            .statusCode(400)
+            .body("code", equalTo("bookpublishing.currency_not_supported"))
+            .body("message", equalTo("Currency not supported"))
+            .body("field", equalTo("price"))
     }
 
     @Test
@@ -80,7 +115,7 @@ class PostBookControllerShould : ContractTest() {
             .body("price.currency", equalTo(CURRENCY))
     }
 
-    private fun bookBody() =
+    private fun bookBody(currency: String = CURRENCY) =
         """{
                     "title": "$TITLE",
                     "summary": "$SUMMARY",
@@ -88,7 +123,7 @@ class PostBookControllerShould : ContractTest() {
                     "tags": ["${tags[0]}", "${tags[1]}"],
                     "price": {
                         "amount": 15,
-                        "currency": "EUR"
+                        "currency": "$currency"
                     }
                 }"""
 

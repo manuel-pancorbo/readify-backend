@@ -13,6 +13,8 @@ import com.readify.bookpublishing.domain.book.Tags
 import com.readify.bookpublishing.domain.book.Title
 import com.readify.bookpublishing.infrastructure.domain.book.JpaBookRepository
 import com.readify.bookpublishing.infrastructure.jpa.bookpublishing.JpaBookDataSource
+import com.readify.shared.domain.money.Currency
+import com.readify.shared.domain.money.Money
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -62,6 +64,7 @@ class JpaBookRepositoryShould : IntegrationTest() {
             Title("Harry Potter and the philosopher's stone"),
             Cover("https://images-na.ssl-images-amazon.com/images/I/51HSkTKlauL._SX346_BO1,204,203,200_.jpg"),
             Summary("Harry hasn't had a birthday party in eleven years - but all that is about to change when a mysterious letter arrives with an invitation to an incredible place."),
-            Tags(listOf("fantasy", "magic"))
+            Tags(listOf("fantasy", "magic")),
+            Money(1f, Currency.EUR)
         )
 }

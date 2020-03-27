@@ -6,7 +6,10 @@ import com.readify.authentication.domain.LoggedUser
 import com.readify.authentication.domain.Requester
 import com.readify.bookpublishing.application.service.createbook.PublishBookRequest
 import com.readify.bookpublishing.application.service.createbook.BookPublishedSuccessfullyResponse
+import com.readify.bookpublishing.application.service.createbook.InvalidCurrencyResponse
+import com.readify.bookpublishing.application.service.createbook.PublishBookResponse
 import com.readify.bookpublishing.application.service.createbook.PublishBookService
+import com.readify.shared.infrastructure.controller.error.HttpErrorResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
@@ -21,7 +24,7 @@ class PostBookController(private val publishBookService: PublishBookService) {
     fun createBook(
         @RequestBody httpBookRequest: HttpBookRequest,
         requester: Requester
-    ): ResponseEntity<HttpBookResponse> =
+    ): ResponseEntity<out Any> =
         when (requester) {
             is AnonymousUser -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
             is LoggedUser -> {
@@ -35,5 +38,10 @@ class PostBookController(private val publishBookService: PublishBookService) {
 private fun HttpBookRequest.toCreateBookRequest(requester: LoggedUser) =
     PublishBookRequest(requester.id, title, summary, cover, tags, price.amount, price.currency)
 
-private fun BookPublishedSuccessfullyResponse.toHttpResponse() =
-    ResponseEntity.ok(HttpBookResponse(bookId, authorId, title, summary, cover, tags, HttpMoney(priceAmount, priceCurrency)))
+private fun PublishBookResponse.toHttpResponse() =
+    when(this) {
+        InvalidCurrencyResponse -> ResponseEntity.badRequest()
+            .body(HttpErrorResponse("bookpublishing.currency_not_supported", "Currency not supported", "price"))
+        is BookPublishedSuccessfullyResponse -> ResponseEntity.ok(HttpBookResponse(bookId, authorId, title, summary,
+            cover, tags, HttpMoney(priceAmount, priceCurrency)))
+    }
