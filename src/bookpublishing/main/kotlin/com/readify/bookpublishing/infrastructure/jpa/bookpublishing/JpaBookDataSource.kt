@@ -21,5 +21,7 @@ data class JpaBook(
     val cover: String,
     val summary: String,
     @Type(type = "list-array")
-    val tags: List<String>
+    val tags: List<String>,
+    val priceAmount: Float,
+    val priceCurrency: String
 )

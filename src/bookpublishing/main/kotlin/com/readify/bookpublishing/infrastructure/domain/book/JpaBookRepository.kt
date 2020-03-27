@@ -25,6 +25,7 @@ class JpaBookRepository(private val jpaBookDataSource: JpaBookDataSource) : Book
     }
 }
 
-private fun Book.toJpa() = JpaBook(id.value, authorId.value, title.value, cover.value, summary.value, tags.value)
-private fun JpaBook.toDomain() =
-    Book(BookId(id), AuthorId(authorId), Title(title), Cover(cover), Summary(summary), Tags(tags), Money(1f, Currency.EUR))
+private fun Book.toJpa() = JpaBook(id.value, authorId.value, title.value, cover.value, summary.value, tags.value,
+    price.amount, price.currency.toString())
+private fun JpaBook.toDomain() = Book(BookId(id), AuthorId(authorId), Title(title), Cover(cover), Summary(summary),
+    Tags(tags), Money(priceAmount, Currency.valueOf(priceCurrency)))

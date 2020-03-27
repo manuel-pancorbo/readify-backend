@@ -45,6 +45,8 @@ class JpaBookRepositoryShould : IntegrationTest() {
         assertThat(actual.get().cover).isEqualTo(book.cover.value)
         assertThat(actual.get().summary).isEqualTo(book.summary.value)
         assertThat(actual.get().tags).isEqualTo(book.tags.value)
+        assertThat(actual.get().priceAmount).isEqualTo(book.price.amount)
+        assertThat(actual.get().priceCurrency).isEqualTo(book.price.currency.toString())
     }
 
     @Test
@@ -65,6 +67,6 @@ class JpaBookRepositoryShould : IntegrationTest() {
             Cover("https://images-na.ssl-images-amazon.com/images/I/51HSkTKlauL._SX346_BO1,204,203,200_.jpg"),
             Summary("Harry hasn't had a birthday party in eleven years - but all that is about to change when a mysterious letter arrives with an invitation to an incredible place."),
             Tags(listOf("fantasy", "magic")),
-            Money(1f, Currency.EUR)
+            Money(15.5f, Currency.EUR)
         )
 }
