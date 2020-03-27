@@ -3,7 +3,7 @@ package com.readify.bookpublishing.application.service.createbook
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import com.readify.bookpublishing.domain.book.AuthorId
-import com.readify.bookpublishing.domain.book.Book
+import com.readify.bookpublishing.domain.book.DraftBook
 import com.readify.bookpublishing.domain.book.BookFactory
 import com.readify.bookpublishing.domain.book.BookId
 import com.readify.bookpublishing.domain.book.BookRepository
@@ -50,14 +50,10 @@ class PublishBookServiceShould {
     private fun request(currency: String = PRICE_CURRENCY) =
         PublishBookRequest(AUTHOR_ID, TITLE, SUMMARY, COVER, tags, PRICE_AMOUNT, currency)
     private fun expectedResponse() =
-        BookPublishedSuccessfullyResponse(AUTHOR_ID, BOOK_ID, TITLE, SUMMARY, COVER, tags, PRICE_AMOUNT, PRICE_CURRENCY)
-
-    private fun book() =
-        Book(
-            BookId(BOOK_ID), AuthorId(AUTHOR_ID), Title(TITLE), Cover(COVER), Summary(SUMMARY), Tags(tags), Money(
-                PRICE_AMOUNT, Currency.EUR
-            )
-        )
+        BookPublishedSuccessfullyResponse(AUTHOR_ID, BOOK_ID, TITLE, SUMMARY, COVER, tags, PRICE_AMOUNT,
+            PRICE_CURRENCY, BookStatus.DRAFT)
+    private fun book() = DraftBook(BookId(BOOK_ID), AuthorId(AUTHOR_ID), Title(TITLE), Cover(COVER), Summary(SUMMARY),
+        Tags(tags), Money(PRICE_AMOUNT, Currency.EUR))
 
     companion object {
         const val BOOK_ID = "71ede130-a7d2-4726-8702-90383dc5cd7d"

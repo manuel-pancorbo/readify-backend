@@ -43,5 +43,5 @@ private fun PublishBookResponse.toHttpResponse() =
         InvalidCurrencyResponse -> ResponseEntity.badRequest()
             .body(HttpErrorResponse("bookpublishing.currency_not_supported", "Currency not supported", "price"))
         is BookPublishedSuccessfullyResponse -> ResponseEntity.ok(HttpBookResponse(bookId, authorId, title, summary,
-            cover, tags, HttpMoney(priceAmount, priceCurrency)))
+            cover, tags, HttpMoney(priceAmount, priceCurrency), status.toString().toLowerCase()))
     }

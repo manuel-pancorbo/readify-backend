@@ -5,9 +5,10 @@ import com.readify.ContractTest
 import com.readify.authentication.application.service.verifyaccesstoken.VerifyAccessTokenRequest
 import com.readify.authentication.application.service.verifyaccesstoken.VerifyAccessTokenResponse
 import com.readify.authentication.application.service.verifyaccesstoken.VerifyAccessTokenService
-import com.readify.bookpublishing.application.service.createbook.PublishBookRequest
 import com.readify.bookpublishing.application.service.createbook.BookPublishedSuccessfullyResponse
+import com.readify.bookpublishing.application.service.createbook.BookStatus.DRAFT
 import com.readify.bookpublishing.application.service.createbook.InvalidCurrencyResponse
+import com.readify.bookpublishing.application.service.createbook.PublishBookRequest
 import com.readify.bookpublishing.application.service.createbook.PublishBookService
 import io.mockk.every
 import io.restassured.RestAssured
@@ -93,7 +94,8 @@ class PostBookControllerShould : ContractTest() {
                     COVER,
                     tags,
                     PRICE,
-                    CURRENCY
+                    CURRENCY,
+                    DRAFT
                 )
             )
 
@@ -107,6 +109,7 @@ class PostBookControllerShould : ContractTest() {
             .then()
             .statusCode(200)
             .body("id", equalTo("any-id"))
+            .body("status", equalTo("draft"))
             .body("title", equalTo(TITLE))
             .body("summary", equalTo(SUMMARY))
             .body("cover", equalTo(COVER))

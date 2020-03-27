@@ -10,5 +10,6 @@ data class HttpBookResponse(
     @JsonProperty("summary") val summary: String,
     @JsonProperty("cover") val cover: String,
     @JsonProperty("tags") val tags: List<String>,
-    @JsonProperty("price") val price: HttpMoney
+    @JsonProperty("price") val price: HttpMoney,
+    @JsonProperty("status") val status: String
 )

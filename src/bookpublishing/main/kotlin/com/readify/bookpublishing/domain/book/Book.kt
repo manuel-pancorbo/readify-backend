@@ -1,31 +1,43 @@
 package com.readify.bookpublishing.domain.book
 
+import com.readify.shared.domain.clock.Clock
 import com.readify.shared.domain.event.RootAggregate
 import com.readify.shared.domain.event.book.BookPublished
 import com.readify.shared.domain.money.Money
+import java.time.ZonedDateTime
 import java.util.UUID
 
-data class Book(
-    val id: BookId,
-    val authorId: AuthorId,
-    val title: Title,
-    val cover: Cover,
-    val summary: Summary,
-    val tags: Tags,
-    val price: Money
-) :
-    RootAggregate() {
+sealed class Book(
+    open val id: BookId, open val authorId: AuthorId, open val title: Title, open val cover: Cover,
+    open val summary: Summary, open val tags: Tags, open val price: Money
+) : RootAggregate() {
 
     fun sameAuthor(anotherAuthorId: AuthorId) = authorId == anotherAuthorId
 
     companion object {
-        fun create(id: BookId, authorId: AuthorId, title: Title, cover: Cover, summary: Summary, tags: Tags, price: Money) =
-            Book(id, authorId, title, cover, summary, tags, price)
-                .also { it.record(
-                    BookPublished(id.value, authorId.value, title.value, cover.value, summary.value, tags.value, price)
-                ) }
+        fun create(id: BookId, authorId: AuthorId, title: Title, cover: Cover, summary: Summary, tags: Tags,
+                   price: Money) =
+            DraftBook(id, authorId, title, cover, summary, tags, price)
+                .also { it.record(BookPublished(id.value, authorId.value, title.value, cover.value, summary.value,
+                    tags.value, price)) }
     }
 }
+
+data class DraftBook(
+    override val id: BookId, override val authorId: AuthorId, override val title: Title, override val cover: Cover,
+    override val summary: Summary, override val tags: Tags, override val price: Money
+) : Book(id, authorId, title, cover, summary, tags, price)
+
+data class InProgressBook(
+    override val id: BookId, override val authorId: AuthorId, override val title: Title, override val cover: Cover,
+    override val summary: Summary, override val tags: Tags, override val price: Money
+) : Book(id, authorId, title, cover, summary, tags, price)
+
+data class FinishedBook(
+    override val id: BookId, override val authorId: AuthorId, override val title: Title, override val cover: Cover,
+    override val summary: Summary, override val tags: Tags, override val price: Money,
+    val finishedAt: ZonedDateTime = Clock().now()
+) : Book(id, authorId, title, cover, summary, tags, price)
 
 data class BookId(val value: String) {
     init {

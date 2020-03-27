@@ -12,15 +12,8 @@ import java.util.UUID
 
 sealed class Chapter : RootAggregate()
 
-class DraftChapter(
-    val id: ChapterId,
-    val title: Title,
-    val content: Content,
-    val price: Money,
-    val authorId: AuthorId,
-    val bookId: BookId,
-    val modifiedAt: ZonedDateTime
-) : Chapter() {
+class DraftChapter(val id: ChapterId, val title: Title, val content: Content, val price: Money,
+                   val authorId: AuthorId, val bookId: BookId, val modifiedAt: ZonedDateTime) : Chapter() {
     companion object {
         fun create(title: Title, content: Content, price: Money, authorId: AuthorId, bookId: BookId) =
             DraftChapter(ChapterId(UUID.randomUUID().toString()), title, content, price, authorId, bookId, Clock().now())

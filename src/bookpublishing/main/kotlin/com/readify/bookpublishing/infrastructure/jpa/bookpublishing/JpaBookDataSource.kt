@@ -4,7 +4,10 @@ import com.vladmihalcea.hibernate.type.array.ListArrayType
 import org.hibernate.annotations.Type
 import org.hibernate.annotations.TypeDef
 import org.springframework.data.jpa.repository.JpaRepository
+import java.time.ZonedDateTime
 import javax.persistence.Entity
+import javax.persistence.EnumType
+import javax.persistence.Enumerated
 import javax.persistence.Id
 import javax.persistence.Table
 
@@ -23,5 +26,10 @@ data class JpaBook(
     @Type(type = "list-array")
     val tags: List<String>,
     val priceAmount: Float,
-    val priceCurrency: String
+    val priceCurrency: String,
+    @Enumerated(EnumType.STRING)
+    val status: JpaBookStatus,
+    val finishedAt: ZonedDateTime?
 )
+
+enum class JpaBookStatus { DRAFT, IN_PROGRESS, FINISHED }

@@ -5,7 +5,7 @@ import com.readify.shared.domain.money.Money
 
 class BookMother {
     fun validOne(bookId: String, authorId: String) =
-        Book(
+        DraftBook(
             BookId(bookId),
             AuthorId(authorId),
             Title("Harry Potter and the philosopher's stone"),
