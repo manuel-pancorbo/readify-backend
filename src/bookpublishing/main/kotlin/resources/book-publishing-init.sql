@@ -22,5 +22,7 @@ CREATE TABLE bookpublishing.chapter
     modifiedAt  timestamp with time zone,
     publishedAt timestamp with time zone,
     status      VARCHAR(10),
+    priceamount   NUMERIC(6,2),
+    pricecurrency VARCHAR(4),
     PRIMARY KEY (id)
 );

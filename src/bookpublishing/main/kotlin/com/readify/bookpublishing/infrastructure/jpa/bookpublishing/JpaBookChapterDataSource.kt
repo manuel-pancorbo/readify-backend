@@ -22,7 +22,9 @@ data class JpaChapter(
     val modifiedAt: ZonedDateTime,
     val publishedAt: ZonedDateTime?,
     @Enumerated(EnumType.STRING)
-    val status: JpaChapterStatus
+    val status: JpaChapterStatus,
+    val priceAmount: Float,
+    val priceCurrency: String
 )
 
 enum class JpaChapterStatus { DRAFT, PUBLISHED }

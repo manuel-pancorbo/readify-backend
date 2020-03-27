@@ -49,6 +49,8 @@ class JpaChapterRepositoryShould : IntegrationTest() {
         assertThat(actual.get().title).isEqualTo(chapter.title.value)
         assertThat(actual.get().content).isEqualTo(chapter.content.value)
         assertThat(actual.get().status).isEqualTo(JpaChapterStatus.DRAFT)
+        assertThat(actual.get().priceAmount).isEqualTo(1.35f)
+        assertThat(actual.get().priceCurrency).isEqualTo("EUR")
         assertThat(actual.get().modifiedAt).isNotNull()
         assertThat(actual.get().publishedAt).isNull()
     }
@@ -63,7 +65,7 @@ class JpaChapterRepositoryShould : IntegrationTest() {
                 content
             """
             ),
-            Money(1f, Currency.EUR),
+            Money(1.35f, Currency.EUR),
             AuthorId(UUID.randomUUID().toString()),
             BookId(UUID.randomUUID().toString()),
             Clock().now()

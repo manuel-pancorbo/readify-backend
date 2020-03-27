@@ -17,7 +17,7 @@ class JpaChapterRepository(private val jpaChapterDataSource: JpaChapterDataSourc
 private fun Chapter.toJpa() =
     when(this) {
         is DraftChapter -> JpaChapter(id.value, authorId.value, bookId.value, title.value, content.value,
-            modifiedAt, null, JpaChapterStatus.DRAFT)
+            modifiedAt, null, JpaChapterStatus.DRAFT, price.amount, price.currency.toString())
         is PublishedChapter -> JpaChapter(id.value, authorId.value, bookId.value, title.value, content.value,
-            modifiedAt, publishedAt, JpaChapterStatus.PUBLISHED)
+            modifiedAt, publishedAt, JpaChapterStatus.PUBLISHED, price.amount, price.currency.toString())
     }
