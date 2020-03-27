@@ -17,22 +17,16 @@ sealed class Book(
     companion object {
         fun create(id: BookId, authorId: AuthorId, title: Title, cover: Cover, summary: Summary, tags: Tags,
                    price: Money) =
-            DraftBook(id, authorId, title, cover, summary, tags, price)
+            InProgressBook(id, authorId, title, cover, summary, tags, price)
                 .also { it.record(BookPublished(id.value, authorId.value, title.value, cover.value, summary.value,
                     tags.value, price)) }
     }
 }
 
-data class DraftBook(
-    override val id: BookId, override val authorId: AuthorId, override val title: Title, override val cover: Cover,
-    override val summary: Summary, override val tags: Tags, override val price: Money,
-    override val completionPercentage: Int = 0
-) : Book(id, authorId, title, cover, summary, tags, price, completionPercentage)
-
 data class InProgressBook(
     override val id: BookId, override val authorId: AuthorId, override val title: Title, override val cover: Cover,
     override val summary: Summary, override val tags: Tags, override val price: Money,
-    override val completionPercentage: Int
+    override val completionPercentage: Int = 0
 ) : Book(id, authorId, title, cover, summary, tags, price, completionPercentage)
 
 data class FinishedBook(

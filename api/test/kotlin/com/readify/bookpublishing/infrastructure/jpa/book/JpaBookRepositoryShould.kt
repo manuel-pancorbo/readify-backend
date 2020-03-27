@@ -6,7 +6,7 @@ import assertk.assertions.isNull
 import assertk.assertions.isTrue
 import com.readify.IntegrationTest
 import com.readify.bookpublishing.domain.book.AuthorId
-import com.readify.bookpublishing.domain.book.DraftBook
+import com.readify.bookpublishing.domain.book.InProgressBook
 import com.readify.bookpublishing.domain.book.BookId
 import com.readify.bookpublishing.domain.book.Cover
 import com.readify.bookpublishing.domain.book.Summary
@@ -63,7 +63,7 @@ class JpaBookRepositoryShould : IntegrationTest() {
     }
 
     private fun anyBook() =
-        DraftBook(
+        InProgressBook(
             BookId("71ede130-a7d2-4726-8702-90383dc5cd7d"),
             AuthorId("0b35b63a-c7b6-4faf-bda1-c95868def3c7"),
             Title("Harry Potter and the philosopher's stone"),

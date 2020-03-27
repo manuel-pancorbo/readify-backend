@@ -33,4 +33,4 @@ data class JpaBook(
     val finishedAt: ZonedDateTime?
 )
 
-enum class JpaBookStatus { DRAFT, IN_PROGRESS, FINISHED }
+enum class JpaBookStatus { IN_PROGRESS, FINISHED }

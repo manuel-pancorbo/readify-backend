@@ -5,9 +5,8 @@ import com.readify.bookpublishing.domain.book.Book
 import com.readify.bookpublishing.domain.book.BookId
 import com.readify.bookpublishing.domain.book.BookRepository
 import com.readify.bookpublishing.domain.book.Cover
-import com.readify.bookpublishing.domain.book.DraftBook
-import com.readify.bookpublishing.domain.book.FinishedBook
 import com.readify.bookpublishing.domain.book.InProgressBook
+import com.readify.bookpublishing.domain.book.FinishedBook
 import com.readify.bookpublishing.domain.book.Summary
 import com.readify.bookpublishing.domain.book.Tags
 import com.readify.bookpublishing.domain.book.Title
@@ -31,10 +30,6 @@ class JpaBookRepository(private val jpaBookDataSource: JpaBookDataSource) : Book
 
 private fun Book.toJpa() =
     when (this) {
-        is DraftBook -> JpaBook(
-            id.value, authorId.value, title.value, cover.value, summary.value, tags.value,
-            price.amount, price.currency.toString(), JpaBookStatus.DRAFT, completionPercentage, null
-        )
         is InProgressBook -> JpaBook(
             id.value, authorId.value, title.value, cover.value, summary.value, tags.value,
             price.amount, price.currency.toString(), JpaBookStatus.IN_PROGRESS, completionPercentage, null
@@ -46,10 +41,6 @@ private fun Book.toJpa() =
     }
 
 private fun JpaBook.toDomain() = when (status) {
-    JpaBookStatus.DRAFT -> DraftBook(
-        BookId(id), AuthorId(authorId), Title(title), Cover(cover), Summary(summary),
-        Tags(tags), Money(priceAmount, Currency.valueOf(priceCurrency)), completionPercentage
-    )
     JpaBookStatus.IN_PROGRESS -> InProgressBook(
         BookId(id), AuthorId(authorId), Title(title), Cover(cover), Summary(summary),
         Tags(tags), Money(priceAmount, Currency.valueOf(priceCurrency)), completionPercentage

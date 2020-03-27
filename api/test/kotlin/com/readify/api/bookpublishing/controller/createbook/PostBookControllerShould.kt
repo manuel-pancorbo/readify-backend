@@ -6,7 +6,7 @@ import com.readify.authentication.application.service.verifyaccesstoken.VerifyAc
 import com.readify.authentication.application.service.verifyaccesstoken.VerifyAccessTokenResponse
 import com.readify.authentication.application.service.verifyaccesstoken.VerifyAccessTokenService
 import com.readify.bookpublishing.application.service.createbook.BookPublishedSuccessfullyResponse
-import com.readify.bookpublishing.application.service.createbook.BookStatus.DRAFT
+import com.readify.bookpublishing.application.service.createbook.BookStatus
 import com.readify.bookpublishing.application.service.createbook.InvalidCurrencyResponse
 import com.readify.bookpublishing.application.service.createbook.PublishBookRequest
 import com.readify.bookpublishing.application.service.createbook.PublishBookService
@@ -96,7 +96,7 @@ class PostBookControllerShould : ContractTest() {
                     tags,
                     PRICE,
                     CURRENCY,
-                    DRAFT,
+                    BookStatus.IN_PROGRESS,
                     null,
                     0
                 )
@@ -112,7 +112,7 @@ class PostBookControllerShould : ContractTest() {
             .then()
             .statusCode(200)
             .body("id", equalTo("any-id"))
-            .body("status", equalTo("draft"))
+            .body("status", equalTo("in_progress"))
             .body("title", equalTo(TITLE))
             .body("summary", equalTo(SUMMARY))
             .body("cover", equalTo(COVER))
