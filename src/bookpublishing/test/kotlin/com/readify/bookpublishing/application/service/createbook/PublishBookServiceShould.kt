@@ -51,7 +51,7 @@ class PublishBookServiceShould {
         PublishBookRequest(AUTHOR_ID, TITLE, SUMMARY, COVER, tags, PRICE_AMOUNT, currency)
     private fun expectedResponse() =
         BookPublishedSuccessfullyResponse(AUTHOR_ID, BOOK_ID, TITLE, SUMMARY, COVER, tags, PRICE_AMOUNT,
-            PRICE_CURRENCY, BookStatus.DRAFT)
+            PRICE_CURRENCY, BookStatus.DRAFT, null, 0)
     private fun book() = DraftBook(BookId(BOOK_ID), AuthorId(AUTHOR_ID), Title(TITLE), Cover(COVER), Summary(SUMMARY),
         Tags(tags), Money(PRICE_AMOUNT, Currency.EUR))
 

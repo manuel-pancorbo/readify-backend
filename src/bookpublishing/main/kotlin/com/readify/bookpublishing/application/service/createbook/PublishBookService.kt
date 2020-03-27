@@ -36,14 +36,14 @@ private fun Book.toResponse() =
     when (this) {
         is DraftBook -> BookPublishedSuccessfullyResponse(
             authorId.value, id.value, title.value, summary.value, cover.value, tags.value, price.amount,
-            price.currency.toString(), BookStatus.DRAFT
+            price.currency.toString(), BookStatus.DRAFT, null, 0
         )
         is InProgressBook -> BookPublishedSuccessfullyResponse(
             authorId.value, id.value, title.value, summary.value, cover.value, tags.value, price.amount,
-            price.currency.toString(), BookStatus.IN_PROGRESS
+            price.currency.toString(), BookStatus.IN_PROGRESS, null, 0
         )
         is FinishedBook -> BookPublishedSuccessfullyResponse(
             authorId.value, id.value, title.value, summary.value, cover.value, tags.value, price.amount,
-            price.currency.toString(), BookStatus.FINISHED
+            price.currency.toString(), BookStatus.FINISHED, null, 0
         )
     }

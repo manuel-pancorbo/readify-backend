@@ -33,29 +33,29 @@ private fun Book.toJpa() =
     when (this) {
         is DraftBook -> JpaBook(
             id.value, authorId.value, title.value, cover.value, summary.value, tags.value,
-            price.amount, price.currency.toString(), JpaBookStatus.DRAFT, null
+            price.amount, price.currency.toString(), JpaBookStatus.DRAFT, completionPercentage, null
         )
         is InProgressBook -> JpaBook(
             id.value, authorId.value, title.value, cover.value, summary.value, tags.value,
-            price.amount, price.currency.toString(), JpaBookStatus.IN_PROGRESS, null
+            price.amount, price.currency.toString(), JpaBookStatus.IN_PROGRESS, completionPercentage, null
         )
         is FinishedBook -> JpaBook(
             id.value, authorId.value, title.value, cover.value, summary.value, tags.value,
-            price.amount, price.currency.toString(), JpaBookStatus.FINISHED, finishedAt
+            price.amount, price.currency.toString(), JpaBookStatus.FINISHED, completionPercentage, finishedAt
         )
     }
 
 private fun JpaBook.toDomain() = when (status) {
     JpaBookStatus.DRAFT -> DraftBook(
         BookId(id), AuthorId(authorId), Title(title), Cover(cover), Summary(summary),
-        Tags(tags), Money(priceAmount, Currency.valueOf(priceCurrency))
+        Tags(tags), Money(priceAmount, Currency.valueOf(priceCurrency)), completionPercentage
     )
     JpaBookStatus.IN_PROGRESS -> InProgressBook(
         BookId(id), AuthorId(authorId), Title(title), Cover(cover), Summary(summary),
-        Tags(tags), Money(priceAmount, Currency.valueOf(priceCurrency))
+        Tags(tags), Money(priceAmount, Currency.valueOf(priceCurrency)), completionPercentage
     )
     JpaBookStatus.FINISHED -> FinishedBook(
         BookId(id), AuthorId(authorId), Title(title), Cover(cover), Summary(summary),
-        Tags(tags), Money(priceAmount, Currency.valueOf(priceCurrency)), finishedAt!!
+        Tags(tags), Money(priceAmount, Currency.valueOf(priceCurrency)), completionPercentage, finishedAt!!
     )
 }

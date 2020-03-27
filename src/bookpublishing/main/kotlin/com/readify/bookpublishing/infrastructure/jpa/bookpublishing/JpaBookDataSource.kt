@@ -29,6 +29,7 @@ data class JpaBook(
     val priceCurrency: String,
     @Enumerated(EnumType.STRING)
     val status: JpaBookStatus,
+    val completionPercentage: Int,
     val finishedAt: ZonedDateTime?
 )
 

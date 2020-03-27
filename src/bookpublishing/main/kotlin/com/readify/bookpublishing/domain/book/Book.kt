@@ -9,7 +9,7 @@ import java.util.UUID
 
 sealed class Book(
     open val id: BookId, open val authorId: AuthorId, open val title: Title, open val cover: Cover,
-    open val summary: Summary, open val tags: Tags, open val price: Money
+    open val summary: Summary, open val tags: Tags, open val price: Money, open val completionPercentage: Int
 ) : RootAggregate() {
 
     fun sameAuthor(anotherAuthorId: AuthorId) = authorId == anotherAuthorId
@@ -25,19 +25,21 @@ sealed class Book(
 
 data class DraftBook(
     override val id: BookId, override val authorId: AuthorId, override val title: Title, override val cover: Cover,
-    override val summary: Summary, override val tags: Tags, override val price: Money
-) : Book(id, authorId, title, cover, summary, tags, price)
+    override val summary: Summary, override val tags: Tags, override val price: Money,
+    override val completionPercentage: Int = 0
+) : Book(id, authorId, title, cover, summary, tags, price, completionPercentage)
 
 data class InProgressBook(
     override val id: BookId, override val authorId: AuthorId, override val title: Title, override val cover: Cover,
-    override val summary: Summary, override val tags: Tags, override val price: Money
-) : Book(id, authorId, title, cover, summary, tags, price)
+    override val summary: Summary, override val tags: Tags, override val price: Money,
+    override val completionPercentage: Int
+) : Book(id, authorId, title, cover, summary, tags, price, completionPercentage)
 
 data class FinishedBook(
     override val id: BookId, override val authorId: AuthorId, override val title: Title, override val cover: Cover,
     override val summary: Summary, override val tags: Tags, override val price: Money,
-    val finishedAt: ZonedDateTime = Clock().now()
-) : Book(id, authorId, title, cover, summary, tags, price)
+    override val completionPercentage: Int, val finishedAt: ZonedDateTime = Clock().now()
+) : Book(id, authorId, title, cover, summary, tags, price, completionPercentage)
 
 data class BookId(val value: String) {
     init {

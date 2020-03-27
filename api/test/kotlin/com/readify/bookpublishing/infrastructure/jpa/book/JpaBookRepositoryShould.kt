@@ -2,6 +2,7 @@ package com.readify.bookpublishing.infrastructure.jpa.book
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import assertk.assertions.isNull
 import assertk.assertions.isTrue
 import com.readify.IntegrationTest
 import com.readify.bookpublishing.domain.book.AuthorId
@@ -47,6 +48,8 @@ class JpaBookRepositoryShould : IntegrationTest() {
         assertThat(actual.get().tags).isEqualTo(book.tags.value)
         assertThat(actual.get().priceAmount).isEqualTo(book.price.amount)
         assertThat(actual.get().priceCurrency).isEqualTo(book.price.currency.toString())
+        assertThat(actual.get().finishedAt).isNull()
+        assertThat(actual.get().completionPercentage).isEqualTo(0)
     }
 
     @Test

@@ -1,5 +1,7 @@
 package com.readify.bookpublishing.application.service.createbook
 
+import java.time.ZonedDateTime
+
 sealed class PublishBookResponse
 object InvalidCurrencyResponse : PublishBookResponse()
 data class BookPublishedSuccessfullyResponse(
@@ -11,5 +13,7 @@ data class BookPublishedSuccessfullyResponse(
     val tags: List<String>,
     val priceAmount: Float,
     val priceCurrency: String,
-    val status: BookStatus
+    val status: BookStatus,
+    val finishedAt: ZonedDateTime?,
+    val completionPercentage: Int
 ) : PublishBookResponse()

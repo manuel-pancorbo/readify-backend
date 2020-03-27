@@ -1,16 +1,17 @@
 create schema if not exists bookpublishing;
 CREATE TABLE bookpublishing.book
 (
-    id            VARCHAR(36)  NOT NULL,
-    authorId      VARCHAR(36)  NOT NULL,
-    status        VARCHAR(10),
-    title         VARCHAR(150) NOT NULL,
-    summary       TEXT,
-    cover         VARCHAR(200),
-    tags          VARCHAR(20)[],
-    priceamount   NUMERIC(6, 2),
-    pricecurrency VARCHAR(4),
-    finishedAt    timestamp with time zone,
+    id                   VARCHAR(36)  NOT NULL,
+    authorId             VARCHAR(36)  NOT NULL,
+    status               VARCHAR(10),
+    title                VARCHAR(150) NOT NULL,
+    summary              TEXT,
+    cover                VARCHAR(200),
+    tags                 VARCHAR(20)[],
+    priceamount          NUMERIC(6, 2),
+    pricecurrency        VARCHAR(4),
+    finishedAt           timestamp with time zone,
+    completionpercentage NUMERIC(3, 0),
     PRIMARY KEY (id)
 );
 

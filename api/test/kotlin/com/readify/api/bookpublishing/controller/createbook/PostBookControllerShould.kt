@@ -14,6 +14,7 @@ import io.mockk.every
 import io.restassured.RestAssured
 import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.equalTo
+import org.hamcrest.CoreMatchers.nullValue
 import org.junit.jupiter.api.Test
 
 class PostBookControllerShould : ContractTest() {
@@ -95,7 +96,9 @@ class PostBookControllerShould : ContractTest() {
                     tags,
                     PRICE,
                     CURRENCY,
-                    DRAFT
+                    DRAFT,
+                    null,
+                    0
                 )
             )
 
@@ -116,6 +119,8 @@ class PostBookControllerShould : ContractTest() {
             .body("tags", CoreMatchers.hasItems(tags[0], tags[1]))
             .body("price.amount", equalTo(PRICE))
             .body("price.currency", equalTo(CURRENCY))
+            .body("completionPercentage", equalTo(0))
+            .body("finishedAt", nullValue())
     }
 
     private fun bookBody(currency: String = CURRENCY) =
