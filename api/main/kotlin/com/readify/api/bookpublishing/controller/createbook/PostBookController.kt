@@ -5,7 +5,7 @@ import com.readify.authentication.domain.AnonymousUser
 import com.readify.authentication.domain.LoggedUser
 import com.readify.authentication.domain.Requester
 import com.readify.bookpublishing.application.service.createbook.PublishBookRequest
-import com.readify.bookpublishing.application.service.createbook.PublishBookResponse
+import com.readify.bookpublishing.application.service.createbook.BookPublishedSuccessfullyResponse
 import com.readify.bookpublishing.application.service.createbook.PublishBookService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -35,5 +35,5 @@ class PostBookController(private val publishBookService: PublishBookService) {
 private fun HttpBookRequest.toCreateBookRequest(requester: LoggedUser) =
     PublishBookRequest(requester.id, title, summary, cover, tags, price.amount, price.currency)
 
-private fun PublishBookResponse.toHttpResponse() =
+private fun BookPublishedSuccessfullyResponse.toHttpResponse() =
     ResponseEntity.ok(HttpBookResponse(bookId, authorId, title, summary, cover, tags, HttpMoney(priceAmount, priceCurrency)))

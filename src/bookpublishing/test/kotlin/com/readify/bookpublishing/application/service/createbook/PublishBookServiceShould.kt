@@ -11,6 +11,8 @@ import com.readify.bookpublishing.domain.book.Cover
 import com.readify.bookpublishing.domain.book.Summary
 import com.readify.bookpublishing.domain.book.Tags
 import com.readify.bookpublishing.domain.book.Title
+import com.readify.shared.domain.money.Currency
+import com.readify.shared.domain.money.Money
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -19,22 +21,43 @@ import org.junit.jupiter.api.Test
 class PublishBookServiceShould {
 
     private val bookRepository: BookRepository = mockk(relaxed = true)
-    private val bookFactory: BookFactory = mockk()
+    private val bookFactory: BookFactory = mockk(relaxed = true)
     private val service = PublishBookService(bookFactory, bookRepository)
 
     @Test
     fun `save a new book and publish a book created domain event`() {
-        val book = Book(BookId(BOOK_ID), AuthorId(AUTHOR_ID), Title(TITLE), Cover(COVER), Summary(SUMMARY), Tags(tags))
-        every { bookFactory.create(AuthorId(AUTHOR_ID), Title(TITLE), Cover(COVER), Summary(SUMMARY), Tags(tags)) }
-            .returns(book)
+        every {
+            bookFactory.create(
+                AuthorId(AUTHOR_ID), Title(TITLE), Cover(COVER), Summary(SUMMARY), Tags(tags), Money(
+                    PRICE_AMOUNT, Currency.EUR
+                )
+            )
+        }.returns(book())
 
         val response = service.execute(request())
 
-        verify { bookRepository.save(book) }
-        assertThat(response).isEqualTo(PublishBookResponse(AUTHOR_ID, BOOK_ID, TITLE, SUMMARY, COVER, tags))
+        verify { bookRepository.save(book()) }
+        assertThat(response).isEqualTo(expectedResponse())
     }
 
-    private fun request() = PublishBookRequest(AUTHOR_ID, TITLE, SUMMARY, COVER, tags)
+    @Test
+    fun `return invalid currency response when given price currency is not supported`() {
+        val response = service.execute(request(currency = "non-supported-currency"))
+
+        assertThat(response).isEqualTo(InvalidCurrencyResponse)
+    }
+
+    private fun request(currency: String = PRICE_CURRENCY) =
+        PublishBookRequest(AUTHOR_ID, TITLE, SUMMARY, COVER, tags, PRICE_AMOUNT, currency)
+    private fun expectedResponse() =
+        BookPublishedSuccessfullyResponse(AUTHOR_ID, BOOK_ID, TITLE, SUMMARY, COVER, tags, PRICE_AMOUNT, PRICE_CURRENCY)
+
+    private fun book() =
+        Book(
+            BookId(BOOK_ID), AuthorId(AUTHOR_ID), Title(TITLE), Cover(COVER), Summary(SUMMARY), Tags(tags), Money(
+                PRICE_AMOUNT, Currency.EUR
+            )
+        )
 
     companion object {
         const val BOOK_ID = "71ede130-a7d2-4726-8702-90383dc5cd7d"
@@ -43,6 +66,8 @@ class PublishBookServiceShould {
         const val SUMMARY =
             "Harry hasn't had a birthday party in eleven years - but all that is about to change when a mysterious letter arrives with an invitation to an incredible place."
         const val COVER = "https://images-na.ssl-images-amazon.com/images/I/51HSkTKlauL._SX346_BO1,204,203,200_.jpg"
+        const val PRICE_AMOUNT = 15f
+        const val PRICE_CURRENCY = "EUR"
         val tags = listOf("fantasy", "magic")
     }
 }

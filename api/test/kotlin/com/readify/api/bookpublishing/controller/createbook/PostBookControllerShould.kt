@@ -6,7 +6,7 @@ import com.readify.authentication.application.service.verifyaccesstoken.VerifyAc
 import com.readify.authentication.application.service.verifyaccesstoken.VerifyAccessTokenResponse
 import com.readify.authentication.application.service.verifyaccesstoken.VerifyAccessTokenService
 import com.readify.bookpublishing.application.service.createbook.PublishBookRequest
-import com.readify.bookpublishing.application.service.createbook.PublishBookResponse
+import com.readify.bookpublishing.application.service.createbook.BookPublishedSuccessfullyResponse
 import com.readify.bookpublishing.application.service.createbook.PublishBookService
 import io.mockk.every
 import io.restassured.RestAssured
@@ -51,7 +51,7 @@ class PostBookControllerShould : ContractTest() {
             )
         }
             .returns(
-                PublishBookResponse(
+                BookPublishedSuccessfullyResponse(
                     "any-author-id", "any-id",
                     TITLE,
                     SUMMARY,
@@ -93,7 +93,8 @@ class PostBookControllerShould : ContractTest() {
                 }"""
 
     companion object {
-        const val TITLE = "Harry Potter and the philosopher's stone"
+        const val TITLE = "Harry Pot" +
+                "ter and the philosopher's stone"
         const val SUMMARY =
             "Harry hasn't had a birthday party in eleven years - but all that is about to change when a mysterious letter arrives with an invitation to an incredible place."
         const val COVER = "https://images-na.ssl-images-amazon.com/images/I/51HSkTKlauL._SX346_BO1,204,203,200_.jpg"

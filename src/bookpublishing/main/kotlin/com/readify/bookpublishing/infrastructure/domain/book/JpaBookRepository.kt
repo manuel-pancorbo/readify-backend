@@ -10,6 +10,8 @@ import com.readify.bookpublishing.domain.book.Tags
 import com.readify.bookpublishing.domain.book.Title
 import com.readify.bookpublishing.infrastructure.jpa.bookpublishing.JpaBook
 import com.readify.bookpublishing.infrastructure.jpa.bookpublishing.JpaBookDataSource
+import com.readify.shared.domain.money.Currency
+import com.readify.shared.domain.money.Money
 
 class JpaBookRepository(private val jpaBookDataSource: JpaBookDataSource) : BookRepository {
     override fun save(book: Book) {
@@ -25,4 +27,4 @@ class JpaBookRepository(private val jpaBookDataSource: JpaBookDataSource) : Book
 
 private fun Book.toJpa() = JpaBook(id.value, authorId.value, title.value, cover.value, summary.value, tags.value)
 private fun JpaBook.toDomain() =
-    Book(BookId(id), AuthorId(authorId), Title(title), Cover(cover), Summary(summary), Tags(tags))
+    Book(BookId(id), AuthorId(authorId), Title(title), Cover(cover), Summary(summary), Tags(tags), Money(1f, Currency.EUR))

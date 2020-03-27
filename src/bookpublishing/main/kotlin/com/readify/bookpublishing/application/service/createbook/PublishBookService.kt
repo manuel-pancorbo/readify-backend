@@ -8,22 +8,32 @@ import com.readify.bookpublishing.domain.book.Cover
 import com.readify.bookpublishing.domain.book.Summary
 import com.readify.bookpublishing.domain.book.Tags
 import com.readify.bookpublishing.domain.book.Title
+import com.readify.shared.domain.money.CurrencyNotSupportedException
+import com.readify.shared.domain.money.Money.Companion.of
 
 class PublishBookService(private val bookFactory: BookFactory, private val bookRepository: BookRepository) {
     fun execute(request: PublishBookRequest) =
-        bookFactory.create(
-            AuthorId(request.authorId),
-            Title(request.title),
-            Cover(request.cover),
-            Summary(request.summary),
-            Tags(request.tags)
-        )
-            .also { bookRepository.save(it) }
-            .toResponse()
+        try {
+            bookFactory.create(
+                    AuthorId(request.authorId),
+                    Title(request.title),
+                    Cover(request.cover),
+                    Summary(request.summary),
+                    Tags(request.tags),
+                    of(request.priceAmount, request.priceCurrency)
+                )
+                .also { bookRepository.save(it) }
+                .toResponse()
+        } catch (exception: CurrencyNotSupportedException) {
+            InvalidCurrencyResponse
+        }
 }
 
 private fun Book.toResponse() =
-    PublishBookResponse(authorId.value, id.value, title.value, summary.value, cover.value, tags.value, 0f, "")
+    BookPublishedSuccessfullyResponse(
+        authorId.value, id.value, title.value, summary.value, cover.value, tags.value, price.amount,
+        price.currency.toString()
+    )
 
 data class PublishBookRequest(
     val authorId: String,
@@ -35,7 +45,9 @@ data class PublishBookRequest(
     val priceCurrency: String
 )
 
-data class PublishBookResponse(
+sealed class PublishBookResponse
+object InvalidCurrencyResponse : PublishBookResponse()
+data class BookPublishedSuccessfullyResponse(
     val authorId: String,
     val bookId: String,
     val title: String,
@@ -44,4 +56,4 @@ data class PublishBookResponse(
     val tags: List<String>,
     val priceAmount: Float,
     val priceCurrency: String
-)
+) : PublishBookResponse()
