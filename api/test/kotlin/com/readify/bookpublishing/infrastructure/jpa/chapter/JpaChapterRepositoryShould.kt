@@ -16,6 +16,8 @@ import com.readify.bookpublishing.infrastructure.domain.book.JpaChapterRepositor
 import com.readify.bookpublishing.infrastructure.jpa.bookpublishing.JpaChapterDataSource
 import com.readify.bookpublishing.infrastructure.jpa.bookpublishing.JpaChapterStatus
 import com.readify.shared.domain.clock.Clock
+import com.readify.shared.domain.money.Currency
+import com.readify.shared.domain.money.Money
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -61,6 +63,7 @@ class JpaChapterRepositoryShould : IntegrationTest() {
                 content
             """
             ),
+            Money(1f, Currency.EUR),
             AuthorId(UUID.randomUUID().toString()),
             BookId(UUID.randomUUID().toString()),
             Clock().now()

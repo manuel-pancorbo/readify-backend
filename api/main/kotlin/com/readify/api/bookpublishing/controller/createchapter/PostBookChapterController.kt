@@ -1,5 +1,6 @@
 package com.readify.api.bookpublishing.controller.createchapter
 
+import com.readify.api.bookpublishing.controller.common.HttpMoney
 import com.readify.authentication.domain.AnonymousUser
 import com.readify.authentication.domain.LoggedUser
 import com.readify.authentication.domain.Requester
@@ -9,6 +10,8 @@ import com.readify.bookpublishing.application.service.createchapter.ChapterCreat
 import com.readify.bookpublishing.application.service.createchapter.CreateChapterRequest
 import com.readify.bookpublishing.application.service.createchapter.CreateChapterResponse
 import com.readify.bookpublishing.application.service.createchapter.CreateChapterService
+import com.readify.bookpublishing.application.service.createchapter.InvalidCurrencyResponse
+import com.readify.shared.infrastructure.controller.error.HttpErrorResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PathVariable
@@ -25,7 +28,7 @@ class PostBookChapterController(private val createChapterService: CreateChapterS
         @RequestBody httpRequest: PostBookChapterHttpRequest,
         @PathVariable bookId: String,
         requester: Requester
-    ): ResponseEntity<PostBookChapterHttpResponse> =
+    ): ResponseEntity<out Any> =
         when (requester) {
             is AnonymousUser -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
             is LoggedUser -> createChapterService
@@ -34,13 +37,16 @@ class PostBookChapterController(private val createChapterService: CreateChapterS
         }
 }
 
-private fun CreateChapterResponse.toHttpResponse(): ResponseEntity<PostBookChapterHttpResponse> =
+private fun CreateChapterResponse.toHttpResponse() =
     when (this) {
         is BookNotFoundResponse, BookNotBelongToAuthorResponse -> ResponseEntity.notFound().build()
         is ChapterCreatedResponse -> ResponseEntity.ok(
-            PostBookChapterHttpResponse(id, title, content, modifiedAt, bookId, authorId, status.toString())
+            PostBookChapterHttpResponse(id, title, content, modifiedAt, bookId, authorId, status.toString(),
+                HttpMoney(priceAmount, priceCurrency))
         )
+        InvalidCurrencyResponse -> ResponseEntity.badRequest()
+            .body(HttpErrorResponse("bookpublishing.currency_not_supported","Currency not supported", "price"))
     }
 
 private fun PostBookChapterHttpRequest.toServiceRequest(requester: LoggedUser, bookId: String) =
-    CreateChapterRequest(title, content, requester.id, bookId)
+    CreateChapterRequest(title, content, requester.id, bookId, price.amount, price.currency)

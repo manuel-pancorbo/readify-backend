@@ -8,6 +8,7 @@ import com.readify.authentication.application.service.verifyaccesstoken.VerifyAc
 import com.readify.bookpublishing.application.service.createchapter.BookNotBelongToAuthorResponse
 import com.readify.bookpublishing.application.service.createchapter.BookNotFoundResponse
 import com.readify.bookpublishing.application.service.createchapter.CreateChapterService
+import com.readify.bookpublishing.application.service.createchapter.InvalidCurrencyResponse
 import io.mockk.every
 import io.mockk.verify
 import io.restassured.RestAssured
@@ -38,7 +39,7 @@ class PostBookChapterControllerShould : ContractTest() {
     fun `return 404 when the requested book does not exists`() {
         val validRequest = ChapterHttpRequestMother().validOne()
         val serviceRequest =
-            CreateChapterRequestMother().createWith("any-author-id", bookId)
+            CreateChapterRequestMother().validOne("any-author-id", bookId)
         every { verifyAccessTokenService.execute(VerifyAccessTokenRequest("anytoken")) }
             .returns(VerifyAccessTokenResponse("any-author-id", "jkrowling", "jkrowling@gmail.com"))
         every { createChapterService.execute(any()) } returns BookNotFoundResponse
@@ -61,7 +62,7 @@ class PostBookChapterControllerShould : ContractTest() {
     fun `return 404 when the requested book does not belong to requester author`() {
         val validRequest = ChapterHttpRequestMother().validOne()
         val serviceRequest =
-            CreateChapterRequestMother().createWith("any-author-id", bookId)
+            CreateChapterRequestMother().validOne("any-author-id", bookId)
         every { verifyAccessTokenService.execute(VerifyAccessTokenRequest("anytoken")) }
             .returns(VerifyAccessTokenResponse("any-author-id", "jkrowling", "jkrowling@gmail.com"))
         every { createChapterService.execute(any()) } returns BookNotBelongToAuthorResponse
@@ -83,7 +84,7 @@ class PostBookChapterControllerShould : ContractTest() {
     @Test
     fun `return ok when chapter is created successfully`() {
         val validRequest = ChapterHttpRequestMother().validOne()
-        val serviceRequest = CreateChapterRequestMother().createWith("any-author-id", bookId)
+        val serviceRequest = CreateChapterRequestMother().validOne("any-author-id", bookId)
         val serviceResponse = ChapterCreatedResponseMother().createWith("any-author-id", bookId)
         every { verifyAccessTokenService.execute(VerifyAccessTokenRequest("anytoken")) }
             .returns(VerifyAccessTokenResponse("any-author-id", "jkrowling", "jkrowling@gmail.com"))
@@ -107,6 +108,34 @@ class PostBookChapterControllerShould : ContractTest() {
             .body("modifiedAt", equalTo(serviceResponse.modifiedAt.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)))
             .body("author", equalTo(serviceResponse.authorId))
             .body("book", equalTo(serviceResponse.bookId))
+            .body("price.amount", equalTo(serviceResponse.priceAmount))
+            .body("price.currency", equalTo(serviceResponse.priceCurrency))
+
+        verify { createChapterService.execute(serviceRequest) }
+    }
+
+    @Test
+    fun `return bad request when given currency is not supported`() {
+        val validRequest = ChapterHttpRequestMother().unsupportedCurrency()
+        val serviceRequest = CreateChapterRequestMother().unsupportedCurrency("any-author-id", bookId)
+        every { verifyAccessTokenService.execute(VerifyAccessTokenRequest("anytoken")) }
+            .returns(VerifyAccessTokenResponse("any-author-id", "jkrowling", "jkrowling@gmail.com"))
+        every { createChapterService.execute(serviceRequest) }
+            .returns(InvalidCurrencyResponse)
+
+        RestAssured.given()
+            .`when`()
+            .contentType("application/json")
+            .and()
+            .header("Authorization", "Bearer anytoken")
+            .and()
+            .body(chapterBody(validRequest))
+            .post("/v1/books/$bookId/chapters")
+            .then()
+            .statusCode(400)
+            .body("code", equalTo("bookpublishing.currency_not_supported"))
+            .body("message", equalTo("Currency not supported"))
+            .body("field", equalTo("price"))
 
         verify { createChapterService.execute(serviceRequest) }
     }
@@ -115,7 +144,11 @@ class PostBookChapterControllerShould : ContractTest() {
         """
         {
             "title": "${request.title}",
-            "content": "${request.content}"
+            "content": "${request.content}",
+            "price": {
+                "amount": ${request.price.amount},
+                "currency": "${request.price.currency}"
+            }
         }
     """
 

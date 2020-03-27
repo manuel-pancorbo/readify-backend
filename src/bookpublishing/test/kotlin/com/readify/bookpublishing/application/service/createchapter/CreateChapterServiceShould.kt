@@ -9,6 +9,7 @@ import com.readify.bookpublishing.domain.book.BookRepository
 import com.readify.bookpublishing.domain.chapter.ChapterFactory
 import com.readify.bookpublishing.domain.chapter.ChapterMother
 import com.readify.bookpublishing.domain.chapter.ChapterRepository
+import com.readify.shared.domain.money.Money
 import io.mockk.every
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
@@ -54,7 +55,8 @@ class CreateChapterServiceShould {
         val request = CreateChapterRequestMother().createWith(authorId, bookId)
         val expectedChapter = ChapterMother().draftOne(authorId, bookId)
         every { bookRepository.findById(BookId(bookId)) } returns BookMother().validOne(bookId, authorId)
-        every { chapterFactory.create(AuthorId(authorId), BookId(bookId), request.title, request.content) }
+        every { chapterFactory.create(AuthorId(authorId), BookId(bookId), request.title, request.content,
+            Money.of(request.priceAmount, request.priceCurrency)) }
             .returns(expectedChapter)
 
         val response = service.execute(request)
@@ -68,7 +70,9 @@ class CreateChapterServiceShould {
                 expectedChapter.modifiedAt,
                 expectedChapter.authorId.value,
                 expectedChapter.bookId.value,
-                ChapterStatus.DRAFT
+                ChapterStatus.DRAFT,
+                1.3f,
+                "EUR"
             )
         )
     }
