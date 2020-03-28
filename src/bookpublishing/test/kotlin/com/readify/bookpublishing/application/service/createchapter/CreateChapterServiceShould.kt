@@ -41,7 +41,7 @@ class CreateChapterServiceShould {
         val bookId = UUID.randomUUID().toString()
         val request = CreateChapterRequestMother().createWith("author-id", bookId)
         every { bookRepository.findById(BookId(bookId)) }
-            .returns(BookMother().validOne(bookId, UUID.randomUUID().toString()))
+            .returns(BookMother().inProgressBook(bookId, UUID.randomUUID().toString()))
 
         val response = service.execute(request)
 
@@ -54,7 +54,7 @@ class CreateChapterServiceShould {
         val authorId = UUID.randomUUID().toString()
         val request = CreateChapterRequestMother().createWith(authorId, bookId)
         val expectedChapter = ChapterMother().draftOne(authorId, bookId)
-        every { bookRepository.findById(BookId(bookId)) } returns BookMother().validOne(bookId, authorId)
+        every { bookRepository.findById(BookId(bookId)) } returns BookMother().inProgressBook(bookId, authorId)
         every { chapterFactory.create(AuthorId(authorId), BookId(bookId), request.title, request.content,
             Money.of(request.priceAmount, request.priceCurrency)) }
             .returns(expectedChapter)

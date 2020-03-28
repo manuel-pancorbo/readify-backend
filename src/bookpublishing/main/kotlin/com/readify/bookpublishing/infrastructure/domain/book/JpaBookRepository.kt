@@ -4,6 +4,7 @@ import com.readify.bookpublishing.domain.book.AuthorId
 import com.readify.bookpublishing.domain.book.Book
 import com.readify.bookpublishing.domain.book.BookId
 import com.readify.bookpublishing.domain.book.BookRepository
+import com.readify.bookpublishing.domain.book.CompletionPercentage
 import com.readify.bookpublishing.domain.book.Cover
 import com.readify.bookpublishing.domain.book.FinishedBook
 import com.readify.bookpublishing.domain.book.InProgressBook
@@ -34,11 +35,11 @@ private fun Book.toJpa() =
     when (this) {
         is InProgressBook -> JpaBook(
             id.value, authorId.value, title.value, cover.value, summary.value, tags.value, price.amount,
-            price.currency.toString(), JpaBookStatus.IN_PROGRESS, completionPercentage, visibility.toJpa(), null
+            price.currency.toString(), JpaBookStatus.IN_PROGRESS, completionPercentage.value, visibility.toJpa(), null
         )
         is FinishedBook -> JpaBook(
             id.value, authorId.value, title.value, cover.value, summary.value, tags.value, price.amount,
-            price.currency.toString(), JpaBookStatus.FINISHED, completionPercentage, visibility.toJpa(), finishedAt
+            price.currency.toString(), JpaBookStatus.FINISHED, completionPercentage.value, visibility.toJpa(), finishedAt
         )
     }
 
@@ -52,7 +53,7 @@ private fun Visibility.toJpa() =
 private fun JpaBook.toDomain() = when (status) {
     JpaBookStatus.IN_PROGRESS -> InProgressBook(
         BookId(id), AuthorId(authorId), Title(title), Cover(cover), Summary(summary),
-        Tags(tags), Money(priceAmount, Currency.valueOf(priceCurrency)), completionPercentage
+        Tags(tags), Money(priceAmount, Currency.valueOf(priceCurrency)), CompletionPercentage(completionPercentage)
     )
     JpaBookStatus.FINISHED -> FinishedBook(
         BookId(id), AuthorId(authorId), Title(title), Cover(cover), Summary(summary),

@@ -7,6 +7,7 @@ import com.readify.bookpublishing.domain.book.InProgressBook
 import com.readify.bookpublishing.domain.book.BookFactory
 import com.readify.bookpublishing.domain.book.BookId
 import com.readify.bookpublishing.domain.book.BookRepository
+import com.readify.bookpublishing.domain.book.CompletionPercentage
 import com.readify.bookpublishing.domain.book.Cover
 import com.readify.bookpublishing.domain.book.Summary
 import com.readify.bookpublishing.domain.book.Tags
@@ -54,7 +55,7 @@ class PublishBookServiceShould {
         BookPublishedSuccessfullyResponse(AUTHOR_ID, BOOK_ID, TITLE, SUMMARY, COVER, tags, PRICE_AMOUNT,
             PRICE_CURRENCY, BookStatus.IN_PROGRESS, BookVisibility.RESTRICTED, null, 40)
     private fun book() = InProgressBook(BookId(BOOK_ID), AuthorId(AUTHOR_ID), Title(TITLE), Cover(COVER), Summary(SUMMARY),
-        Tags(tags), Money(PRICE_AMOUNT, Currency.EUR), 40, Visibility.RESTRICTED)
+        Tags(tags), Money(PRICE_AMOUNT, Currency.EUR), CompletionPercentage(40), Visibility.RESTRICTED)
 
     companion object {
         const val BOOK_ID = "71ede130-a7d2-4726-8702-90383dc5cd7d"

@@ -6,9 +6,10 @@ import assertk.assertions.isNull
 import assertk.assertions.isTrue
 import com.readify.IntegrationTest
 import com.readify.bookpublishing.domain.book.AuthorId
-import com.readify.bookpublishing.domain.book.InProgressBook
 import com.readify.bookpublishing.domain.book.BookId
+import com.readify.bookpublishing.domain.book.CompletionPercentage
 import com.readify.bookpublishing.domain.book.Cover
+import com.readify.bookpublishing.domain.book.InProgressBook
 import com.readify.bookpublishing.domain.book.Summary
 import com.readify.bookpublishing.domain.book.Tags
 import com.readify.bookpublishing.domain.book.Title
@@ -64,7 +65,18 @@ class JpaBookRepositoryShould : IntegrationTest() {
         assertThat(actual).isEqualTo(book)
     }
 
-    private fun anyBook() =
+    @Test
+    fun `update a previously saved ad persist the changes successfully`() {
+        val expected = anyBook(CompletionPercentage(50))
+        repository.save(anyBook())
+        repository.save(expected)
+
+        val actual = repository.findById(anyBook().id)
+
+        assertThat(actual).isEqualTo(expected)
+    }
+
+    private fun anyBook(completionPercentage: CompletionPercentage = CompletionPercentage.empty()) =
         InProgressBook(
             BookId("71ede130-a7d2-4726-8702-90383dc5cd7d"),
             AuthorId("0b35b63a-c7b6-4faf-bda1-c95868def3c7"),
@@ -72,6 +84,7 @@ class JpaBookRepositoryShould : IntegrationTest() {
             Cover("https://images-na.ssl-images-amazon.com/images/I/51HSkTKlauL._SX346_BO1,204,203,200_.jpg"),
             Summary("Harry hasn't had a birthday party in eleven years - but all that is about to change when a mysterious letter arrives with an invitation to an incredible place."),
             Tags(listOf("fantasy", "magic")),
-            Money(15.5f, Currency.EUR)
+            Money(15.5f, Currency.EUR),
+            completionPercentage
         )
 }
