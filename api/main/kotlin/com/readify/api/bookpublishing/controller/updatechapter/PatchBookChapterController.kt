@@ -51,7 +51,7 @@ private fun UpdateBookChapterResponse.toHttpResponse(): ResponseEntity<out Any> 
         is BookChapterUpdatedResponse -> ok(
             BookChapterHttpResponse(
                 id, title, content, modifiedAt, bookId, authorId,
-                status.toString(), HttpMoney(priceAmount, priceCurrency)
+                status.toString().toLowerCase(), HttpMoney(priceAmount, priceCurrency)
             )
         )
     }
