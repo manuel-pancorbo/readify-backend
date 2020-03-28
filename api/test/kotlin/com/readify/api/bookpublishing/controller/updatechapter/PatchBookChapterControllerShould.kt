@@ -121,7 +121,8 @@ class PatchBookChapterControllerShould : ContractTest() {
             .body("price.currency", equalTo(serviceResponse.priceCurrency))
     }
 
-    private fun serviceRequest(status: String = "published") = UpdateBookChapterRequest(status)
+    private fun serviceRequest(status: String = "published") =
+        UpdateBookChapterRequest(ANY_AUTHOR_ID, ANY_BOOK_ID, ANY_CHAPTER_ID, status)
 
     private fun updateBookChapterBody(status: String = "published") =
         """{
