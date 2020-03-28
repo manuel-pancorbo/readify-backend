@@ -8,9 +8,7 @@ import javax.persistence.Enumerated
 import javax.persistence.Id
 import javax.persistence.Table
 
-interface JpaChapterDataSource : JpaRepository<JpaChapter, String> {
-    fun findByIdAndBookId(id: String, bookId: String): JpaChapter?
-}
+interface JpaChapterDataSource : JpaRepository<JpaChapter, String>
 
 @Entity
 @Table(name = "chapter", schema = "bookpublishing")
