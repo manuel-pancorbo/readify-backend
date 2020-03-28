@@ -22,8 +22,9 @@ class JpaChapterRepository(private val jpaChapterDataSource: JpaChapterDataSourc
 
     override fun findByIdAndBookId(id: ChapterId, bookId: BookId): Chapter? {
         return jpaChapterDataSource
-            .findByIdAndBookId(id.value, bookId.value)
-            ?.toDomain()
+            .findById(id.value)
+            .map { it.toDomain() }
+            .orElse(null)
     }
 }
 
