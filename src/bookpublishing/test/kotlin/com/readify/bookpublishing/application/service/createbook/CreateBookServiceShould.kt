@@ -2,6 +2,8 @@ package com.readify.bookpublishing.application.service.createbook
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import com.readify.bookpublishing.application.service.common.BookStatus
+import com.readify.bookpublishing.application.service.common.BookVisibility
 import com.readify.bookpublishing.domain.book.AuthorId
 import com.readify.bookpublishing.domain.book.InProgressBook
 import com.readify.bookpublishing.domain.book.BookFactory
@@ -20,11 +22,11 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.Test
 
-class PublishBookServiceShould {
+class CreateBookServiceShould {
 
     private val bookRepository: BookRepository = mockk(relaxed = true)
     private val bookFactory: BookFactory = mockk(relaxed = true)
-    private val service = PublishBookService(bookFactory, bookRepository)
+    private val service = CreateBookService(bookFactory, bookRepository)
 
     @Test
     fun `save a new book and publish a book created domain event`() {
@@ -50,9 +52,9 @@ class PublishBookServiceShould {
     }
 
     private fun request(currency: String = PRICE_CURRENCY) =
-        PublishBookRequest(AUTHOR_ID, TITLE, SUMMARY, COVER, tags, PRICE_AMOUNT, currency)
+        CreateBookRequest(AUTHOR_ID, TITLE, SUMMARY, COVER, tags, PRICE_AMOUNT, currency)
     private fun expectedResponse() =
-        BookPublishedSuccessfullyResponse(AUTHOR_ID, BOOK_ID, TITLE, SUMMARY, COVER, tags, PRICE_AMOUNT,
+        BookCreatedSuccessfullyResponse(AUTHOR_ID, BOOK_ID, TITLE, SUMMARY, COVER, tags, PRICE_AMOUNT,
             PRICE_CURRENCY, BookStatus.IN_PROGRESS, BookVisibility.RESTRICTED, null, 40)
     private fun book() = InProgressBook(BookId(BOOK_ID), AuthorId(AUTHOR_ID), Title(TITLE), Cover(COVER), Summary(SUMMARY),
         Tags(tags), Money(PRICE_AMOUNT, Currency.EUR), CompletionPercentage(40), Visibility.RESTRICTED)

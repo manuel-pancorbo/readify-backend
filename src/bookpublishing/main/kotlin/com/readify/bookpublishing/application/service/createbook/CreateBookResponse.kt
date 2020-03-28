@@ -1,10 +1,12 @@
 package com.readify.bookpublishing.application.service.createbook
 
+import com.readify.bookpublishing.application.service.common.BookStatus
+import com.readify.bookpublishing.application.service.common.BookVisibility
 import java.time.ZonedDateTime
 
-sealed class PublishBookResponse
-object InvalidCurrencyResponse : PublishBookResponse()
-data class BookPublishedSuccessfullyResponse(
+sealed class CreateBookResponse
+object InvalidCurrencyResponse : CreateBookResponse()
+data class BookCreatedSuccessfullyResponse(
     val authorId: String,
     val bookId: String,
     val title: String,
@@ -17,4 +19,4 @@ data class BookPublishedSuccessfullyResponse(
     val visibility: BookVisibility,
     val finishedAt: ZonedDateTime?,
     val completionPercentage: Int
-) : PublishBookResponse()
+) : CreateBookResponse()

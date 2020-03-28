@@ -1,6 +1,6 @@
 package com.readify.bookpublishing.application.service.createbook
 
-data class PublishBookRequest(
+data class CreateBookRequest(
     val authorId: String,
     val title: String,
     val summary: String,

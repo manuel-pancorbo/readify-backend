@@ -2,6 +2,7 @@ package com.readify.bookpublishing.application.service.updatebook
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import assertk.assertions.isInstanceOf
 import com.readify.bookpublishing.domain.book.BookId
 import com.readify.bookpublishing.domain.book.BookMother
 import com.readify.bookpublishing.domain.book.BookRepository
@@ -69,6 +70,9 @@ class UpdateBookServiceShould {
 
         verify { bookRepository.save(BookMother().inProgressBook(anyBookId, anyAuthor, 75)) }
         verify { eventBus.publish(any()) }
-        assertThat(response).isEqualTo(BookUpdatedSuccessfully)
+        assertThat(response).isInstanceOf(BookUpdatedSuccessfully::class)
+        assertThat((response as BookUpdatedSuccessfully).bookId).isEqualTo(anyBookId)
+        assertThat(response.authorId).isEqualTo(anyAuthor)
+        assertThat(response.completionPercentage).isEqualTo(75)
     }
 }

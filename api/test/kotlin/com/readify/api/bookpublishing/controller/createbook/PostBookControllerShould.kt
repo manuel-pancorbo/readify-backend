@@ -5,12 +5,12 @@ import com.readify.ContractTest
 import com.readify.authentication.application.service.verifyaccesstoken.VerifyAccessTokenRequest
 import com.readify.authentication.application.service.verifyaccesstoken.VerifyAccessTokenResponse
 import com.readify.authentication.application.service.verifyaccesstoken.VerifyAccessTokenService
-import com.readify.bookpublishing.application.service.createbook.BookPublishedSuccessfullyResponse
-import com.readify.bookpublishing.application.service.createbook.BookStatus
-import com.readify.bookpublishing.application.service.createbook.BookVisibility
+import com.readify.bookpublishing.application.service.createbook.BookCreatedSuccessfullyResponse
+import com.readify.bookpublishing.application.service.common.BookStatus
+import com.readify.bookpublishing.application.service.common.BookVisibility
 import com.readify.bookpublishing.application.service.createbook.InvalidCurrencyResponse
-import com.readify.bookpublishing.application.service.createbook.PublishBookRequest
-import com.readify.bookpublishing.application.service.createbook.PublishBookService
+import com.readify.bookpublishing.application.service.createbook.CreateBookRequest
+import com.readify.bookpublishing.application.service.createbook.CreateBookService
 import io.mockk.every
 import io.restassured.RestAssured
 import org.hamcrest.CoreMatchers
@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test
 
 class PostBookControllerShould : ContractTest() {
     @MockkBean(relaxed = true)
-    private lateinit var publishBookService: PublishBookService
+    private lateinit var createBookService: CreateBookService
 
     @MockkBean(relaxed = true)
     private lateinit var verifyAccessTokenService: VerifyAccessTokenService
@@ -43,8 +43,8 @@ class PostBookControllerShould : ContractTest() {
             .returns(VerifyAccessTokenResponse("any-author-id", "jkrowling", "jkrowling@gmail.com"))
 
         every {
-            publishBookService.execute(
-                PublishBookRequest(
+            createBookService.execute(
+                CreateBookRequest(
                     "any-author-id",
                     TITLE,
                     SUMMARY,
@@ -76,8 +76,8 @@ class PostBookControllerShould : ContractTest() {
         every { verifyAccessTokenService.execute(VerifyAccessTokenRequest("anytoken")) }
             .returns(VerifyAccessTokenResponse("any-author-id", "jkrowling", "jkrowling@gmail.com"))
         every {
-            publishBookService.execute(
-                PublishBookRequest(
+            createBookService.execute(
+                CreateBookRequest(
                     "any-author-id",
                     TITLE,
                     SUMMARY,
@@ -89,7 +89,7 @@ class PostBookControllerShould : ContractTest() {
             )
         }
             .returns(
-                BookPublishedSuccessfullyResponse(
+                BookCreatedSuccessfullyResponse(
                     "any-author-id", "any-id",
                     TITLE,
                     SUMMARY,

@@ -1,6 +1,7 @@
 package com.readify.api.bookpublishing.controller.updatebook
 
-import com.fasterxml.jackson.annotation.JsonProperty
+import com.readify.api.bookpublishing.controller.common.HttpBookResponse
+import com.readify.api.bookpublishing.controller.common.HttpMoney
 import com.readify.authentication.domain.AnonymousUser
 import com.readify.authentication.domain.LoggedUser
 import com.readify.authentication.domain.Requester
@@ -42,16 +43,19 @@ class PatchBookController(private val updateBookService: UpdateBookService) {
 
 private fun UpdateBookResponse.toHttpResponse() =
     when (this) {
-        BookUpdatedSuccessfully -> ok().build()
+        is BookUpdatedSuccessfully -> ok(
+            HttpBookResponse(
+                bookId, authorId, title, summary,
+                cover, tags, HttpMoney(priceAmount, priceCurrency), status.toString().toLowerCase(),
+                visibility.toString().toLowerCase(), completionPercentage, finishedAt
+            )
+        )
         CompletionPercentageOutOfRange -> badRequest().body(
             HttpErrorResponse(
                 "bookpublishing.percentage_completion",
-                "Completion percentage out of range", "completionPercentage"
+                "Completion percentage out of range",
+                "completionPercentage"
             )
         )
         BookNotBelongToAuthorResponse, BookNotFoundResponse -> notFound().build()
     }
-
-data class PatchBookHttpRequest(
-    @JsonProperty("completionPercentage") val completionPercentage: Int
-)

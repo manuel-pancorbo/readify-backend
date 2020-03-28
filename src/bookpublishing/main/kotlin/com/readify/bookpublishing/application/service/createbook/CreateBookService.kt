@@ -1,5 +1,7 @@
 package com.readify.bookpublishing.application.service.createbook
 
+import com.readify.bookpublishing.application.service.common.BookStatus
+import com.readify.bookpublishing.application.service.common.BookVisibility
 import com.readify.bookpublishing.domain.book.AuthorId
 import com.readify.bookpublishing.domain.book.Book
 import com.readify.bookpublishing.domain.book.BookFactory
@@ -14,8 +16,8 @@ import com.readify.bookpublishing.domain.book.Visibility
 import com.readify.shared.domain.money.CurrencyNotSupportedException
 import com.readify.shared.domain.money.Money
 
-class PublishBookService(private val bookFactory: BookFactory, private val bookRepository: BookRepository) {
-    fun execute(request: PublishBookRequest) =
+class CreateBookService(private val bookFactory: BookFactory, private val bookRepository: BookRepository) {
+    fun execute(request: CreateBookRequest) =
         try {
             bookFactory.create(
                     AuthorId(request.authorId),
@@ -34,13 +36,13 @@ class PublishBookService(private val bookFactory: BookFactory, private val bookR
 
 private fun Book.toResponse() =
     when (this) {
-        is InProgressBook -> BookPublishedSuccessfullyResponse(
+        is InProgressBook -> BookCreatedSuccessfullyResponse(
             authorId.value, id.value, title.value, summary.value, cover.value, tags.value, price.amount,
             price.currency.toString(), BookStatus.IN_PROGRESS, visibility.toResponse(), null, completionPercentage.value
         )
-        is FinishedBook -> BookPublishedSuccessfullyResponse(
+        is FinishedBook -> BookCreatedSuccessfullyResponse(
             authorId.value, id.value, title.value, summary.value, cover.value, tags.value, price.amount,
-            price.currency.toString(), BookStatus.FINISHED, visibility.toResponse(), null, completionPercentage.value
+            price.currency.toString(), BookStatus.FINISHED, visibility.toResponse(), finishedAt, completionPercentage.value
         )
     }
 
