@@ -55,6 +55,16 @@ class JpaChapterRepositoryShould : IntegrationTest() {
         assertThat(actual.get().publishedAt).isNull()
     }
 
+    @Test
+    fun `find chapter by id and book id`() {
+        val chapter = anyChapter()
+        repository.save(chapter)
+
+        val actualChapter = repository.findByIdAndBookId(chapter.id, chapter.bookId)
+
+        assertThat(actualChapter).isEqualTo(chapter)
+    }
+
     private fun anyChapter() =
         DraftChapter(
             ChapterId(UUID.randomUUID().toString()),

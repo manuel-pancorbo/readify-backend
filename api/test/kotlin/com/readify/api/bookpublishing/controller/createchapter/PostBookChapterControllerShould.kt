@@ -104,7 +104,7 @@ class PostBookChapterControllerShould : ContractTest() {
             .body("id", equalTo(serviceResponse.id))
             .body("title", equalTo(serviceResponse.title))
             .body("content", equalTo(serviceResponse.content))
-            .body("status", equalTo(serviceResponse.status.toString()))
+            .body("status", equalTo(serviceResponse.status.toString().toLowerCase()))
             .body("modifiedAt", equalTo(serviceResponse.modifiedAt.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)))
             .body("author", equalTo(serviceResponse.authorId))
             .body("book", equalTo(serviceResponse.bookId))

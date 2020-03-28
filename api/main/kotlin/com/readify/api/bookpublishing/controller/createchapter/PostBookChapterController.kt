@@ -1,5 +1,6 @@
 package com.readify.api.bookpublishing.controller.createchapter
 
+import com.readify.api.bookpublishing.controller.common.BookChapterHttpResponse
 import com.readify.api.bookpublishing.controller.common.HttpMoney
 import com.readify.authentication.domain.AnonymousUser
 import com.readify.authentication.domain.LoggedUser
@@ -41,8 +42,10 @@ private fun CreateChapterResponse.toHttpResponse() =
     when (this) {
         is BookNotFoundResponse, BookNotBelongToAuthorResponse -> ResponseEntity.notFound().build()
         is ChapterCreatedResponse -> ResponseEntity.ok(
-            PostBookChapterHttpResponse(id, title, content, modifiedAt, bookId, authorId, status.toString(),
-                HttpMoney(priceAmount, priceCurrency))
+            BookChapterHttpResponse(
+                id, title, content, modifiedAt, bookId, authorId, status.toString().toLowerCase(),
+                HttpMoney(priceAmount, priceCurrency)
+            )
         )
         InvalidCurrencyResponse -> ResponseEntity.badRequest()
             .body(HttpErrorResponse("bookpublishing.currency_not_supported","Currency not supported", "price"))
