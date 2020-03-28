@@ -40,10 +40,9 @@ class PatchBookControllerShould : ContractTest() {
 
     @Test
     fun `returns 200 when book has been updated successfully`() {
-        val serviceRequest = UpdateBookRequest(ANY_AUTHOR_ID, ANY_BOOK_ID, 50)
         every { verifyAccessTokenService.execute(VerifyAccessTokenRequest("anytoken")) }
             .returns(VerifyAccessTokenResponse(ANY_AUTHOR_ID, "jkrowling", "jkrowling@gmail.com"))
-        every { updateBookService.execute(serviceRequest) } returns bookUpdatedResponse()
+        every { updateBookService.execute(serviceRequest()) } returns bookUpdatedResponse()
 
         RestAssured.given()
             .`when`()
@@ -57,7 +56,7 @@ class PatchBookControllerShould : ContractTest() {
             .statusCode(200)
             .body("id", equalTo(ANY_BOOK_ID))
             .body("status", equalTo("in_progress"))
-            .body("visibility", equalTo("null"))
+            .body("visibility", equalTo("restricted"))
             .body("title", equalTo(ANY_TITLE))
             .body("summary", equalTo(ANY_SUMMARY))
             .body("cover", equalTo(ANY_COVER))
@@ -70,10 +69,9 @@ class PatchBookControllerShould : ContractTest() {
 
     @Test
     fun `returns 400 when new percentage is out of valid range`() {
-        val serviceRequest = UpdateBookRequest(ANY_AUTHOR_ID, ANY_BOOK_ID, 50)
         every { verifyAccessTokenService.execute(VerifyAccessTokenRequest("anytoken")) }
             .returns(VerifyAccessTokenResponse(ANY_AUTHOR_ID, "jkrowling", "jkrowling@gmail.com"))
-        every { updateBookService.execute(serviceRequest) } returns (CompletionPercentageOutOfRange)
+        every { updateBookService.execute(serviceRequest()) } returns (CompletionPercentageOutOfRange)
 
         RestAssured.given()
             .`when`()
@@ -92,10 +90,9 @@ class PatchBookControllerShould : ContractTest() {
 
     @Test
     fun `returns 404 when an user wants to update a book of another user`() {
-        val serviceRequest = UpdateBookRequest(ANY_AUTHOR_ID, ANY_BOOK_ID, 50)
         every { verifyAccessTokenService.execute(VerifyAccessTokenRequest("anytoken")) }
             .returns(VerifyAccessTokenResponse(ANY_AUTHOR_ID, "jkrowling", "jkrowling@gmail.com"))
-        every { updateBookService.execute(serviceRequest) } returns (BookNotBelongToAuthorResponse)
+        every { updateBookService.execute(serviceRequest()) } returns (BookNotBelongToAuthorResponse)
 
         RestAssured.given()
             .`when`()
@@ -111,10 +108,9 @@ class PatchBookControllerShould : ContractTest() {
 
     @Test
     fun `returns 404 when an user wants to update a book that not exists`() {
-        val serviceRequest = UpdateBookRequest(ANY_AUTHOR_ID, ANY_BOOK_ID, 50)
         every { verifyAccessTokenService.execute(VerifyAccessTokenRequest("anytoken")) }
             .returns(VerifyAccessTokenResponse(ANY_AUTHOR_ID, "jkrowling", "jkrowling@gmail.com"))
-        every { updateBookService.execute(serviceRequest) } returns (BookNotFoundResponse)
+        every { updateBookService.execute(serviceRequest()) } returns (BookNotFoundResponse)
 
         RestAssured.given()
             .`when`()
@@ -133,9 +129,24 @@ class PatchBookControllerShould : ContractTest() {
         ANY_VISIBILITY, null, ANY_COMPLETION_PERCENTAGE
     )
 
+    private fun serviceRequest() = UpdateBookRequest(
+        ANY_AUTHOR_ID, ANY_BOOK_ID, ANY_TITLE, ANY_SUMMARY, ANY_COVER, ANY_TAGS, ANY_AMOUNT, ANY_CURRENCY,
+        ANY_VISIBILITY, ANY_COMPLETION_PERCENTAGE
+    )
+
     private fun updateBookBody() = """
         {
-          "completionPercentage": 50
+          "title": "$ANY_TITLE",
+          "summary": "$ANY_SUMMARY",
+          "cover": "$ANY_COVER",
+          "tags": ["${ANY_TAGS[0]}", "${ANY_TAGS[1]}"],
+          "visibility": "$ANY_VISIBILITY_AS_STRING",
+          "summary": "$ANY_SUMMARY",
+          "price": {
+            "amount": $ANY_AMOUNT,
+            "currency": "$ANY_CURRENCY"
+          },
+          "completionPercentage": $ANY_COMPLETION_PERCENTAGE
         }
     """
 
@@ -146,10 +157,11 @@ class PatchBookControllerShould : ContractTest() {
         private const val ANY_SUMMARY = "Any summary"
         private const val ANY_COVER = "http://any-cover.com/cover.jpg"
         private val ANY_TAGS = listOf("any", "tag")
-        private const val ANY_AMOUNT = 15f
+        private const val ANY_AMOUNT = 25.99f
         private const val ANY_CURRENCY = "EUR"
         private val ANY_STATUS = BookStatus.IN_PROGRESS
-        private val ANY_VISIBILITY = BookVisibility.NULL
+        private val ANY_VISIBILITY = BookVisibility.RESTRICTED
+        private const val ANY_VISIBILITY_AS_STRING = "restricted"
         private const val ANY_COMPLETION_PERCENTAGE = 50
     }
 }

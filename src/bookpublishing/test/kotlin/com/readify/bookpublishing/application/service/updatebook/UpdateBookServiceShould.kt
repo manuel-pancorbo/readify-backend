@@ -27,7 +27,7 @@ class UpdateBookServiceShould {
         val anyBookId = UUID.randomUUID().toString()
         val anyAuthor = UUID.randomUUID().toString()
         val otherAuthor = UUID.randomUUID().toString()
-        val request = UpdateBookRequest(anyAuthor, anyBookId, 50)
+        val request = UpdateBookRequest(anyAuthor, anyBookId, completionPercentage = 50)
         every { bookRepository.findById(BookId(anyBookId)) } returns BookMother().inProgressBook(anyBookId, otherAuthor)
 
         val response = service.execute(request)
@@ -39,7 +39,7 @@ class UpdateBookServiceShould {
     fun `returns book not found when an user wants to update a non existent book`() {
         val anyBookId = UUID.randomUUID().toString()
         val anyAuthor = UUID.randomUUID().toString()
-        val request = UpdateBookRequest(anyAuthor, anyBookId, 50)
+        val request = UpdateBookRequest(anyAuthor, anyBookId, completionPercentage = 50)
         every { bookRepository.findById(BookId(anyBookId)) } returns null
 
         val response = service.execute(request)
@@ -51,7 +51,7 @@ class UpdateBookServiceShould {
     fun `returns completion percentage out of range response when given completion percentage is invalid`() {
         val anyBookId = UUID.randomUUID().toString()
         val anyAuthor = UUID.randomUUID().toString()
-        val request = UpdateBookRequest(anyAuthor, anyBookId, 101)
+        val request = UpdateBookRequest(anyAuthor, anyBookId, completionPercentage = 101)
         every { bookRepository.findById(BookId(anyBookId)) } returns BookMother().inProgressBook(anyBookId, anyAuthor)
 
         val response = service.execute(request)
@@ -63,7 +63,8 @@ class UpdateBookServiceShould {
     fun `returns successful response when completion percentage is updated successfully`() {
         val anyBookId = UUID.randomUUID().toString()
         val anyAuthor = UUID.randomUUID().toString()
-        val request = UpdateBookRequest(anyAuthor, anyBookId, 75)
+        val request = UpdateBookRequest(anyAuthor, anyBookId, completionPercentage = 75,
+            title = "new title", tags = listOf("new", "tags"))
         every { bookRepository.findById(BookId(anyBookId)) } returns BookMother().inProgressBook(anyBookId, anyAuthor)
 
         val response = service.execute(request)
@@ -74,5 +75,7 @@ class UpdateBookServiceShould {
         assertThat((response as BookUpdatedSuccessfully).bookId).isEqualTo(anyBookId)
         assertThat(response.authorId).isEqualTo(anyAuthor)
         assertThat(response.completionPercentage).isEqualTo(75)
+        assertThat(response.title).isEqualTo("new title")
+        assertThat(response.tags).isEqualTo(listOf("new", "tags"))
     }
 }

@@ -5,6 +5,7 @@ import com.readify.api.bookpublishing.controller.common.HttpMoney
 import com.readify.authentication.domain.AnonymousUser
 import com.readify.authentication.domain.LoggedUser
 import com.readify.authentication.domain.Requester
+import com.readify.bookpublishing.application.service.common.BookVisibility
 import com.readify.bookpublishing.application.service.updatebook.BookNotBelongToAuthorResponse
 import com.readify.bookpublishing.application.service.updatebook.BookNotFoundResponse
 import com.readify.bookpublishing.application.service.updatebook.BookUpdatedSuccessfully
@@ -36,9 +37,20 @@ class PatchBookController(private val updateBookService: UpdateBookService) {
         when (requester) {
             is AnonymousUser -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
             is LoggedUser -> updateBookService
-                .execute(UpdateBookRequest(requester.id, bookId, httpRequest.completionPercentage))
+                .execute(httpRequest.toServiceRequest(requester, bookId))
                 .toHttpResponse()
         }
+}
+
+private fun PatchBookHttpRequest.toServiceRequest(requester: LoggedUser, bookId: String) =
+    UpdateBookRequest(requester.id, bookId, title, summary, cover, tags ?: emptyList(), price?.amount, price?.currency,
+        visibility.toServiceVisibility(), completionPercentage)
+
+private fun String?.toServiceVisibility() = when(this) {
+    "null" -> BookVisibility.NULL
+    "restricted" -> BookVisibility.RESTRICTED
+    "visible" -> BookVisibility.VISIBLE
+    else -> null
 }
 
 private fun UpdateBookResponse.toHttpResponse() =

@@ -15,7 +15,7 @@ sealed class Book(
 ) : RootAggregate() {
 
     fun sameAuthor(anotherAuthorId: AuthorId) = authorId == anotherAuthorId
-    abstract fun update(newCompletionPercentage: CompletionPercentage): Book
+    abstract fun update(changes: BookChanges): Book
 
     companion object {
         fun create(
@@ -32,12 +32,16 @@ data class InProgressBook(
     override val summary: Summary, override val tags: Tags, override val price: Money,
     override val completionPercentage: CompletionPercentage = empty(), override val visibility: Visibility = NULL
 ) : Book(id, authorId, title, cover, summary, tags, price, completionPercentage, visibility) {
-    override fun update(newCompletionPercentage: CompletionPercentage) =
-        if (newCompletionPercentage.isFinished()) {
-            FinishedBook(id, authorId, title, cover, summary, tags, price, visibility)
+    override fun update(changes: BookChanges) =
+        if (changes.completionPercentage?.isFinished() == true) {
+            FinishedBook(id, authorId, changes.title ?: title, changes.cover ?: cover, changes.summary ?: summary,
+                changes.tags ?: tags, changes.price ?: price, changes.visibility ?: visibility)
                 .also { it.record(DomainEventFactory.bookFinished(it)) }
         } else {
-            copy(completionPercentage = newCompletionPercentage)
+            copy(title = changes.title ?: title, cover = changes.cover ?: cover, summary = changes.summary ?: summary,
+                tags = changes.tags ?: tags, price = changes.price ?: price,
+                visibility = changes.visibility ?: visibility,
+                completionPercentage = changes.completionPercentage ?: completionPercentage)
                 .also { it.record(DomainEventFactory.bookUpdated(it)) }
         }
 }
@@ -47,13 +51,16 @@ data class FinishedBook(
     override val summary: Summary, override val tags: Tags, override val price: Money,
     override val visibility: Visibility, val finishedAt: ZonedDateTime = Clock().now()
 ) : Book(id, authorId, title, cover, summary, tags, price, finished(), visibility) {
-    override fun update(newCompletionPercentage: CompletionPercentage) =
-        if (newCompletionPercentage.isFinished()) {
-            this
-                //update book
+    override fun update(changes: BookChanges) =
+        if (changes.completionPercentage?.isFinished() == true) {
+            copy(title = changes.title ?: title, cover = changes.cover ?: cover, summary = changes.summary ?: summary,
+                tags = changes.tags ?: tags, price = changes.price ?: price,
+                visibility = changes.visibility ?: visibility)
                 .also { it.record(DomainEventFactory.bookUpdated(it)) }
         } else {
-            InProgressBook(id, authorId, title, cover, summary, tags, price, newCompletionPercentage, visibility)
+            InProgressBook(id, authorId, changes.title ?: title, changes.cover ?: cover, changes.summary ?: summary,
+                changes.tags ?: tags, changes.price ?: price, changes.completionPercentage ?: completionPercentage,
+                changes.visibility ?: visibility)
                 .also { it.record(DomainEventFactory.bookUpdated(it)) }
         }
 }
