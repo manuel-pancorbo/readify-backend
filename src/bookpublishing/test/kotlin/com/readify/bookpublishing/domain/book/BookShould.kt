@@ -18,10 +18,10 @@ class BookShould {
 
         val updatedBook = inProgressBook.update(BookChanges(completionPercentage = CompletionPercentage(90)))
 
-        assertThat(updatedBook.completionPercentage).isEqualTo(CompletionPercentage(50))
+        assertThat(updatedBook.completionPercentage).isEqualTo(CompletionPercentage(90))
         assertThat(updatedBook.pullDomainEvents()).hasSize(1)
         assertThat(updatedBook.pullDomainEvents()[0]).isInstanceOf(BookUpdated::class)
-        assertThat((updatedBook.pullDomainEvents()[0] as BookUpdated).completionPercentage).isEqualTo(50)
+        assertThat((updatedBook.pullDomainEvents()[0] as BookUpdated).completionPercentage).isEqualTo(90)
     }
 
     @Test
@@ -30,7 +30,7 @@ class BookShould {
         val anyAuthor = UUID.randomUUID().toString()
         val inProgressBook = BookMother().inProgressBook(anyBookId, anyAuthor)
 
-        val updatedBook = inProgressBook.update(BookChanges(completionPercentage = CompletionPercentage(90)))
+        val updatedBook = inProgressBook.update(BookChanges(completionPercentage = CompletionPercentage(100)))
 
         assertThat(updatedBook).isInstanceOf(FinishedBook::class)
         assertThat(updatedBook.pullDomainEvents()).hasSize(1)

@@ -69,7 +69,8 @@ class UpdateBookServiceShould {
 
         val response = service.execute(request)
 
-        verify { bookRepository.save(BookMother().inProgressBook(anyBookId, anyAuthor, 75)) }
+        verify { bookRepository.save(BookMother().inProgressBook(anyBookId, anyAuthor, 75, title = "new title",
+            tags = listOf("new", "tags"))) }
         verify { eventBus.publish(any()) }
         assertThat(response).isInstanceOf(BookUpdatedSuccessfully::class)
         assertThat((response as BookUpdatedSuccessfully).bookId).isEqualTo(anyBookId)
