@@ -142,6 +142,20 @@ class PostBookChapterControllerShould : ContractTest() {
         verify { createChapterService.execute(serviceRequest) }
     }
 
+    @Test
+    fun `return bad request when not all mandatory parameters are supplied`() {
+        RestAssured.given()
+            .`when`()
+            .contentType("application/json")
+            .and()
+            .header("Authorization", "Bearer anytoken")
+            .and()
+            .body(invalidChapterBody())
+            .post("/v1/books/$bookId/chapters")
+            .then()
+            .statusCode(400)
+    }
+
     private fun chapterBody(request: PostBookChapterHttpRequest) =
         """
         {
@@ -155,6 +169,18 @@ class PostBookChapterControllerShould : ContractTest() {
             "excerpt": "${request.excerpt}"
         }
     """
+
+    private fun invalidChapterBody() =
+        """
+        {
+            "title": "any title",
+            "content": "any content",
+            "price": {
+                "amount": 40,
+                "currency": "EUR"
+            }
+        }
+        """
 
     companion object {
         private const val bookId = "any-book-id"
