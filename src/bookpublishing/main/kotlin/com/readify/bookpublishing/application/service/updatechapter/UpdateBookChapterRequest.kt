@@ -6,5 +6,7 @@ data class UpdateBookChapterRequest(
     val chapterId: String,
     val status: String? = null,
     val title: String? = null,
-    val content: String? = null
+    val content: String? = null,
+    val order: Int? = null,
+    val excerpt: String? = null
 )

@@ -7,6 +7,8 @@ import com.readify.bookpublishing.domain.chapter.Chapter
 import com.readify.bookpublishing.domain.chapter.ChapterFactory
 import com.readify.bookpublishing.domain.chapter.ChapterRepository
 import com.readify.bookpublishing.domain.chapter.DraftChapter
+import com.readify.bookpublishing.domain.chapter.Excerpt
+import com.readify.bookpublishing.domain.chapter.Order
 import com.readify.bookpublishing.domain.chapter.PublishedChapter
 import com.readify.shared.domain.money.CurrencyNotSupportedException
 import com.readify.shared.domain.money.Money
@@ -25,7 +27,8 @@ class CreateChapterService(
             try {
                 chapterFactory.create(
                         book.authorId, book.id, request.title, request.content,
-                        Money.of(request.priceAmount, request.priceCurrency)
+                        Money.of(request.priceAmount, request.priceCurrency), Order(request.order),
+                        request.excerpt?.let { Excerpt(it) }
                     )
                     .also { chapterRepository.save(it) }
                     .toResponse()
@@ -38,11 +41,13 @@ class CreateChapterService(
         when (this) {
             is DraftChapter -> ChapterCreatedResponse(
                 id.value, title.value, content.value, modifiedAt,
-                authorId.value, bookId.value, ChapterStatus.DRAFT, price.amount, price.currency.toString()
+                authorId.value, bookId.value, ChapterStatus.DRAFT, price.amount, price.currency.toString(), order.value,
+                excerpt?.value
             )
             is PublishedChapter -> ChapterCreatedResponse(
                 id.value, title.value, content.value, modifiedAt,
-                authorId.value, bookId.value, ChapterStatus.PUBLISHED, price.amount, price.currency.toString()
+                authorId.value, bookId.value, ChapterStatus.PUBLISHED, price.amount, price.currency.toString(),
+                order.value, excerpt?.value
             )
         }
 }

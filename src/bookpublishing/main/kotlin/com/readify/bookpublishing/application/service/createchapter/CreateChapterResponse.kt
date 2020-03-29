@@ -15,7 +15,9 @@ data class ChapterCreatedResponse(
     val bookId: String,
     val status: ChapterStatus,
     val priceAmount: Float,
-    val priceCurrency: String
+    val priceCurrency: String,
+    val order: Int,
+    val excerpt: String?
 ) : CreateChapterResponse()
 
 enum class ChapterStatus { DRAFT, PUBLISHED }

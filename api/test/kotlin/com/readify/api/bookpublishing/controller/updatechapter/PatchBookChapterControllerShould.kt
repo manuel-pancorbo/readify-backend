@@ -96,7 +96,7 @@ class PatchBookChapterControllerShould : ContractTest() {
     @Test
     fun `returns ok when an author update a chapter to set it as published`() {
         val serviceResponse = ChapterUpdatedResponseMother()
-            .createWith(ANY_AUTHOR_ID, ANY_BOOK_ID, NEW_TITLE, NEW_CONTENT)
+            .createWith(ANY_AUTHOR_ID, ANY_BOOK_ID, NEW_TITLE, NEW_CONTENT, NEW_ORDER, NEW_EXCERPT)
         every { verifyAccessTokenService.execute(VerifyAccessTokenRequest("anytoken")) }
             .returns(VerifyAccessTokenResponse(ANY_AUTHOR_ID, "jkrowling", "jkrowling@gmail.com"))
         every { updateBookChapterService.execute(serviceRequest()) } returns serviceResponse
@@ -120,16 +120,21 @@ class PatchBookChapterControllerShould : ContractTest() {
             .body("book", equalTo(serviceResponse.bookId))
             .body("price.amount", equalTo(serviceResponse.priceAmount))
             .body("price.currency", equalTo(serviceResponse.priceCurrency))
+            .body("order", equalTo(serviceResponse.order))
+            .body("excerpt", equalTo(serviceResponse.excerpt))
     }
 
     private fun serviceRequest(status: String = "published") =
-        UpdateBookChapterRequest(ANY_AUTHOR_ID, ANY_BOOK_ID, ANY_CHAPTER_ID, status, NEW_TITLE, NEW_CONTENT)
+        UpdateBookChapterRequest(ANY_AUTHOR_ID, ANY_BOOK_ID, ANY_CHAPTER_ID, status, NEW_TITLE, NEW_CONTENT, NEW_ORDER,
+            NEW_EXCERPT)
 
     private fun updateBookChapterBody(status: String = "published") =
         """{
           "status": "$status",
           "title": "$NEW_TITLE",
-          "content": "$NEW_CONTENT"
+          "content": "$NEW_CONTENT",
+          "order": $NEW_ORDER,
+          "excerpt": "$NEW_EXCERPT"
         }"""
 
     companion object {
@@ -138,5 +143,7 @@ class PatchBookChapterControllerShould : ContractTest() {
         private const val ANY_AUTHOR_ID = "0959893a-88cf-465e-b792-43edd8b69e0e"
         private const val NEW_TITLE = "new chapter title"
         private const val NEW_CONTENT = "new chapter content"
+        private const val NEW_ORDER = 5
+        private const val NEW_EXCERPT = "new excerpt"
     }
 }

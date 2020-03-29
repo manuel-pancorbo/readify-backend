@@ -9,69 +9,76 @@ import com.readify.shared.domain.event.book.ChapterPublished
 import com.readify.shared.domain.event.book.ChapterUpdated
 import com.readify.shared.domain.money.Money
 import java.time.ZonedDateTime
-import java.util.StringTokenizer
 import java.util.UUID
 
 sealed class Chapter(
     open val id: ChapterId, open val title: Title, open val content: Content, open val price: Money,
-    open val authorId: AuthorId, open val bookId: BookId, open val modifiedAt: ZonedDateTime
+    open val authorId: AuthorId, open val bookId: BookId, open val modifiedAt: ZonedDateTime, open val order: Order,
+    open val excerpt: Excerpt?
 ) : RootAggregate() {
     fun sameAuthor(anotherAuthorId: AuthorId) = authorId == anotherAuthorId
-    abstract fun update(title: String?, content: String?): Chapter
+    abstract fun update(title: String?, content: String?, order: Int?, excerpt: String?): Chapter
 
     companion object {
-        fun create(title: Title, content: Content, price: Money, authorId: AuthorId, bookId: BookId) =
+        fun create(title: Title, content: Content, price: Money, authorId: AuthorId, bookId: BookId, order: Order,
+                   excerpt: Excerpt?) =
             DraftChapter(
-                ChapterId(UUID.randomUUID().toString()), title, content, price, authorId, bookId, Clock().now()
+                ChapterId(UUID.randomUUID().toString()), title, content, price, authorId, bookId, Clock().now(), order,
+                excerpt
             )
-                .also { it.record(ChapterCreated(it.id.value, it.title.value, it.authorId.value, it.bookId.value)) }
+                .also { it.record(ChapterCreated(it.id.value, it.title.value, it.authorId.value, it.bookId.value,
+                    it.order.value, it.excerpt?.value)) }
     }
 }
 
 data class DraftChapter(
     override val id: ChapterId, override val title: Title, override val content: Content, override val price: Money,
-    override val authorId: AuthorId, override val bookId: BookId, override val modifiedAt: ZonedDateTime
-) : Chapter(id, title, content, price, authorId, bookId, modifiedAt) {
-    override fun update(title: String?, content: String?) =
+    override val authorId: AuthorId, override val bookId: BookId, override val modifiedAt: ZonedDateTime,
+    override val order: Order, override val excerpt: Excerpt?
+) : Chapter(id, title, content, price, authorId, bookId, modifiedAt, order, excerpt) {
+    override fun update(title: String?, content: String?, order: Int?, excerpt: String?) =
         copy(
             title = title?.let { Title(it) } ?: this.title,
             content = content?.let { Content(it) } ?: this.content,
+            order = order?.let { Order(order) } ?: this.order,
+            excerpt = excerpt?.let { Excerpt(excerpt) } ?: this.excerpt,
             modifiedAt = Clock().now()
         )
-            .also { it.record(ChapterUpdated(it.bookId.value, it.id.value, it.authorId.value, it.title.value,
-                it.modifiedAt)) }
+            .also {
+                it.record(
+                    ChapterUpdated(
+                        it.bookId.value, it.id.value, it.authorId.value, it.title.value,
+                        it.modifiedAt, it.order.value, it.excerpt?.value
+                    )
+                )
+            }
 
-    fun publish() = PublishedChapter(id, title, content, price, authorId, bookId, modifiedAt, Clock().now())
+    fun publish() = PublishedChapter(
+        id, title, content, price, authorId, bookId, modifiedAt, order, excerpt, Clock().now()
+    )
         .also { it.record(ChapterPublished(it.id.value, it.publishedAt)) }
 }
 
 data class PublishedChapter(
     override val id: ChapterId, override val title: Title, override val content: Content, override val price: Money,
     override val authorId: AuthorId, override val bookId: BookId, override val modifiedAt: ZonedDateTime,
-    val publishedAt: ZonedDateTime = Clock().now()
-) : Chapter(id, title, content, price, authorId, bookId, modifiedAt) {
-    override fun update(title: String?, content: String?) =
+    override val order: Order, override val excerpt: Excerpt?, val publishedAt: ZonedDateTime = Clock().now()
+) : Chapter(id, title, content, price, authorId, bookId, modifiedAt, order, excerpt) {
+    override fun update(title: String?, content: String?, order: Int?, excerpt: String?) =
         copy(
             title = title?.let { Title(it) } ?: this.title,
             content = content?.let { Content(it) } ?: this.content,
+            order = order?.let { Order(order) } ?: this.order,
+            excerpt = excerpt?.let { Excerpt(excerpt) } ?: this.excerpt,
             modifiedAt = Clock().now()
         )
-            .also { it.record(ChapterUpdated(it.bookId.value, it.id.value, it.authorId.value, it.title.value,
-                it.modifiedAt)) }
+            .also {
+                it.record(
+                    ChapterUpdated(
+                        it.bookId.value, it.id.value, it.authorId.value, it.title.value,
+                        it.modifiedAt, it.order.value, it.excerpt?.value
+                    )
+                )
+            }
 
-}
-
-data class Title(val value: String)
-data class Content(val value: String) {
-    val wordCount: Int = StringTokenizer(value).countTokens()
-
-    init {
-        if (wordCount > 10000) throw IllegalArgumentException()
-    }
-}
-
-data class ChapterId(val value: String) {
-    init {
-        UUID.fromString(value)
-    }
 }

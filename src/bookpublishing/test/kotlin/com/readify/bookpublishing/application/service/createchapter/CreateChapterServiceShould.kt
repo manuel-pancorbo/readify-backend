@@ -9,6 +9,8 @@ import com.readify.bookpublishing.domain.book.BookRepository
 import com.readify.bookpublishing.domain.chapter.ChapterFactory
 import com.readify.bookpublishing.domain.chapter.ChapterMother
 import com.readify.bookpublishing.domain.chapter.ChapterRepository
+import com.readify.bookpublishing.domain.chapter.Excerpt
+import com.readify.bookpublishing.domain.chapter.Order
 import com.readify.shared.domain.money.Money
 import io.mockk.every
 import io.mockk.junit5.MockKExtension
@@ -56,7 +58,7 @@ class CreateChapterServiceShould {
         val expectedChapter = ChapterMother().draftOne(authorId, bookId)
         every { bookRepository.findById(BookId(bookId)) } returns BookMother().inProgressBook(bookId, authorId)
         every { chapterFactory.create(AuthorId(authorId), BookId(bookId), request.title, request.content,
-            Money.of(request.priceAmount, request.priceCurrency)) }
+            Money.of(request.priceAmount, request.priceCurrency), Order(request.order), Excerpt(request.excerpt!!)) }
             .returns(expectedChapter)
 
         val response = service.execute(request)
@@ -72,7 +74,9 @@ class CreateChapterServiceShould {
                 expectedChapter.bookId.value,
                 ChapterStatus.DRAFT,
                 1.3f,
-                "EUR"
+                "EUR",
+                expectedChapter.order.value,
+                expectedChapter.excerpt?.value
             )
         )
     }

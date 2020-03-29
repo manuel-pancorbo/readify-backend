@@ -11,6 +11,8 @@ import com.readify.bookpublishing.domain.book.BookId
 import com.readify.bookpublishing.domain.chapter.ChapterId
 import com.readify.bookpublishing.domain.chapter.Content
 import com.readify.bookpublishing.domain.chapter.DraftChapter
+import com.readify.bookpublishing.domain.chapter.Excerpt
+import com.readify.bookpublishing.domain.chapter.Order
 import com.readify.bookpublishing.domain.chapter.Title
 import com.readify.bookpublishing.infrastructure.domain.book.JpaChapterRepository
 import com.readify.bookpublishing.infrastructure.jpa.bookpublishing.JpaChapterDataSource
@@ -78,6 +80,8 @@ class JpaChapterRepositoryShould : IntegrationTest() {
             Money(1.35f, Currency.EUR),
             AuthorId(UUID.randomUUID().toString()),
             BookId(UUID.randomUUID().toString()),
-            Clock().now()
+            Clock().now(),
+            Order(1),
+            Excerpt("any excerpt")
         )
 }

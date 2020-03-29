@@ -18,7 +18,7 @@ class UpdateBookChapterService(private val chapterRepository: ChapterRepository,
         if (request.status != "published") return InvalidChapterStatusResponse
 
         return chapter.publishIfNeeded(eventBus)
-            .update(request.title, request.content)
+            .update(request.title, request.content, request.order, request.excerpt)
             .also { eventBus.publish(it.pullDomainEvents()) }
             .also { chapterRepository.save(it) }
             .toResponse()
@@ -37,10 +37,12 @@ private fun Chapter.toResponse() =
     when (this) {
         is DraftChapter -> BookChapterUpdatedResponse(
             id.value, title.value, content.value, modifiedAt,
-            authorId.value, bookId.value, ChapterStatus.DRAFT, price.amount, price.currency.toString()
+            authorId.value, bookId.value, ChapterStatus.DRAFT, price.amount, price.currency.toString(), order.value,
+            excerpt?.value
         )
         is PublishedChapter -> BookChapterUpdatedResponse(
             id.value, title.value, content.value, modifiedAt,
-            authorId.value, bookId.value, ChapterStatus.PUBLISHED, price.amount, price.currency.toString()
+            authorId.value, bookId.value, ChapterStatus.PUBLISHED, price.amount, price.currency.toString(), order.value,
+            excerpt?.value
         )
     }

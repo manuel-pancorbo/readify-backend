@@ -110,6 +110,8 @@ class PostBookChapterControllerShould : ContractTest() {
             .body("book", equalTo(serviceResponse.bookId))
             .body("price.amount", equalTo(serviceResponse.priceAmount))
             .body("price.currency", equalTo(serviceResponse.priceCurrency))
+            .body("order", equalTo(serviceResponse.order))
+            .body("excerpt", equalTo(serviceResponse.excerpt))
 
         verify { createChapterService.execute(serviceRequest) }
     }
@@ -148,7 +150,9 @@ class PostBookChapterControllerShould : ContractTest() {
             "price": {
                 "amount": ${request.price.amount},
                 "currency": "${request.price.currency}"
-            }
+            },
+            "order": ${request.order},
+            "excerpt": "${request.excerpt}"
         }
     """
 

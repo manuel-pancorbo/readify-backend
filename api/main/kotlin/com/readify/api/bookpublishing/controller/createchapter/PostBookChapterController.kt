@@ -44,7 +44,7 @@ private fun CreateChapterResponse.toHttpResponse() =
         is ChapterCreatedResponse -> ResponseEntity.ok(
             BookChapterHttpResponse(
                 id, title, content, modifiedAt, bookId, authorId, status.toString().toLowerCase(),
-                HttpMoney(priceAmount, priceCurrency)
+                HttpMoney(priceAmount, priceCurrency), order, excerpt
             )
         )
         InvalidCurrencyResponse -> ResponseEntity.badRequest()
@@ -52,4 +52,4 @@ private fun CreateChapterResponse.toHttpResponse() =
     }
 
 private fun PostBookChapterHttpRequest.toServiceRequest(requester: LoggedUser, bookId: String) =
-    CreateChapterRequest(title, content, requester.id, bookId, price.amount, price.currency)
+    CreateChapterRequest(title, content, requester.id, bookId, price.amount, price.currency, order, excerpt)

@@ -11,5 +11,7 @@ data class BookChapterHttpResponse(
     @JsonProperty("book") val book: String,
     @JsonProperty("author") val author: String,
     @JsonProperty("status") val status: String,
-    @JsonProperty("price") val price: HttpMoney
+    @JsonProperty("price") val price: HttpMoney,
+    @JsonProperty("order") val order: Int,
+    @JsonProperty("excerpt") val excerpt: String?
 )

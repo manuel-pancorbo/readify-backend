@@ -26,7 +26,9 @@ data class JpaChapter(
     @Enumerated(EnumType.STRING)
     val status: JpaChapterStatus,
     val priceAmount: Float,
-    val priceCurrency: String
+    val priceCurrency: String,
+    val chapterOrder: Int,
+    val excerpt: String?
 )
 
 enum class JpaChapterStatus { DRAFT, PUBLISHED }

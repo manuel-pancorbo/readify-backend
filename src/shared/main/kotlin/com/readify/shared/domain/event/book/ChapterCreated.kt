@@ -8,5 +8,7 @@ data class ChapterCreated(
     val title: String,
     val authorId: String,
     val bookId: String,
+    val order: Int,
+    val excerpt: String?,
     override val occurredOn: LocalDateTime = LocalDateTime.now()
 ) : DomainEvent(occurredOn)

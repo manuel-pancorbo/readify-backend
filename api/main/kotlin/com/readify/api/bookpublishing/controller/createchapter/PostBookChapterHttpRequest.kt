@@ -6,5 +6,7 @@ import com.readify.api.bookpublishing.controller.common.HttpMoney
 data class PostBookChapterHttpRequest(
     @JsonProperty("title") val title: String,
     @JsonProperty("content") val content: String,
-    @JsonProperty("price") val price: HttpMoney
+    @JsonProperty("price") val price: HttpMoney,
+    @JsonProperty("order") val order: Int,
+    @JsonProperty("excerpt") val excerpt: String?
 )

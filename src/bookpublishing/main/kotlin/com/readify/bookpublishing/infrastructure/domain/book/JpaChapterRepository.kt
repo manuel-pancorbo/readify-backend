@@ -7,6 +7,8 @@ import com.readify.bookpublishing.domain.chapter.ChapterId
 import com.readify.bookpublishing.domain.chapter.ChapterRepository
 import com.readify.bookpublishing.domain.chapter.Content
 import com.readify.bookpublishing.domain.chapter.DraftChapter
+import com.readify.bookpublishing.domain.chapter.Excerpt
+import com.readify.bookpublishing.domain.chapter.Order
 import com.readify.bookpublishing.domain.chapter.PublishedChapter
 import com.readify.bookpublishing.domain.chapter.Title
 import com.readify.bookpublishing.infrastructure.jpa.bookpublishing.JpaChapter
@@ -31,17 +33,20 @@ class JpaChapterRepository(private val jpaChapterDataSource: JpaChapterDataSourc
 private fun JpaChapter.toDomain(): Chapter {
     return when(status) {
         JpaChapterStatus.DRAFT -> DraftChapter(ChapterId(id), Title(title), Content(content), Money(priceAmount,
-            Currency.valueOf(priceCurrency)), AuthorId(authorId), BookId(bookId), Clock().from(modifiedAt))
+            Currency.valueOf(priceCurrency)), AuthorId(authorId), BookId(bookId), Clock().from(modifiedAt), Order(chapterOrder),
+            excerpt?.let { Excerpt(it) })
         JpaChapterStatus.PUBLISHED -> PublishedChapter(ChapterId(id), Title(title), Content(content), Money(priceAmount,
             Currency.valueOf(priceCurrency)), AuthorId(authorId), BookId(bookId), Clock().from(modifiedAt),
-            Clock().from(publishedAt!!))
+            Order(chapterOrder), excerpt?.let { Excerpt(it) }, Clock().from(publishedAt!!) )
     }
 }
 
 private fun Chapter.toJpa() =
     when(this) {
         is DraftChapter -> JpaChapter(id.value, authorId.value, bookId.value, title.value, content.value,
-            modifiedAt.toInstant(), null, JpaChapterStatus.DRAFT, price.amount, price.currency.toString())
+            modifiedAt.toInstant(), null, JpaChapterStatus.DRAFT, price.amount, price.currency.toString(), order.value,
+            excerpt?.value)
         is PublishedChapter -> JpaChapter(id.value, authorId.value, bookId.value, title.value, content.value,
-            modifiedAt.toInstant(), publishedAt.toInstant(), JpaChapterStatus.PUBLISHED, price.amount, price.currency.toString())
+            modifiedAt.toInstant(), publishedAt.toInstant(), JpaChapterStatus.PUBLISHED, price.amount,
+            price.currency.toString(), order.value, excerpt?.value)
     }

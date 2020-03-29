@@ -10,5 +10,7 @@ data class ChapterUpdated(
     val authorId: String,
     val title: String,
     val modifiedAt: ZonedDateTime,
+    val order: Int,
+    val excerpt: String?,
     override val occurredOn: LocalDateTime = LocalDateTime.now()
 ) : DomainEvent(occurredOn)

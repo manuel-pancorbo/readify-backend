@@ -47,7 +47,7 @@ class UpdateBookChapterServiceShould {
     @Test
     fun `return updated chapter when chapter has been updated successfully`() {
         val request = UpdateBookChapterRequest(ANY_AUTHOR_ID, ANY_BOOK_ID, ANY_CHAPTER_ID, "published",
-            NEW_TITLE, NEW_CONTENT)
+            NEW_TITLE, NEW_CONTENT, NEW_ORDER, NEW_EXCERPT)
         every { chapterRepository.findByIdAndBookId(ChapterId(ANY_CHAPTER_ID), BookId(ANY_BOOK_ID)) }
             .returns(ChapterMother().draftOne(ANY_AUTHOR_ID, ANY_BOOK_ID))
 
@@ -57,6 +57,8 @@ class UpdateBookChapterServiceShould {
         assertThat((response as BookChapterUpdatedResponse).status).isEqualTo(ChapterStatus.PUBLISHED)
         assertThat(response.title).isEqualTo(NEW_TITLE)
         assertThat(response.content).isEqualTo(NEW_CONTENT)
+        assertThat(response.order).isEqualTo(NEW_ORDER)
+        assertThat(response.excerpt).isEqualTo(NEW_EXCERPT)
         verify(exactly = 1) { chapterRepository.save(any()) }
         verify(exactly = 2) { eventBus.publish(any()) }
     }
@@ -82,5 +84,7 @@ class UpdateBookChapterServiceShould {
         private const val ANY_CHAPTER_ID = "8fc22ffc-2f1d-4957-a823-fba950b242f5"
         private const val NEW_TITLE = "new chapter title"
         private const val NEW_CONTENT = "new chapter content"
+        private const val NEW_ORDER = 2
+        private const val NEW_EXCERPT = "new excerpt"
     }
 }

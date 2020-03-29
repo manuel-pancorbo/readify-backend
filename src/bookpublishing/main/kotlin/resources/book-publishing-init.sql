@@ -28,5 +28,7 @@ CREATE TABLE bookpublishing.chapter
     status        VARCHAR(10),
     priceamount   NUMERIC(6, 2),
     pricecurrency VARCHAR(4),
+    chapterOrder  NUMERIC(2, 0),
+    excerpt       TEXT,
     PRIMARY KEY (id)
 );

@@ -25,7 +25,8 @@ class ChapterFactoryShould {
         val authorId = AuthorId(UUID.randomUUID().toString())
         val bookId = BookId(UUID.randomUUID().toString())
 
-        val actual = chapterFactory.create(authorId, bookId, "any title", "any chapter content", Money(1.3f, EUR))
+        val actual = chapterFactory.create(authorId, bookId, "any title", "any chapter content", Money(1.3f, EUR),
+            Order(1), Excerpt("any excerpt"))
 
         assertThat(actual.authorId).isEqualTo(authorId)
         assertThat(actual.bookId).isEqualTo(bookId)
@@ -34,6 +35,8 @@ class ChapterFactoryShould {
         assertThat(actual.content).isEqualTo(Content("any chapter content"))
         assertThat(actual.price).isEqualTo(Money(1.3f, EUR))
         assertThat(actual.modifiedAt).isNotNull()
+        assertThat(actual.order).isEqualTo(Order(1))
+        assertThat(actual.excerpt).isEqualTo(Excerpt("any excerpt"))
         verify { eventBus.publish(actual.pullDomainEvents()) }
         assertThat(actual.pullDomainEvents()).hasSize(1)
         assertThat(actual.pullDomainEvents()[0]).isInstanceOf(ChapterCreated::class)
