@@ -12,6 +12,7 @@ import com.readify.bookpublishing.domain.chapter.Title
 import com.readify.bookpublishing.infrastructure.jpa.bookpublishing.JpaChapter
 import com.readify.bookpublishing.infrastructure.jpa.bookpublishing.JpaChapterDataSource
 import com.readify.bookpublishing.infrastructure.jpa.bookpublishing.JpaChapterStatus
+import com.readify.shared.domain.clock.Clock
 import com.readify.shared.domain.money.Currency
 import com.readify.shared.domain.money.Money
 
@@ -22,25 +23,25 @@ class JpaChapterRepository(private val jpaChapterDataSource: JpaChapterDataSourc
 
     override fun findByIdAndBookId(id: ChapterId, bookId: BookId): Chapter? {
         return jpaChapterDataSource
-            .findById(id.value)
-            .map { it.toDomain() }
-            .orElse(null)
+            .findByIdAndBookId(id.value, bookId.value)
+            ?.toDomain()
     }
 }
 
 private fun JpaChapter.toDomain(): Chapter {
     return when(status) {
         JpaChapterStatus.DRAFT -> DraftChapter(ChapterId(id), Title(title), Content(content), Money(priceAmount,
-            Currency.valueOf(priceCurrency)), AuthorId(authorId), BookId(bookId), modifiedAt)
+            Currency.valueOf(priceCurrency)), AuthorId(authorId), BookId(bookId), Clock().from(modifiedAt))
         JpaChapterStatus.PUBLISHED -> PublishedChapter(ChapterId(id), Title(title), Content(content), Money(priceAmount,
-            Currency.valueOf(priceCurrency)), AuthorId(authorId), BookId(bookId), modifiedAt, publishedAt!!)
+            Currency.valueOf(priceCurrency)), AuthorId(authorId), BookId(bookId), Clock().from(modifiedAt),
+            Clock().from(publishedAt!!))
     }
 }
 
 private fun Chapter.toJpa() =
     when(this) {
         is DraftChapter -> JpaChapter(id.value, authorId.value, bookId.value, title.value, content.value,
-            modifiedAt, null, JpaChapterStatus.DRAFT, price.amount, price.currency.toString())
+            modifiedAt.toInstant(), null, JpaChapterStatus.DRAFT, price.amount, price.currency.toString())
         is PublishedChapter -> JpaChapter(id.value, authorId.value, bookId.value, title.value, content.value,
-            modifiedAt, publishedAt, JpaChapterStatus.PUBLISHED, price.amount, price.currency.toString())
+            modifiedAt.toInstant(), publishedAt.toInstant(), JpaChapterStatus.PUBLISHED, price.amount, price.currency.toString())
     }

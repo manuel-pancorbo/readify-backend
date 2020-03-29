@@ -4,14 +4,14 @@ import com.vladmihalcea.hibernate.type.array.ListArrayType
 import org.hibernate.annotations.Type
 import org.hibernate.annotations.TypeDef
 import org.springframework.data.jpa.repository.JpaRepository
-import java.time.ZonedDateTime
+import java.time.Instant
 import javax.persistence.Entity
 import javax.persistence.EnumType
 import javax.persistence.Enumerated
 import javax.persistence.Id
 import javax.persistence.Table
 
-interface JpaBookDataSource: JpaRepository<JpaBook, String>
+interface JpaBookDataSource : JpaRepository<JpaBook, String>
 
 @Entity
 @Table(name = "book", schema = "bookpublishing")
@@ -32,7 +32,7 @@ data class JpaBook(
     val completionPercentage: Int,
     @Enumerated(EnumType.STRING)
     val visibility: JpaBookVisibility,
-    val finishedAt: ZonedDateTime?
+    val finishedAt: Instant?
 )
 
 enum class JpaBookStatus { IN_PROGRESS, FINISHED }

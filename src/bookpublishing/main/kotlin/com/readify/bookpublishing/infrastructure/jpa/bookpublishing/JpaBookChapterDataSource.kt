@@ -1,14 +1,16 @@
 package com.readify.bookpublishing.infrastructure.jpa.bookpublishing
 
 import org.springframework.data.jpa.repository.JpaRepository
-import java.time.ZonedDateTime
+import java.time.Instant
 import javax.persistence.Entity
 import javax.persistence.EnumType
 import javax.persistence.Enumerated
 import javax.persistence.Id
 import javax.persistence.Table
 
-interface JpaChapterDataSource : JpaRepository<JpaChapter, String>
+interface JpaChapterDataSource : JpaRepository<JpaChapter, String> {
+    fun findByIdAndBookId(id: String, bookId: String): JpaChapter?
+}
 
 @Entity
 @Table(name = "chapter", schema = "bookpublishing")
@@ -19,8 +21,8 @@ data class JpaChapter(
     val bookId: String,
     val title: String,
     val content: String,
-    val modifiedAt: ZonedDateTime,
-    val publishedAt: ZonedDateTime?,
+    val modifiedAt: Instant,
+    val publishedAt: Instant?,
     @Enumerated(EnumType.STRING)
     val status: JpaChapterStatus,
     val priceAmount: Float,

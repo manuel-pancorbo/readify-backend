@@ -16,6 +16,7 @@ import com.readify.bookpublishing.infrastructure.jpa.bookpublishing.JpaBook
 import com.readify.bookpublishing.infrastructure.jpa.bookpublishing.JpaBookDataSource
 import com.readify.bookpublishing.infrastructure.jpa.bookpublishing.JpaBookStatus
 import com.readify.bookpublishing.infrastructure.jpa.bookpublishing.JpaBookVisibility
+import com.readify.shared.domain.clock.Clock
 import com.readify.shared.domain.money.Currency
 import com.readify.shared.domain.money.Money
 
@@ -39,7 +40,8 @@ private fun Book.toJpa() =
         )
         is FinishedBook -> JpaBook(
             id.value, authorId.value, title.value, cover.value, summary.value, tags.value, price.amount,
-            price.currency.toString(), JpaBookStatus.FINISHED, completionPercentage.value, visibility.toJpa(), finishedAt
+            price.currency.toString(), JpaBookStatus.FINISHED, completionPercentage.value, visibility.toJpa(),
+            finishedAt.toInstant()
         )
     }
 
@@ -57,6 +59,6 @@ private fun JpaBook.toDomain() = when (status) {
     )
     JpaBookStatus.FINISHED -> FinishedBook(
         BookId(id), AuthorId(authorId), Title(title), Cover(cover), Summary(summary),
-        Tags(tags), Money(priceAmount, Currency.valueOf(priceCurrency)), Visibility.NULL, finishedAt!!
+        Tags(tags), Money(priceAmount, Currency.valueOf(priceCurrency)), Visibility.NULL, Clock().from(finishedAt!!)
     )
 }
