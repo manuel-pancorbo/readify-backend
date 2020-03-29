@@ -95,7 +95,8 @@ class PatchBookChapterControllerShould : ContractTest() {
 
     @Test
     fun `returns ok when an author update a chapter to set it as published`() {
-        val serviceResponse = ChapterUpdatedResponseMother().createWith(ANY_AUTHOR_ID, ANY_BOOK_ID)
+        val serviceResponse = ChapterUpdatedResponseMother()
+            .createWith(ANY_AUTHOR_ID, ANY_BOOK_ID, NEW_TITLE, NEW_CONTENT)
         every { verifyAccessTokenService.execute(VerifyAccessTokenRequest("anytoken")) }
             .returns(VerifyAccessTokenResponse(ANY_AUTHOR_ID, "jkrowling", "jkrowling@gmail.com"))
         every { updateBookChapterService.execute(serviceRequest()) } returns serviceResponse
@@ -111,8 +112,8 @@ class PatchBookChapterControllerShould : ContractTest() {
             .then()
             .statusCode(200)
             .body("id", equalTo(serviceResponse.id))
-            .body("title", equalTo(serviceResponse.title))
-            .body("content", equalTo(serviceResponse.content))
+            .body("title", equalTo(NEW_TITLE))
+            .body("content", equalTo(NEW_CONTENT))
             .body("status", equalTo(serviceResponse.status.toString().toLowerCase()))
             .body("modifiedAt", equalTo(serviceResponse.modifiedAt.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)))
             .body("author", equalTo(serviceResponse.authorId))
@@ -122,16 +123,20 @@ class PatchBookChapterControllerShould : ContractTest() {
     }
 
     private fun serviceRequest(status: String = "published") =
-        UpdateBookChapterRequest(ANY_AUTHOR_ID, ANY_BOOK_ID, ANY_CHAPTER_ID, status)
+        UpdateBookChapterRequest(ANY_AUTHOR_ID, ANY_BOOK_ID, ANY_CHAPTER_ID, status, NEW_TITLE, NEW_CONTENT)
 
     private fun updateBookChapterBody(status: String = "published") =
         """{
-          "status": "$status"
+          "status": "$status",
+          "title": "$NEW_TITLE",
+          "content": "$NEW_CONTENT"
         }"""
 
     companion object {
         private const val ANY_BOOK_ID = "66f86298-bb74-4496-913e-ebc3dc451f1b"
         private const val ANY_CHAPTER_ID = "9e4af2a5-5fdc-4933-b546-4610004f068f"
         private const val ANY_AUTHOR_ID = "0959893a-88cf-465e-b792-43edd8b69e0e"
+        private const val NEW_TITLE = "new chapter title"
+        private const val NEW_CONTENT = "new chapter content"
     }
 }

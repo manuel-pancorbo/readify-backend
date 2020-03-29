@@ -1,7 +1,6 @@
 package com.readify.api.bookpublishing.controller.common
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.readify.api.bookpublishing.controller.common.HttpMoney
 import java.time.ZonedDateTime
 
 data class BookChapterHttpResponse(

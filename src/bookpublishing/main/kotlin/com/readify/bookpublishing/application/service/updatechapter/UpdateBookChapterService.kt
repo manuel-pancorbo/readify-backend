@@ -14,22 +14,24 @@ class UpdateBookChapterService(private val chapterRepository: ChapterRepository,
     fun execute(request: UpdateBookChapterRequest): UpdateBookChapterResponse {
         val chapter = chapterRepository.findByIdAndBookId(ChapterId(request.chapterId), BookId(request.bookId))
             ?: return BookChapterNotFoundResponse
-
         if (!chapter.sameAuthor(AuthorId(request.authorId))) return BookNotBelongToAuthorResponse
+        if (request.status != "published") return InvalidChapterStatusResponse
 
-        return when (request.status) {
-            "published" -> when(chapter) {
-                is PublishedChapter -> chapter.toResponse()
-                is DraftChapter -> chapter.publish()
-                    .also { chapterRepository.save(it) }
-                    .also { eventBus.publish(it.pullDomainEvents()) }
-                    .toResponse()
-            }
-            else -> InvalidChapterStatusResponse
-        }
+        return chapter.publishIfNeeded(eventBus)
+            .update(request.title, request.content)
+            .also { eventBus.publish(it.pullDomainEvents()) }
+            .also { chapterRepository.save(it) }
+            .toResponse()
     }
-
 }
+
+private fun Chapter.publishIfNeeded(eventBus: EventBus) =
+    if (this is DraftChapter) {
+        this.publish()
+            .also { eventBus.publish(it.pullDomainEvents()) }
+    } else {
+        this
+    }
 
 private fun Chapter.toResponse() =
     when (this) {

@@ -6,11 +6,11 @@ import com.readify.shared.domain.clock.Clock
 import java.util.UUID
 
 class ChapterUpdatedResponseMother {
-    fun createWith(authorId: String, bookId: String) =
+    fun createWith(authorId: String, bookId: String, title: String = TITLE, content: String = CONTENT) =
         BookChapterUpdatedResponse(
             ID,
-            TITLE,
-            CONTENT,
+            title,
+            content,
             Clock().now(),
             authorId,
             bookId,

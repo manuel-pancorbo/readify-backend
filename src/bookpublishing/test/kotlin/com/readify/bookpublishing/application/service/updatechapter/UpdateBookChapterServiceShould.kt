@@ -46,7 +46,8 @@ class UpdateBookChapterServiceShould {
 
     @Test
     fun `return updated chapter when chapter has been updated successfully`() {
-        val request = UpdateBookChapterRequest(ANY_AUTHOR_ID, ANY_BOOK_ID, ANY_CHAPTER_ID, "published")
+        val request = UpdateBookChapterRequest(ANY_AUTHOR_ID, ANY_BOOK_ID, ANY_CHAPTER_ID, "published",
+            NEW_TITLE, NEW_CONTENT)
         every { chapterRepository.findByIdAndBookId(ChapterId(ANY_CHAPTER_ID), BookId(ANY_BOOK_ID)) }
             .returns(ChapterMother().draftOne(ANY_AUTHOR_ID, ANY_BOOK_ID))
 
@@ -54,8 +55,24 @@ class UpdateBookChapterServiceShould {
 
         assertThat(response).isInstanceOf(BookChapterUpdatedResponse::class)
         assertThat((response as BookChapterUpdatedResponse).status).isEqualTo(ChapterStatus.PUBLISHED)
-        verify { chapterRepository.save(any()) }
-        verify { eventBus.publish(any()) }
+        assertThat(response.title).isEqualTo(NEW_TITLE)
+        assertThat(response.content).isEqualTo(NEW_CONTENT)
+        verify(exactly = 1) { chapterRepository.save(any()) }
+        verify(exactly = 2) { eventBus.publish(any()) }
+    }
+
+    @Test
+    fun `return same chapter after trying to publish an already published chapter`() {
+        val request = UpdateBookChapterRequest(ANY_AUTHOR_ID, ANY_BOOK_ID, ANY_CHAPTER_ID, "published")
+        every { chapterRepository.findByIdAndBookId(ChapterId(ANY_CHAPTER_ID), BookId(ANY_BOOK_ID)) }
+            .returns(ChapterMother().publishedOne(ANY_AUTHOR_ID, ANY_BOOK_ID))
+
+        val response = service.execute(request)
+
+        assertThat(response).isInstanceOf(BookChapterUpdatedResponse::class)
+        assertThat((response as BookChapterUpdatedResponse).status).isEqualTo(ChapterStatus.PUBLISHED)
+        verify(exactly = 1) { chapterRepository.save(any()) }
+        verify(exactly = 1) { eventBus.publish(any()) }
     }
 
     companion object {
@@ -63,5 +80,7 @@ class UpdateBookChapterServiceShould {
         private const val ANY_OTHER_AUTHOR_ID = "4fa2e51b-2622-4b35-a382-543f7a194a1c"
         private const val ANY_BOOK_ID = "bf806dec-b2e8-44b1-805b-8db748d1439f"
         private const val ANY_CHAPTER_ID = "8fc22ffc-2f1d-4957-a823-fba950b242f5"
+        private const val NEW_TITLE = "new chapter title"
+        private const val NEW_CONTENT = "new chapter content"
     }
 }
