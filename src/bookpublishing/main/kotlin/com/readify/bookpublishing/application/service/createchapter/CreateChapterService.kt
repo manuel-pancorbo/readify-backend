@@ -1,5 +1,6 @@
 package com.readify.bookpublishing.application.service.createchapter
 
+import com.readify.bookpublishing.application.service.common.ChapterStatus
 import com.readify.bookpublishing.domain.book.AuthorId
 import com.readify.bookpublishing.domain.book.BookId
 import com.readify.bookpublishing.domain.book.BookRepository
@@ -26,10 +27,10 @@ class CreateChapterService(
         else
             try {
                 chapterFactory.create(
-                        book.authorId, book.id, request.title, request.content,
-                        Money.of(request.priceAmount, request.priceCurrency), Order(request.order),
-                        request.excerpt?.let { Excerpt(it) }
-                    )
+                    book.authorId, book.id, request.title, request.content,
+                    Money.of(request.priceAmount, request.priceCurrency), Order(request.order),
+                    request.excerpt?.let { Excerpt(it) }
+                )
                     .also { chapterRepository.save(it) }
                     .toResponse()
             } catch (exception: CurrencyNotSupportedException) {

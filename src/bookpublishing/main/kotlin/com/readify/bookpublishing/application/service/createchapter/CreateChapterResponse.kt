@@ -1,5 +1,6 @@
 package com.readify.bookpublishing.application.service.createchapter
 
+import com.readify.bookpublishing.application.service.common.ChapterStatus
 import java.time.ZonedDateTime
 
 sealed class CreateChapterResponse
@@ -19,5 +20,3 @@ data class ChapterCreatedResponse(
     val order: Int,
     val excerpt: String?
 ) : CreateChapterResponse()
-
-enum class ChapterStatus { DRAFT, PUBLISHED }

@@ -1,6 +1,6 @@
 package com.readify.bookpublishing.application.service.updatechapter
 
-import com.readify.bookpublishing.application.service.createchapter.ChapterStatus
+import com.readify.bookpublishing.application.service.common.ChapterStatus
 import com.readify.bookpublishing.domain.book.AuthorId
 import com.readify.bookpublishing.domain.book.BookId
 import com.readify.bookpublishing.domain.chapter.Chapter

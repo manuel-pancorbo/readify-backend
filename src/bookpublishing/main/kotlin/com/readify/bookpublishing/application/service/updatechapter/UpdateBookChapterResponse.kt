@@ -1,6 +1,6 @@
 package com.readify.bookpublishing.application.service.updatechapter
 
-import com.readify.bookpublishing.application.service.createchapter.ChapterStatus
+import com.readify.bookpublishing.application.service.common.ChapterStatus
 import java.time.ZonedDateTime
 
 sealed class UpdateBookChapterResponse

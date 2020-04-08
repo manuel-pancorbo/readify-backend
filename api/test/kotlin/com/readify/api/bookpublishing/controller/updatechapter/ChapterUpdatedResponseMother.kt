@@ -1,6 +1,6 @@
 package com.readify.api.bookpublishing.controller.updatechapter
 
-import com.readify.bookpublishing.application.service.createchapter.ChapterStatus
+import com.readify.bookpublishing.application.service.common.ChapterStatus
 import com.readify.bookpublishing.application.service.updatechapter.BookChapterUpdatedResponse
 import com.readify.shared.domain.clock.Clock
 import java.util.UUID

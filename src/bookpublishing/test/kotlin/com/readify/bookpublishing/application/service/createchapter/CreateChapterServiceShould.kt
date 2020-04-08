@@ -2,6 +2,7 @@ package com.readify.bookpublishing.application.service.createchapter
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import com.readify.bookpublishing.application.service.common.ChapterStatus
 import com.readify.bookpublishing.domain.book.AuthorId
 import com.readify.bookpublishing.domain.book.BookId
 import com.readify.bookpublishing.domain.book.BookMother
@@ -57,8 +58,12 @@ class CreateChapterServiceShould {
         val request = CreateChapterRequestMother().createWith(authorId, bookId)
         val expectedChapter = ChapterMother().draftOne(authorId, bookId)
         every { bookRepository.findById(BookId(bookId)) } returns BookMother().inProgressBook(bookId, authorId)
-        every { chapterFactory.create(AuthorId(authorId), BookId(bookId), request.title, request.content,
-            Money.of(request.priceAmount, request.priceCurrency), Order(request.order), Excerpt(request.excerpt!!)) }
+        every {
+            chapterFactory.create(
+                AuthorId(authorId), BookId(bookId), request.title, request.content,
+                Money.of(request.priceAmount, request.priceCurrency), Order(request.order), Excerpt(request.excerpt!!)
+            )
+        }
             .returns(expectedChapter)
 
         val response = service.execute(request)
