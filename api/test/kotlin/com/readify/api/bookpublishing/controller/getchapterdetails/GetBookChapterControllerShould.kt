@@ -2,11 +2,9 @@ package com.readify.api.bookpublishing.controller.getchapterdetails
 
 import com.ninjasquad.springmockk.MockkBean
 import com.readify.ContractTest
-import com.readify.api.bookpublishing.controller.updatechapter.PatchBookChapterControllerShould
 import com.readify.authentication.application.service.verifyaccesstoken.VerifyAccessTokenRequest
 import com.readify.authentication.application.service.verifyaccesstoken.VerifyAccessTokenResponse
 import com.readify.authentication.application.service.verifyaccesstoken.VerifyAccessTokenService
-import com.readify.bookpublishing.application.service.getchapterservice.BookNotFoundResponse
 import com.readify.bookpublishing.application.service.getchapterservice.ChapterNotFoundResponse
 import com.readify.bookpublishing.application.service.getchapterservice.GetChapterRequest
 import com.readify.bookpublishing.application.service.getchapterservice.GetChapterService
@@ -39,7 +37,7 @@ class GetBookChapterControllerShould : ContractTest() {
         val serviceRequest = GetChapterRequest(authorId, bookId, chapterId)
         every { verifyAccessTokenService.execute(VerifyAccessTokenRequest("anytoken")) }
             .returns(VerifyAccessTokenResponse(authorId, "jkrowling", "jkrowling@gmail.com"))
-        every { getChapterService.execute(serviceRequest) } returns BookNotFoundResponse
+        every { getChapterService.execute(serviceRequest) } returns ChapterNotFoundResponse
 
         RestAssured.given()
             .`when`()

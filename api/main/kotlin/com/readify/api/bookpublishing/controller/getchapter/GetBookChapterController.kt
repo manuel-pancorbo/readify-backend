@@ -4,7 +4,6 @@ import com.readify.api.bookpublishing.controller.common.HttpMoney
 import com.readify.authentication.domain.AnonymousUser
 import com.readify.authentication.domain.LoggedUser
 import com.readify.authentication.domain.Requester
-import com.readify.bookpublishing.application.service.getchapterservice.BookNotFoundResponse
 import com.readify.bookpublishing.application.service.getchapterservice.ChapterNotFoundResponse
 import com.readify.bookpublishing.application.service.getchapterservice.ChapterResponse
 import com.readify.bookpublishing.application.service.getchapterservice.GetChapterRequest
@@ -35,7 +34,7 @@ class GetBookChapterController(private val getChapterService: GetChapterService)
 
 private fun GetChapterResponse.toHttpResponse() =
     when (this) {
-        BookNotFoundResponse, ChapterNotFoundResponse -> ResponseEntity.notFound().build()
+        ChapterNotFoundResponse -> ResponseEntity.notFound().build()
         is ChapterResponse -> ResponseEntity.ok(
             GetChapterHttpResponse(
                 id, title, content, modifiedAt, bookId, authorId,

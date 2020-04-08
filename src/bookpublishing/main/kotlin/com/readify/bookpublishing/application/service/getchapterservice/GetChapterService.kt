@@ -1,28 +1,33 @@
 package com.readify.bookpublishing.application.service.getchapterservice
 
 import com.readify.bookpublishing.application.service.common.ChapterStatus
-import java.time.ZonedDateTime
+import com.readify.bookpublishing.domain.book.AuthorId
+import com.readify.bookpublishing.domain.book.BookId
+import com.readify.bookpublishing.domain.chapter.Chapter
+import com.readify.bookpublishing.domain.chapter.ChapterId
+import com.readify.bookpublishing.domain.chapter.ChapterRepository
+import com.readify.bookpublishing.domain.chapter.DraftChapter
+import com.readify.bookpublishing.domain.chapter.PublishedChapter
 
-class GetChapterService {
-    fun execute(request: GetChapterRequest): GetChapterResponse {
-        TODO("Not yet implemented")
-    }
+class GetChapterService(private val chapterRepository: ChapterRepository) {
+    fun execute(request: GetChapterRequest) =
+        chapterRepository.findByIdAndBookId(ChapterId(request.chapterId), BookId(request.bookId))
+            ?.takeIf { it.sameAuthor(AuthorId(request.authorId)) }
+            ?.toResponse()
+            ?: ChapterNotFoundResponse
 
 }
 
-sealed class GetChapterResponse
-object BookNotFoundResponse : GetChapterResponse()
-object ChapterNotFoundResponse : GetChapterResponse()
-data class ChapterResponse(
-    val id: String,
-    val title: String,
-    val content: String,
-    val modifiedAt: ZonedDateTime,
-    val authorId: String,
-    val bookId: String,
-    val status: ChapterStatus,
-    val priceAmount: Float,
-    val priceCurrency: String,
-    val order: Int,
-    val excerpt: String?
-) : GetChapterResponse()
+private fun Chapter.toResponse() =
+    when (this) {
+        is DraftChapter -> ChapterResponse(
+            id.value, title.value, content.value, modifiedAt,
+            authorId.value, bookId.value, ChapterStatus.DRAFT, price.amount, price.currency.toString(), order.value,
+            excerpt?.value
+        )
+        is PublishedChapter -> ChapterResponse(
+            id.value, title.value, content.value, modifiedAt,
+            authorId.value, bookId.value, ChapterStatus.PUBLISHED, price.amount, price.currency.toString(), order.value,
+            excerpt?.value
+        )
+    }

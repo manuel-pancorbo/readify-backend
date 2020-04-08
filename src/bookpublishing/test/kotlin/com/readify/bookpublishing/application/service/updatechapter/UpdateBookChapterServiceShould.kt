@@ -3,7 +3,7 @@ package com.readify.bookpublishing.application.service.updatechapter
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
-import com.readify.bookpublishing.application.service.createchapter.ChapterStatus
+import com.readify.bookpublishing.application.service.common.ChapterStatus
 import com.readify.bookpublishing.domain.book.BookId
 import com.readify.bookpublishing.domain.chapter.ChapterId
 import com.readify.bookpublishing.domain.chapter.ChapterMother
