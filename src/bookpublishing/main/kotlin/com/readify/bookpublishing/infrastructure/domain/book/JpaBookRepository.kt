@@ -25,11 +25,14 @@ class JpaBookRepository(private val jpaBookDataSource: JpaBookDataSource) : Book
         jpaBookDataSource.save(book.toJpa())
     }
 
-    override fun findById(id: BookId): Book? {
-        return jpaBookDataSource.findById(id.value)
+    override fun findById(id: BookId): Book? =
+        jpaBookDataSource.findById(id.value)
             .map { it.toDomain() }
             .orElse(null)
-    }
+
+    override fun findByAuthorId(authorId: AuthorId) =
+        jpaBookDataSource.findByAuthorId(authorId.value)
+            .map { it.toDomain() }
 }
 
 private fun Book.toJpa() =

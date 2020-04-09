@@ -1,9 +1,11 @@
 package com.readify.bookpublishing.infrastructure.jpa.book
 
 import assertk.assertThat
+import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNull
 import assertk.assertions.isTrue
+import assertk.assertions.size
 import com.readify.IntegrationTest
 import com.readify.bookpublishing.domain.book.AuthorId
 import com.readify.bookpublishing.domain.book.BookId
@@ -63,6 +65,17 @@ class JpaBookRepositoryShould : IntegrationTest() {
         val actual = repository.findById(book.id)
 
         assertThat(actual).isEqualTo(book)
+    }
+
+    @Test
+    fun `return books given an author`() {
+        val book = anyBook()
+        repository.save(book)
+
+        val books = repository.findByAuthorId(book.authorId)
+
+        assertThat(books).hasSize(1)
+        assertThat(books[0]).isEqualTo(book)
     }
 
     @Test

@@ -11,7 +11,9 @@ import javax.persistence.Enumerated
 import javax.persistence.Id
 import javax.persistence.Table
 
-interface JpaBookDataSource : JpaRepository<JpaBook, String>
+interface JpaBookDataSource : JpaRepository<JpaBook, String> {
+    fun findByAuthorId(authorId: String): List<JpaBook>
+}
 
 @Entity
 @Table(name = "book", schema = "bookpublishing")
