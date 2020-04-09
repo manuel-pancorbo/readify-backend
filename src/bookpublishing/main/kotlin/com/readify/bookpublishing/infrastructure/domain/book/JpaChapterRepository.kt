@@ -28,6 +28,12 @@ class JpaChapterRepository(private val jpaChapterDataSource: JpaChapterDataSourc
             .findByIdAndBookId(id.value, bookId.value)
             ?.toDomain()
     }
+
+    override fun findByBookId(bookId: BookId): List<Chapter> {
+        return jpaChapterDataSource
+            .findByBookId(bookId.value)
+            .map { it.toDomain() }
+    }
 }
 
 private fun JpaChapter.toDomain(): Chapter {

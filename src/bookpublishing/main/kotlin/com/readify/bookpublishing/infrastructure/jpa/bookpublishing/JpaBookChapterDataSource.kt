@@ -10,6 +10,7 @@ import javax.persistence.Table
 
 interface JpaChapterDataSource : JpaRepository<JpaChapter, String> {
     fun findByIdAndBookId(id: String, bookId: String): JpaChapter?
+    fun findByBookId(bookId: String): List<JpaChapter>
 }
 
 @Entity

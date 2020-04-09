@@ -1,6 +1,7 @@
 package com.readify.bookpublishing.infrastructure.jpa.chapter
 
 import assertk.assertThat
+import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
 import assertk.assertions.isNull
@@ -65,6 +66,17 @@ class JpaChapterRepositoryShould : IntegrationTest() {
         val actualChapter = repository.findByIdAndBookId(chapter.id, chapter.bookId)
 
         assertThat(actualChapter).isEqualTo(chapter)
+    }
+
+    @Test
+    fun `find chapters by book id`() {
+        val chapter = anyChapter()
+        repository.save(chapter)
+
+        val chapters = repository.findByBookId(chapter.bookId)
+
+        assertThat(chapters).hasSize(1)
+        assertThat(chapters[0]).isEqualTo(chapter)
     }
 
     private fun anyChapter() =
