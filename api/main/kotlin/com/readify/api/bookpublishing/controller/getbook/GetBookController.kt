@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/v1")
 class GetBookController(private val service: GetBookService) {
     @GetMapping("/books/{bookId}")
-    fun createBook(requester: Requester, @PathVariable bookId: String): ResponseEntity<out Any> =
+    fun getBook(requester: Requester, @PathVariable bookId: String): ResponseEntity<out Any> =
         when (requester) {
             is AnonymousUser -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
             is LoggedUser -> service.execute(GetBookRequest(requester.id, bookId)).toHttpResponse()
