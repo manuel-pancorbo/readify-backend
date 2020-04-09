@@ -14,7 +14,7 @@ sealed class Book(
     open val completionPercentage: CompletionPercentage, open val visibility: Visibility
 ) : RootAggregate() {
 
-    fun sameAuthor(anotherAuthorId: AuthorId) = authorId == anotherAuthorId
+    fun isWrittenBy(anotherAuthorId: AuthorId) = authorId == anotherAuthorId
     abstract fun update(changes: BookChanges): Book
 
     companion object {

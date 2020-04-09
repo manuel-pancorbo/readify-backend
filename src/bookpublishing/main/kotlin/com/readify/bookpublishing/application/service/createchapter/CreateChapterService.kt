@@ -22,7 +22,7 @@ class CreateChapterService(
     fun execute(request: CreateChapterRequest): CreateChapterResponse {
         val book = bookRepository.findById(BookId(request.bookId)) ?: return BookNotFoundResponse
 
-        return if (!book.sameAuthor(AuthorId(request.authorId)))
+        return if (!book.isWrittenBy(AuthorId(request.authorId)))
             BookNotBelongToAuthorResponse
         else
             try {

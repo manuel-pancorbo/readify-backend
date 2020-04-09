@@ -23,7 +23,7 @@ import com.readify.shared.domain.money.Money
 class UpdateBookService(private val bookRepository: BookRepository, private val eventBus: EventBus) {
     fun execute(request: UpdateBookRequest): UpdateBookResponse {
         val book = bookRepository.findById(BookId(request.bookId)) ?: return BookNotFoundResponse
-        if (!book.sameAuthor(AuthorId(request.authorId))) return BookNotBelongToAuthorResponse
+        if (!book.isWrittenBy(AuthorId(request.authorId))) return BookNotBelongToAuthorResponse
 
         return try {
             book.update(request.toBookChanges())
