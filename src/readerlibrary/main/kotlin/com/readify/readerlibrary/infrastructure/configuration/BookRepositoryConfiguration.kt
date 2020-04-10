@@ -6,8 +6,8 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-class BookRepositoryConfiguration {
+class ReaderLibraryBookRepositoryConfiguration {
     @Bean
-    fun bookRepositoryConfiguration(jpaBookDataSource: ReaderLibraryJpaBookDataSource) =
+    fun readerLibraryBookRepository(jpaBookDataSource: ReaderLibraryJpaBookDataSource) =
         JpaBookRepository(jpaBookDataSource)
 }
