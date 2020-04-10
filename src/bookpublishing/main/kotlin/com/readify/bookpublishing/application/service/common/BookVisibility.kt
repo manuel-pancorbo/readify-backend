@@ -1,6 +1,6 @@
 package com.readify.bookpublishing.application.service.common
 
-import com.readify.bookpublishing.domain.book.Visibility
+import com.readify.shared.domain.book.Visibility
 
 enum class BookVisibility { NULL, RESTRICTED, VISIBLE;
 

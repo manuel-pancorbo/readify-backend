@@ -2,7 +2,8 @@ package com.readify.bookpublishing.domain.book
 
 import com.readify.bookpublishing.domain.book.CompletionPercentage.Companion.empty
 import com.readify.bookpublishing.domain.book.CompletionPercentage.Companion.finished
-import com.readify.bookpublishing.domain.book.Visibility.NULL
+import com.readify.shared.domain.book.Visibility
+import com.readify.shared.domain.book.Visibility.NULL
 import com.readify.shared.domain.clock.Clock
 import com.readify.shared.domain.event.RootAggregate
 import com.readify.shared.domain.money.Money

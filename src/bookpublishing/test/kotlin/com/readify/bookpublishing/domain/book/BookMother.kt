@@ -1,5 +1,6 @@
 package com.readify.bookpublishing.domain.book
 
+import com.readify.shared.domain.book.Visibility
 import com.readify.shared.domain.money.Currency
 import com.readify.shared.domain.money.Money
 

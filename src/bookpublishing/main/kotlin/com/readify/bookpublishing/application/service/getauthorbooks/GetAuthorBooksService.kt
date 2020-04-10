@@ -8,7 +8,7 @@ import com.readify.bookpublishing.domain.book.Book
 import com.readify.bookpublishing.domain.book.BookRepository
 import com.readify.bookpublishing.domain.book.FinishedBook
 import com.readify.bookpublishing.domain.book.InProgressBook
-import com.readify.bookpublishing.domain.book.Visibility
+import com.readify.shared.domain.book.Visibility
 
 class GetAuthorBooksService(private val bookRepository: BookRepository) {
     fun execute(request: GetAuthorBooksRequest) =

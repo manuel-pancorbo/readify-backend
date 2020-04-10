@@ -7,7 +7,6 @@ data class Title(val value: String)
 data class Summary(val value: String)
 data class Cover(val value: String)
 data class Tags(val value: List<String>)
-enum class Visibility { NULL, RESTRICTED, VISIBLE }
 data class CompletionPercentage(val value: Int) {
     init {
         if (value !in 0..100) throw CompletionPercentageOutOfRangeException

@@ -11,11 +11,11 @@ import com.readify.bookpublishing.domain.book.InProgressBook
 import com.readify.bookpublishing.domain.book.Summary
 import com.readify.bookpublishing.domain.book.Tags
 import com.readify.bookpublishing.domain.book.Title
-import com.readify.bookpublishing.domain.book.Visibility
 import com.readify.bookpublishing.infrastructure.jpa.bookpublishing.JpaBook
 import com.readify.bookpublishing.infrastructure.jpa.bookpublishing.JpaBookDataSource
 import com.readify.bookpublishing.infrastructure.jpa.bookpublishing.JpaBookStatus
 import com.readify.bookpublishing.infrastructure.jpa.bookpublishing.JpaBookVisibility
+import com.readify.shared.domain.book.Visibility
 import com.readify.shared.domain.clock.Clock
 import com.readify.shared.domain.money.Currency
 import com.readify.shared.domain.money.Money

@@ -14,7 +14,7 @@ import com.readify.bookpublishing.domain.book.Cover
 import com.readify.bookpublishing.domain.book.Summary
 import com.readify.bookpublishing.domain.book.Tags
 import com.readify.bookpublishing.domain.book.Title
-import com.readify.bookpublishing.domain.book.Visibility
+import com.readify.shared.domain.book.Visibility
 import com.readify.shared.domain.money.Currency
 import com.readify.shared.domain.money.Money
 import io.mockk.every
