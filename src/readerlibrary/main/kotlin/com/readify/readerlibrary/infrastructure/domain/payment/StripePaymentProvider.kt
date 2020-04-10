@@ -1,7 +1,5 @@
 package com.readify.readerlibrary.infrastructure.domain.payment
 
-import com.readify.readerlibrary.domain.book.Book
-import com.readify.readerlibrary.domain.chapter.Chapter
 import com.readify.readerlibrary.domain.payment.Payment
 import com.readify.readerlibrary.domain.payment.PaymentAttempt
 import com.readify.readerlibrary.domain.payment.PaymentId

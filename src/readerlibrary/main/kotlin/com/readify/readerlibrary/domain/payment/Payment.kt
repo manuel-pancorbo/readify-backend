@@ -25,6 +25,7 @@ data class ChapterPayment(
     override val startedAt: ZonedDateTime = Clock().now(), override val completedAt: ZonedDateTime? = null
 ) : Payment(id, readerId, status, amount, startedAt, completedAt)
 
+data class PaymentId(val value: String)
 enum class Status { PENDING, COMPLETED }
 data class ReaderId(val value: String) {
     init {

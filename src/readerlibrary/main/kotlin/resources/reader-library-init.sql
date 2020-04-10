@@ -30,3 +30,18 @@ CREATE TABLE readerlibrary.chapter
     excerpt       TEXT,
     PRIMARY KEY (id)
 );
+
+CREATE TABLE readerlibrary.payment
+(
+    id           VARCHAR(100) NOT NULL,
+    readerId     VARCHAR(36)  NOT NULL,
+    bookId       VARCHAR(36)  NOT NULL,
+    chapterId    VARCHAR(36),
+    status       VARCHAR(15),
+    type         VARCHAR(15),
+    amount       NUMERIC(6, 2),
+    currency     VARCHAR(4),
+    startedAt    timestamp,
+    completedAt  timestamp,
+    PRIMARY KEY (id)
+);

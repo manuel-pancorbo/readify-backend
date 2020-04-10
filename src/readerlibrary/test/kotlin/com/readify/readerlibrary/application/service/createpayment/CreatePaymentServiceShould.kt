@@ -11,7 +11,6 @@ import com.readify.readerlibrary.domain.chapter.ChapterRepository
 import com.readify.readerlibrary.domain.payment.BookPayment
 import com.readify.readerlibrary.domain.payment.ChapterPayment
 import com.readify.readerlibrary.domain.payment.PaymentAttempt
-import com.readify.readerlibrary.domain.payment.PaymentId
 import com.readify.readerlibrary.domain.payment.PaymentProvider
 import com.readify.readerlibrary.domain.payment.PaymentRepository
 import com.readify.readerlibrary.domain.payment.ReaderId
