@@ -30,3 +30,9 @@ spring.bookpublishing.driver-class-name: org.postgresql.Driver
 authentication:
   hmac256:
     secret: "secret"
+
+stripe:
+  domain: "http://localhost:4242"
+  success: "public/success.html?session_id={CHECKOUT_SESSION_ID}"
+  cancel: "public/canceled.html"
+  secretKey: "sk_test_Q5cwflC6COQRLAixERlNCOXg00JszEtqVH"

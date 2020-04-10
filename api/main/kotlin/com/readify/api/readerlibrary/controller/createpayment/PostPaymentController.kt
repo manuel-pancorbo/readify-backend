@@ -43,7 +43,7 @@ private fun CreatePaymentResponse.toHttpResponse() =
 
 data class PostPaymentHttpRequest(
     @JsonProperty("book") val bookId: String,
-    @JsonProperty("chapter") val chapterId: String
+    @JsonProperty("chapter") val chapterId: String?
 )
 
 data class PostPaymentHttpResponse(
