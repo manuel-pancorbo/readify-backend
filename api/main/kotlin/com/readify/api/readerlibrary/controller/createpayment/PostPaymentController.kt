@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/v1")
 class PostPaymentController(private val createPaymentService: CreatePaymentService) {
     @PostMapping("/readers/{readerId}/payments")
-    fun createBook(
+    fun createPayment(
         requester: Requester,
         @RequestBody request: PostPaymentHttpRequest,
         @PathVariable readerId: String
