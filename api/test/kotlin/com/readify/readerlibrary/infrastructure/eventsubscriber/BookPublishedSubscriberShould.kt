@@ -1,3 +1,0 @@
-package com.readify.readerlibrary.infrastructure.eventsubscriber
-
-internal class BookPublishedSubscriberShould
