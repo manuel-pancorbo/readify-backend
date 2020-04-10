@@ -11,19 +11,25 @@ import java.util.UUID
 sealed class Payment(
     open val id: PaymentId, open val readerId: ReaderId, open val status: Status, open val amount: Money,
     open val startedAt: ZonedDateTime, open val completedAt: ZonedDateTime?
-) : RootAggregate()
+) : RootAggregate() {
+    abstract fun complete(): Payment
+}
 
 data class BookPayment(
     override val id: PaymentId, override val readerId: ReaderId, override val status: Status,
     override val amount: Money, val bookId: BookId, override val startedAt: ZonedDateTime = Clock().now(),
     override val completedAt: ZonedDateTime? = null
-) : Payment(id, readerId, status, amount, startedAt, completedAt)
+) : Payment(id, readerId, status, amount, startedAt, completedAt) {
+    override fun complete() = copy(status = Status.COMPLETED, completedAt = Clock().now())
+}
 
 data class ChapterPayment(
     override val id: PaymentId, override val readerId: ReaderId, override val status: Status,
     override val amount: Money, val bookId: BookId, val chapterId: ChapterId,
     override val startedAt: ZonedDateTime = Clock().now(), override val completedAt: ZonedDateTime? = null
-) : Payment(id, readerId, status, amount, startedAt, completedAt)
+) : Payment(id, readerId, status, amount, startedAt, completedAt) {
+    override fun complete() = copy(status = Status.COMPLETED, completedAt = Clock().now())
+}
 
 data class PaymentId(val value: String)
 enum class Status { PENDING, COMPLETED }

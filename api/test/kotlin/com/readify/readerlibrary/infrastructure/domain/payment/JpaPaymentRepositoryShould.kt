@@ -44,4 +44,14 @@ class JpaPaymentRepositoryShould : IntegrationTest() {
         assertThat(actual.get().type).isEqualTo(JpaPaymentType.BOOK)
         assertThat(actual.get().status).isEqualTo(JpaPaymentStatus.PENDING)
     }
+
+    @Test
+    fun `find by id`() {
+        val payment = PaymentMother.pendingBookPayment("any-payment-id")
+        repository.save(payment)
+
+        val actual = repository.findById(payment.id)
+
+        assertThat(actual).isEqualTo(payment)
+    }
 }
