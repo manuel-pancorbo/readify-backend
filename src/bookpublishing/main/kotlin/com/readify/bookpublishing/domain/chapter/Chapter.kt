@@ -2,6 +2,7 @@ package com.readify.bookpublishing.domain.chapter
 
 import com.readify.bookpublishing.domain.book.AuthorId
 import com.readify.bookpublishing.domain.book.BookId
+import com.readify.shared.domain.chapter.Status
 import com.readify.shared.domain.clock.Clock
 import com.readify.shared.domain.event.RootAggregate
 import com.readify.shared.domain.event.book.ChapterCreated
@@ -26,8 +27,8 @@ sealed class Chapter(
                 ChapterId(UUID.randomUUID().toString()), title, content, price, authorId, bookId, Clock().now(), order,
                 excerpt
             )
-                .also { it.record(ChapterCreated(it.id.value, it.title.value, it.authorId.value, it.bookId.value,
-                    it.order.value, it.excerpt?.value)) }
+                .also { it.record(ChapterCreated(it.id.value, it.title.value, it.content.value, it.authorId.value,
+                    it.bookId.value, it.order.value, it.excerpt?.value, it.price)) }
     }
 }
 
@@ -47,8 +48,8 @@ data class DraftChapter(
             .also {
                 it.record(
                     ChapterUpdated(
-                        it.bookId.value, it.id.value, it.authorId.value, it.title.value,
-                        it.modifiedAt, it.order.value, it.excerpt?.value
+                        it.bookId.value, it.id.value, it.authorId.value, it.title.value, it.content.value,
+                        it.modifiedAt, it.order.value, it.excerpt?.value, it.price, Status.DRAFT, null
                     )
                 )
             }
@@ -56,7 +57,10 @@ data class DraftChapter(
     fun publish() = PublishedChapter(
         id, title, content, price, authorId, bookId, modifiedAt, order, excerpt, Clock().now()
     )
-        .also { it.record(ChapterPublished(it.id.value, it.publishedAt)) }
+        .also { it.record(ChapterPublished(
+            it.bookId.value, it.id.value, it.authorId.value, it.title.value, it.content.value, it.modifiedAt,
+            it.order.value, it.excerpt?.value, it.price, it.publishedAt
+        )) }
 }
 
 data class PublishedChapter(
@@ -75,8 +79,8 @@ data class PublishedChapter(
             .also {
                 it.record(
                     ChapterUpdated(
-                        it.bookId.value, it.id.value, it.authorId.value, it.title.value,
-                        it.modifiedAt, it.order.value, it.excerpt?.value
+                        it.bookId.value, it.id.value, it.authorId.value, it.title.value, it.content.value,
+                        it.modifiedAt, it.order.value, it.excerpt?.value, it.price, Status.PUBLISHED, it.publishedAt
                     )
                 )
             }

@@ -18,7 +18,7 @@ data class JpaChapter(
     val title: String,
     val content: String,
     val modifiedAt: Instant,
-    val publishedAt: Instant?,
+    val publishedAt: Instant,
     val priceAmount: Float,
     val priceCurrency: String,
     val chapterOrder: Int,

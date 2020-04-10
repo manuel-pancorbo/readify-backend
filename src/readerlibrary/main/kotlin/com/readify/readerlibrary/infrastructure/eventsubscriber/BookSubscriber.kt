@@ -17,7 +17,7 @@ import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Service
 
 @Service
-class BookPublishedSubscriber(private val bookRepository: BookRepository) {
+class BookSubscriber(private val bookRepository: BookRepository) {
     @EventListener
     fun on(event: BookCreated) =
         takeIf { event.visibility == Visibility.VISIBLE }
