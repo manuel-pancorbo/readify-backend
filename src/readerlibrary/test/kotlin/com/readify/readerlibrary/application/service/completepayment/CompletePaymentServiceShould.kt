@@ -5,6 +5,7 @@ import assertk.assertions.isEqualTo
 import com.readify.readerlibrary.domain.payment.PaymentId
 import com.readify.readerlibrary.domain.payment.PaymentMother
 import com.readify.readerlibrary.domain.payment.PaymentRepository
+import com.readify.shared.domain.event.bus.EventBus
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -13,7 +14,8 @@ import java.util.UUID
 
 class CompletePaymentServiceShould {
     private val paymentRepository: PaymentRepository = mockk(relaxed = true)
-    private val service = CompletePaymentService(paymentRepository)
+    private val eventBus: EventBus = mockk(relaxed = true)
+    private val service = CompletePaymentService(paymentRepository, eventBus)
 
     @Test
     fun `return payment not found when requested payment does not exists`() {
@@ -22,6 +24,7 @@ class CompletePaymentServiceShould {
         val response = service.execute(CompletePaymentRequest(readerId, paymentId))
 
         assertThat(response).isEqualTo(PaymentNotFoundResponse)
+        verify(exactly = 0) { eventBus.publish(any()) }
     }
 
     @Test
@@ -32,6 +35,7 @@ class CompletePaymentServiceShould {
 
         assertThat(response).isEqualTo(PaymentCompletedResponse)
         verify { paymentRepository.save(any()) }
+        verify(exactly = 1) { eventBus.publish(any()) }
     }
 
     companion object {
