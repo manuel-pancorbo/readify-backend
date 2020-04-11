@@ -20,19 +20,20 @@ import org.springframework.stereotype.Service
 class BookSubscriber(private val bookRepository: BookRepository) {
     @EventListener
     fun on(event: BookCreated) =
-        takeIf { event.visibility == Visibility.VISIBLE }
-            .let {
+        event
+            .takeIf { it.visibility == Visibility.VISIBLE }
+            ?.let {
                 bookRepository.save(
                     Book(
-                        BookId(event.id),
-                        AuthorId(event.authorId),
-                        Title(event.title),
-                        Cover(event.cover),
-                        Summary(event.summary),
-                        Tags(event.tags),
-                        event.price,
-                        CompletionPercentage(event.completionPercentage),
-                        event.status,
+                        BookId(it.id),
+                        AuthorId(it.authorId),
+                        Title(it.title),
+                        Cover(it.cover),
+                        Summary(it.summary),
+                        Tags(it.tags),
+                        it.price,
+                        CompletionPercentage(it.completionPercentage),
+                        it.status,
                         null
                     )
                 )
@@ -40,40 +41,42 @@ class BookSubscriber(private val bookRepository: BookRepository) {
 
     @EventListener
     fun on(event: BookFinished) =
-        takeIf { event.visibility == Visibility.VISIBLE }
-            .let {
+        event
+            .takeIf { it.visibility == Visibility.VISIBLE }
+            ?.let {
                 bookRepository.save(
                     Book(
-                        BookId(event.id),
-                        AuthorId(event.authorId),
-                        Title(event.title),
-                        Cover(event.cover),
-                        Summary(event.summary),
-                        Tags(event.tags),
-                        event.price,
-                        CompletionPercentage(event.completionPercentage),
-                        event.status,
-                        event.finishedAt
+                        BookId(it.id),
+                        AuthorId(it.authorId),
+                        Title(it.title),
+                        Cover(it.cover),
+                        Summary(it.summary),
+                        Tags(it.tags),
+                        it.price,
+                        CompletionPercentage(it.completionPercentage),
+                        it.status,
+                        it.finishedAt
                     )
                 )
             }
 
     @EventListener
     fun on(event: BookUpdated) =
-        takeIf { event.visibility == Visibility.VISIBLE }
-            .let {
+        event
+            .takeIf { it.visibility == Visibility.VISIBLE }
+            ?.let {
                 bookRepository.save(
                     Book(
-                        BookId(event.id),
-                        AuthorId(event.authorId),
-                        Title(event.title),
-                        Cover(event.cover),
-                        Summary(event.summary),
-                        Tags(event.tags),
-                        event.price,
-                        CompletionPercentage(event.completionPercentage),
-                        event.status,
-                        event.finishedAt
+                        BookId(it.id),
+                        AuthorId(it.authorId),
+                        Title(it.title),
+                        Cover(it.cover),
+                        Summary(it.summary),
+                        Tags(it.tags),
+                        it.price,
+                        CompletionPercentage(it.completionPercentage),
+                        it.status,
+                        it.finishedAt
                     )
                 )
             }
