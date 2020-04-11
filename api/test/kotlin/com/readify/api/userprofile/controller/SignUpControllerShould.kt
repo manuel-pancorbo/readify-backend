@@ -10,9 +10,7 @@ import io.mockk.every
 import io.restassured.RestAssured.given
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.CoreMatchers.equalTo
-import org.hamcrest.CoreMatchers.notNullValue
 import org.junit.jupiter.api.Test
-import java.util.UUID
 
 class SignUpControllerShould : ContractTest() {
     @MockkBean(relaxed = true)
@@ -20,9 +18,7 @@ class SignUpControllerShould : ContractTest() {
 
     @Test
     fun `returns http ok after create an user`() {
-        val anyId = UUID.randomUUID().toString()
-        val response = SignUpResponse(anyId, "manuel.pancorbo", "manuelpancorbo90@gmail.com")
-        every { signUpService.execute(any()) } returns response
+        every { signUpService.execute(any()) } returns SignUpResponse
 
         given()
             .`when`()
@@ -32,15 +28,13 @@ class SignUpControllerShould : ContractTest() {
                 """{
                             "username": "manuel.pancorbo",
                             "email": "manuelpancorbo90@gmail.com",
-                            "password": "dummy-password"
+                            "password": "dummy-password",
+                            "fullName": "J.K. Rowling"
                         }"""
             )
             .post("/v1/users")
             .then()
             .statusCode(200)
-            .body("userId", notNullValue())
-            .body("username", equalTo("manuel.pancorbo"))
-            .body("email", equalTo("manuelpancorbo90@gmail.com"))
     }
 
     @Test
@@ -55,7 +49,8 @@ class SignUpControllerShould : ContractTest() {
                 """{
                             "username": "manuel.pancorbo",
                             "email": "manuel.pancorbo@gmail.com",
-                            "password": "dummy-password"
+                            "password": "dummy-password",
+                            "fullName": "J.K. Rowling" 
                         }"""
             )
             .post("/v1/users")
@@ -78,7 +73,8 @@ class SignUpControllerShould : ContractTest() {
                 """{
                             "username": "manuel.pancorbo",
                             "email": "manuel.pancorbo@gmail.com",
-                            "password": "dummy-password"
+                            "password": "dummy-password",
+                            "fullName": "J.K. Rowling" 
                         }"""
             )
             .post("/v1/users")

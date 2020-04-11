@@ -8,6 +8,9 @@ class UserFactory(private val userRepository: UserRepository, private val eventB
     fun create(
         username: Username,
         email: Email,
+        fullName: FullName,
+        image: Image?,
+        website: Website?,
         plainPassword: PlainPassword
     ): User {
         userRepository.findByUsername(username.value)
@@ -16,7 +19,7 @@ class UserFactory(private val userRepository: UserRepository, private val eventB
         userRepository.findByEmail(email.value)
             ?.let { throw EmailAlreadyRegisteredException(email.value) }
 
-        return User.create(newUserId(), username, email, plainPassword)
+        return User.create(newUserId(), username, email, fullName, image, website, plainPassword)
             .also { eventBus.publish(it.pullDomainEvents()) }
     }
 

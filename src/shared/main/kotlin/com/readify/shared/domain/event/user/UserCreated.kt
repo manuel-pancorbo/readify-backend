@@ -7,5 +7,6 @@ data class UserCreated(
     val userId: String,
     val username: String,
     val email: String,
+    val fullName: String,
     override val occurredOn: LocalDateTime = LocalDateTime.now()
 ) : DomainEvent(occurredOn)

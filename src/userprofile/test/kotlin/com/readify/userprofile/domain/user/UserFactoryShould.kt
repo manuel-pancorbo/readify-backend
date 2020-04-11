@@ -23,12 +23,16 @@ class UserFactoryShould {
     @Test
     fun `throw exception whenever username already exists`() {
         every { userRepository.findByUsername("manuel.pancorbo") }
-            .returns(User(anyId(), Username("manuel.pancorbo"), Email("whatever@gmail.com")))
+            .returns(User(anyId(), Username("manuel.pancorbo"), Email("whatever@gmail.com"),
+                FullName("Manuel Pancorbo"), Image("any image"), Website("https://manuel.pancorbo")))
 
         assertThat {
             userFactory.create(
                 Username("manuel.pancorbo"),
                 Email("manuel.pancorbo@gmail.com"),
+                FullName("Manuel Pancorbo"),
+                Image("any image"),
+                Website("https://manuel.pancorbo"),
                 PlainPassword("123456")
             )
         }
@@ -41,12 +45,18 @@ class UserFactoryShould {
         every { userRepository.findByUsername("manuel.pancorbo") }
             .returns(null)
         every { userRepository.findByEmail("manuel.pancorbo@gmail.com") }
-            .returns(User(anyId(), Username("whatever"), Email("manuel.pancorbo@gmail.com")))
+            .returns(User(anyId(), Username("whatever"), Email("manuel.pancorbo@gmail.com"),
+                FullName("Manuel Pancorbo"),
+                Image("any image"),
+                Website("https://manuel.pancorbo")))
 
         assertThat {
             userFactory.create(
                 Username("manuel.pancorbo"),
                 Email("manuel.pancorbo@gmail.com"),
+                FullName("Manuel Pancorbo"),
+                Image("any image"),
+                Website("https://manuel.pancorbo"),
                 PlainPassword("123456")
             )
         }
@@ -64,6 +74,9 @@ class UserFactoryShould {
         val user = userFactory.create(
             Username("manuel.pancorbo"),
             Email("manuel.pancorbo@gmail.com"),
+            FullName("Manuel Pancorbo"),
+            Image("any image"),
+            Website("https://manuel.pancorbo"),
             PlainPassword("123456")
         )
 

@@ -15,7 +15,8 @@ class UserShould {
     @Test
     fun `user should record a usercreated domain event`() {
         val anyId = UUID.randomUUID().toString()
-        val user = User.create(UserId(anyId), Username("manu"), Email("manu@gmail.com"), PlainPassword("123456"))
+        val user = User.create(UserId(anyId), Username("manu"), Email("manu@gmail.com"), FullName("Manuel Pancorbo"),
+            Image("any image"), Website("https://manuel.pancorbo"), PlainPassword("123456"))
 
         assertThat(user.pullDomainEvents()[0]).isInstanceOf(UserCreated::class.java)
         assertThat(user.pullDomainEvents()[0].occurredOn).isNotNull()
@@ -27,12 +28,8 @@ class UserShould {
     @Test
     fun `user should record a plain user credentials domain event`() {
         val anyId = UUID.randomUUID().toString()
-        val user = User.create(
-            UserId(anyId),
-            Username("manu"),
-            Email("manu@gmail.com"),
-            PlainPassword("123456")
-        )
+        val user = User.create(UserId(anyId), Username("manu"), Email("manu@gmail.com"), FullName("Manuel Pancorbo"),
+            Image("any image"), Website("https://manuel.pancorbo"), PlainPassword("123456"))
 
         assertThat(user.pullDomainEvents()[1]).isInstanceOf(PlainUserCredentialsCreated::class.java)
         assertThat(user.pullDomainEvents()[1].occurredOn).isNotNull()
@@ -45,7 +42,8 @@ class UserShould {
     @Test
     internal fun `default constructor does not record any domain event`() {
         val anyId = UUID.randomUUID().toString()
-        val user = User(UserId(anyId), Username("manu"), Email("manu@gmail.com"), PlainPassword("123456"))
+        val user = User(UserId(anyId), Username("manu"), Email("manu@gmail.com"), FullName("Manuel Pancorbo"),
+            Image("any image"), Website("https://manuel.pancorbo"), PlainPassword("123456"))
 
         assertThat(user.pullDomainEvents()).isEmpty()
     }

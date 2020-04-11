@@ -13,23 +13,18 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/v1")
 class SignUpController(private val signUpService: SignUpService) {
     @PostMapping("/users")
-    fun signUp(@RequestBody body: SignUpHttpRequest): ResponseEntity<SignUpHttpResponse> =
-        signUpService.execute(SignUpRequest(body.username, body.email, body.password))
-            .let {
-                ResponseEntity.ok(
-                    SignUpHttpResponse(it.id, it.username, it.email)
-                )
-            }
+    fun signUp(@RequestBody body: SignUpHttpRequest): ResponseEntity<Nothing> =
+        signUpService.execute(
+            SignUpRequest(body.username, body.email, body.password, body.fullName, body.image, body.website)
+        )
+            .let { ResponseEntity.ok().build() }
 }
 
 data class SignUpHttpRequest(
-    @JsonProperty("username") val username: String = "",
-    @JsonProperty("email") val email: String = "",
-    @JsonProperty("password") val password: String = ""
-)
-
-data class SignUpHttpResponse(
-    @JsonProperty("id") val userId: String,
     @JsonProperty("username") val username: String,
-    @JsonProperty("email") val email: String
+    @JsonProperty("email") val email: String,
+    @JsonProperty("password") val password: String,
+    @JsonProperty("fullName") val fullName: String,
+    @JsonProperty("image") val image: String?,
+    @JsonProperty("website") val website: String?
 )

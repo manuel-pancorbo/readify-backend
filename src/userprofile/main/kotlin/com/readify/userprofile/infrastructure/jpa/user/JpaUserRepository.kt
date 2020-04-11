@@ -4,9 +4,8 @@ import com.readify.userprofile.domain.user.User
 import com.readify.userprofile.domain.user.UserRepository
 
 class JpaUserRepository(private val jpaJpaUserDataSource: JpaUserDataSource): UserRepository {
-    override fun save(user: User): User {
+    override fun save(user: User) {
         jpaJpaUserDataSource.save(user.toJpa())
-        return user
     }
 
     override fun findByUsername(username: String): User? =
@@ -16,4 +15,4 @@ class JpaUserRepository(private val jpaJpaUserDataSource: JpaUserDataSource): Us
         jpaJpaUserDataSource.findByEmail(email)?.toDomain()
 }
 
-private fun User.toJpa() = JpaUser(id.value, username.value, email.value)
+private fun User.toJpa() = JpaUser(id.value, username.value, email.value, fullName.value, image?.value, website?.value)
