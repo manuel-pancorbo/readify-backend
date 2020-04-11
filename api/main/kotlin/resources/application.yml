@@ -36,3 +36,5 @@ stripe:
   success: "public/success.html?session_id={CHECKOUT_SESSION_ID}"
   cancel: "public/canceled.html"
   secretKey: "sk_test_Q5cwflC6COQRLAixERlNCOXg00JszEtqVH"
+
+management.endpoints.web.exposure.include: httptrace
