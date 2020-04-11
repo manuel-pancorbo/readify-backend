@@ -30,11 +30,11 @@ class ChapterSubscriber(private val chapterRepository: ChapterRepository) {
 
     @EventListener
     fun on(event: ChapterUpdated) {
-        takeIf { event.status == Status.PUBLISHED }
-            .let { chapterRepository.save(Chapter(
-                ChapterId(event.id), Title(event.title), Content(event.content), event.price, AuthorId(event.authorId),
-                BookId(event.bookId), event.modifiedAt, Order(event.order), event.excerpt?.let { Excerpt(it) },
-                event.publishedAt!!
+        event.takeIf { event.status == Status.PUBLISHED }
+            ?.let { chapterRepository.save(Chapter(
+                ChapterId(it.id), Title(it.title), Content(it.content), it.price, AuthorId(it.authorId),
+                BookId(it.bookId), it.modifiedAt, Order(it.order), it.excerpt?.let { Excerpt(it) },
+                it.publishedAt!!
             )) }
     }
 }
