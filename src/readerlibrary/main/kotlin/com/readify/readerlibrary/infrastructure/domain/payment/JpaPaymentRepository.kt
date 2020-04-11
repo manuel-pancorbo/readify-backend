@@ -22,7 +22,7 @@ class JpaPaymentRepository(private val jpaPaymentDataSource: ReaderLibraryJpaPay
         jpaPaymentDataSource.save(payment.toJpa())
     }
 
-    override fun findById(paymentId: PaymentId) =
+    override fun findById(paymentId: PaymentId): Payment? =
         jpaPaymentDataSource.findById(paymentId.value)
             .map { it.toDomain() }
             .orElse(null)

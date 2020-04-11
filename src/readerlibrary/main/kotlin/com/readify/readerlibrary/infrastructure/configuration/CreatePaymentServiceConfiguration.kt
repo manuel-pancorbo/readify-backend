@@ -3,7 +3,6 @@ package com.readify.readerlibrary.infrastructure.configuration
 import com.readify.readerlibrary.application.service.createpayment.CreatePaymentService
 import com.readify.readerlibrary.domain.book.BookRepository
 import com.readify.readerlibrary.domain.chapter.ChapterRepository
-import com.readify.readerlibrary.domain.payment.Payment
 import com.readify.readerlibrary.domain.payment.PaymentProvider
 import com.readify.readerlibrary.domain.payment.PaymentRepository
 import com.readify.readerlibrary.infrastructure.domain.payment.JpaPaymentRepository
@@ -39,5 +38,6 @@ class CreatePaymentServiceConfiguration {
     fun paymentFactory() = PaymentFactory()
 
     @Bean
-    fun paymentRepository(dataSource: ReaderLibraryJpaPaymentDataSource) = JpaPaymentRepository(dataSource)
+    fun paymentRepository(dataSource: ReaderLibraryJpaPaymentDataSource) =
+        JpaPaymentRepository(dataSource)
 }
