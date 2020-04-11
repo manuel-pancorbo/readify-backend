@@ -9,6 +9,7 @@ import com.readify.readerlibrary.domain.readerlibrary.LibraryPartialBook
 import com.readify.readerlibrary.domain.readerlibrary.LibraryWholeBook
 import com.readify.readerlibrary.domain.readerlibrary.ReaderLibrary
 import com.readify.readerlibrary.domain.readerlibrary.ReaderLibraryRepository
+import com.readify.shared.domain.event.bus.EventBus
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -17,7 +18,8 @@ import java.util.UUID
 
 class AddBookToReaderLibraryServiceShould {
     private val readerLibraryRepository: ReaderLibraryRepository = mockk(relaxed = true)
-    private val service = AddBookToReaderLibraryService(readerLibraryRepository)
+    private val eventBus: EventBus = mockk(relaxed = true)
+    private val service = AddBookToReaderLibraryService(readerLibraryRepository, eventBus)
 
     @Test
     fun `add first book to an empty library`() {
@@ -31,6 +33,7 @@ class AddBookToReaderLibraryServiceShould {
 
         assertThat(response).isEqualTo(AddBookToReaderLibraryResponse)
         verify { readerLibraryRepository.save(expectedLibrary) }
+        verify { eventBus.publish(any()) }
     }
 
     @Test
@@ -49,6 +52,7 @@ class AddBookToReaderLibraryServiceShould {
 
         assertThat(response).isEqualTo(AddBookToReaderLibraryResponse)
         verify { readerLibraryRepository.save(expectedLibrary) }
+        verify { eventBus.publish(any()) }
     }
 
     companion object {

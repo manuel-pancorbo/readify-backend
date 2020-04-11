@@ -4,6 +4,7 @@ import com.readify.readerlibrary.domain.book.BookId
 import com.readify.readerlibrary.domain.chapter.ChapterId
 import com.readify.readerlibrary.domain.payment.ReaderId
 import com.readify.shared.domain.event.RootAggregate
+import com.readify.shared.domain.event.userlibrary.BookWasBoughtByReader
 
 data class ReaderLibrary(val readerId: ReaderId, val library: Map<BookId, LibraryBook>) : RootAggregate() {
     fun add(book: LibraryWholeBook) =
@@ -11,7 +12,7 @@ data class ReaderLibrary(val readerId: ReaderId, val library: Map<BookId, Librar
             is LibraryWholeBook -> throw IllegalArgumentException()
             is LibraryPartialBook -> copy(library = library.plus(existentBook.bookId to existentBook.complete()))
             null -> copy(library = library.plus(book.bookId to book))
-        }
+        }.also { it.record(BookWasBoughtByReader(it.readerId.value, book.bookId.value)) }
 
     fun add(book: LibraryPartialBook) =
         when (val existentBook = library[book.bookId]) {
