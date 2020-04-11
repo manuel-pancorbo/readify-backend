@@ -26,6 +26,11 @@ class JpaPaymentRepository(private val jpaPaymentDataSource: ReaderLibraryJpaPay
         jpaPaymentDataSource.findById(paymentId.value)
             .map { it.toDomain() }
             .orElse(null)
+
+    override fun findCompletedByReaderId(readerId: ReaderId) =
+        jpaPaymentDataSource
+            .findByStatusAndReaderIdOrderByCompletedAtDesc(JpaPaymentStatus.COMPLETED, readerId.value)
+            .map { it.toDomain() }
 }
 
 private fun JpaPayment.toDomain() =

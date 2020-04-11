@@ -10,7 +10,9 @@ import javax.persistence.Enumerated
 import javax.persistence.Id
 import javax.persistence.Table
 
-interface ReaderLibraryJpaPaymentDataSource : JpaRepository<JpaPayment, String>
+interface ReaderLibraryJpaPaymentDataSource : JpaRepository<JpaPayment, String> {
+    fun findByStatusAndReaderIdOrderByCompletedAtDesc(status: JpaPaymentStatus, readerId: String): List<JpaPayment>
+}
 
 @Entity
 @Table(name = "payment", schema = "readerlibrary")
