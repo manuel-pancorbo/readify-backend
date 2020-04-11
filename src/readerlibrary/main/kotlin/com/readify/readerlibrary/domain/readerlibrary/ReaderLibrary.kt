@@ -5,21 +5,22 @@ import com.readify.readerlibrary.domain.chapter.ChapterId
 import com.readify.readerlibrary.domain.payment.ReaderId
 import com.readify.shared.domain.event.RootAggregate
 import com.readify.shared.domain.event.userlibrary.BookWasBoughtByReader
+import com.readify.shared.domain.event.userlibrary.ChapterWasBoughtByReader
 
 data class ReaderLibrary(val readerId: ReaderId, val library: Map<BookId, LibraryBook>) : RootAggregate() {
-    fun add(book: LibraryWholeBook) =
-        when (val existentBook = library[book.bookId]) {
+    fun add(bookId: BookId) =
+        when (val existentBook = library[bookId]) {
             is LibraryWholeBook -> throw IllegalArgumentException()
             is LibraryPartialBook -> copy(library = library.plus(existentBook.bookId to existentBook.complete()))
-            null -> copy(library = library.plus(book.bookId to book))
-        }.also { it.record(BookWasBoughtByReader(it.readerId.value, book.bookId.value)) }
+            null -> copy(library = library.plus(bookId to LibraryWholeBook(bookId)))
+        }.also { it.record(BookWasBoughtByReader(it.readerId.value, bookId.value)) }
 
-    fun add(book: LibraryPartialBook) =
-        when (val existentBook = library[book.bookId]) {
+    fun add(bookId: BookId, chapterId: ChapterId) =
+        when (val existentBook = library[bookId]) {
             is LibraryWholeBook -> throw IllegalArgumentException()
-            is LibraryPartialBook -> copy(library = library.plus(existentBook.bookId to existentBook.addChapter(book.chapters)))
-            null -> copy(library = library.plus(book.bookId to book))
-        }
+            is LibraryPartialBook -> copy(library = library.plus(existentBook.bookId to existentBook.addChapter(chapterId)))
+            null -> copy(library = library.plus(bookId to LibraryPartialBook(bookId, listOf(chapterId))))
+        }.also { it.record(ChapterWasBoughtByReader(it.readerId.value, bookId.value, chapterId.value)) }
 
     companion object {
         fun create(readerId: ReaderId) = ReaderLibrary(readerId, emptyMap())
@@ -30,5 +31,5 @@ sealed class LibraryBook(open val id: BookId)
 data class LibraryWholeBook(val bookId: BookId) : LibraryBook(bookId)
 data class LibraryPartialBook(val bookId: BookId, val chapters: List<ChapterId>) : LibraryBook(bookId) {
     fun complete() = LibraryWholeBook(bookId)
-    fun addChapter(chapters: List<ChapterId>) = copy(chapters = chapters.plus(chapters))
+    fun addChapter(chapterId: ChapterId) = copy(chapters = chapters.plus(chapterId))
 }
