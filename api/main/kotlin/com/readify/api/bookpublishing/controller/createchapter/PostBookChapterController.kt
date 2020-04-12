@@ -24,17 +24,22 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/v1")
 class PostBookChapterController(private val createChapterService: CreateChapterService) {
-    @PostMapping("/books/{bookId}/chapters")
+    @PostMapping("/authors/{authorId}/books/{bookId}/chapters")
     fun createBook(
         @RequestBody httpRequest: PostBookChapterHttpRequest,
         @PathVariable bookId: String,
+        @PathVariable authorId: String,
         requester: Requester
     ): ResponseEntity<out Any> =
         when (requester) {
             is AnonymousUser -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
-            is LoggedUser -> createChapterService
-                .execute(httpRequest.toServiceRequest(requester, bookId))
-                .toHttpResponse()
+            is LoggedUser ->
+                if (requester.id != authorId)
+                    ResponseEntity.notFound().build()
+                else
+                    createChapterService
+                        .execute(httpRequest.toServiceRequest(requester, bookId))
+                        .toHttpResponse()
         }
 }
 
@@ -48,7 +53,7 @@ private fun CreateChapterResponse.toHttpResponse() =
             )
         )
         InvalidCurrencyResponse -> ResponseEntity.badRequest()
-            .body(HttpErrorResponse("bookpublishing.currency_not_supported","Currency not supported", "price"))
+            .body(HttpErrorResponse("bookpublishing.currency_not_supported", "Currency not supported", "price"))
     }
 
 private fun PostBookChapterHttpRequest.toServiceRequest(requester: LoggedUser, bookId: String) =

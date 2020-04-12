@@ -4,7 +4,9 @@ server:
     enabled: true
     mime-types: application/json
 
-spring.jpa.database: postgresql
+spring:
+  jpa.database: postgresql
+  profiles.active: dev
 
 # User Profile Database
 spring.datasource.jdbcUrl: jdbc:postgresql://localhost:5432/postgres?currentSchema=userprofiles

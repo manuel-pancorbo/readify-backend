@@ -13,17 +13,22 @@ import com.readify.bookpublishing.application.service.getauthorbooks.GetAuthorBo
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/v1")
 class GetAuthorBooksController(private val service: GetAuthorBooksService) {
-    @GetMapping("/books")
-    fun getBook(requester: Requester): ResponseEntity<out Any> =
+    @GetMapping("/authors/{authorId}/books")
+    fun getBook(requester: Requester, @PathVariable authorId: String): ResponseEntity<out Any> =
         when (requester) {
             is AnonymousUser -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
-            is LoggedUser -> service.execute(GetAuthorBooksRequest(requester.id)).toHttpResponse()
+            is LoggedUser ->
+                if (requester.id != authorId)
+                    ResponseEntity.notFound().build()
+                else
+                    service.execute(GetAuthorBooksRequest(requester.id)).toHttpResponse()
         }
 }
 
@@ -31,7 +36,9 @@ private fun GetAuthorBooksResponse.toHttpResponse() =
     ResponseEntity.ok(HttpAuthorBooksResponse(books.map { it.toHttpResponse() }))
 
 private fun BookResponse.toHttpResponse() =
-    HttpBookResponse(bookId, authorId, title, summary, cover, tags, HttpMoney(priceAmount, priceCurrency),
-        status.toString().toLowerCase(), visibility.toString().toLowerCase(), completionPercentage, finishedAt)
+    HttpBookResponse(
+        bookId, authorId, title, summary, cover, tags, HttpMoney(priceAmount, priceCurrency),
+        status.toString().toLowerCase(), visibility.toString().toLowerCase(), completionPercentage, finishedAt
+    )
 
 data class HttpAuthorBooksResponse(@JsonProperty("books") val books: List<HttpBookResponse>)

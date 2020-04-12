@@ -20,11 +20,19 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/v1")
 class GetBookController(private val service: GetBookService) {
-    @GetMapping("/books/{bookId}")
-    fun getBook(requester: Requester, @PathVariable bookId: String): ResponseEntity<out Any> =
+    @GetMapping("/authors/{authorId}/books/{bookId}")
+    fun getBook(
+        requester: Requester,
+        @PathVariable bookId: String,
+        @PathVariable authorId: String
+    ): ResponseEntity<out Any> =
         when (requester) {
             is AnonymousUser -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
-            is LoggedUser -> service.execute(GetBookRequest(requester.id, bookId)).toHttpResponse()
+            is LoggedUser ->
+                if (requester.id != authorId)
+                    ResponseEntity.notFound().build()
+                else
+                    service.execute(GetBookRequest(requester.id, bookId)).toHttpResponse()
         }
 }
 

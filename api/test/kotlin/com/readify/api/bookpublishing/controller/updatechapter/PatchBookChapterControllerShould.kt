@@ -30,7 +30,7 @@ class PatchBookChapterControllerShould : ContractTest() {
             .contentType("application/json")
             .and()
             .body(updateBookChapterBody())
-            .patch("/v1/books/$ANY_BOOK_ID/chapters/$ANY_CHAPTER_ID")
+            .patch("/v1/authors/$ANY_AUTHOR_ID/books/$ANY_BOOK_ID/chapters/$ANY_CHAPTER_ID")
             .then()
             .statusCode(401)
     }
@@ -48,7 +48,7 @@ class PatchBookChapterControllerShould : ContractTest() {
             .header("Authorization", "Bearer anytoken")
             .and()
             .body(updateBookChapterBody())
-            .patch("/v1/books/${ANY_BOOK_ID}/chapters/$ANY_CHAPTER_ID")
+            .patch("/v1/authors/$ANY_AUTHOR_ID/books/${ANY_BOOK_ID}/chapters/$ANY_CHAPTER_ID")
             .then()
             .statusCode(404)
     }
@@ -66,7 +66,24 @@ class PatchBookChapterControllerShould : ContractTest() {
             .header("Authorization", "Bearer anytoken")
             .and()
             .body(updateBookChapterBody())
-            .patch("/v1/books/${ANY_BOOK_ID}/chapters/$ANY_CHAPTER_ID")
+            .patch("/v1/authors/$ANY_AUTHOR_ID/books/${ANY_BOOK_ID}/chapters/$ANY_CHAPTER_ID")
+            .then()
+            .statusCode(404)
+    }
+
+    @Test
+    fun `returns 404 when requester is not the resource author`() {
+        every { verifyAccessTokenService.execute(VerifyAccessTokenRequest("anytoken")) }
+            .returns(VerifyAccessTokenResponse(ANOTHER_AUTHOR_ID, "jkrowling", "jkrowling@gmail.com"))
+
+        RestAssured.given()
+            .`when`()
+            .contentType("application/json")
+            .and()
+            .header("Authorization", "Bearer anytoken")
+            .and()
+            .body(updateBookChapterBody())
+            .patch("/v1/authors/$ANY_AUTHOR_ID/books/${ANY_BOOK_ID}/chapters/$ANY_CHAPTER_ID")
             .then()
             .statusCode(404)
     }
@@ -85,7 +102,7 @@ class PatchBookChapterControllerShould : ContractTest() {
             .header("Authorization", "Bearer anytoken")
             .and()
             .body(updateBookChapterBody(status = "draft"))
-            .patch("/v1/books/${ANY_BOOK_ID}/chapters/$ANY_CHAPTER_ID")
+            .patch("/v1/authors/$ANY_AUTHOR_ID/books/${ANY_BOOK_ID}/chapters/$ANY_CHAPTER_ID")
             .then()
             .statusCode(400)
             .body("code", equalTo("bookpublishing.chapter.invalid-status"))
@@ -108,7 +125,7 @@ class PatchBookChapterControllerShould : ContractTest() {
             .header("Authorization", "Bearer anytoken")
             .and()
             .body(updateBookChapterBody())
-            .patch("/v1/books/${ANY_BOOK_ID}/chapters/$ANY_CHAPTER_ID")
+            .patch("/v1/authors/$ANY_AUTHOR_ID/books/${ANY_BOOK_ID}/chapters/$ANY_CHAPTER_ID")
             .then()
             .statusCode(200)
             .body("id", equalTo(serviceResponse.id))
@@ -141,6 +158,7 @@ class PatchBookChapterControllerShould : ContractTest() {
         private const val ANY_BOOK_ID = "66f86298-bb74-4496-913e-ebc3dc451f1b"
         private const val ANY_CHAPTER_ID = "9e4af2a5-5fdc-4933-b546-4610004f068f"
         private const val ANY_AUTHOR_ID = "0959893a-88cf-465e-b792-43edd8b69e0e"
+        private const val ANOTHER_AUTHOR_ID = "f37ced65-0a2e-4c0c-937c-0980c5b97548"
         private const val NEW_TITLE = "new chapter title"
         private const val NEW_CONTENT = "new chapter content"
         private const val NEW_ORDER = 5

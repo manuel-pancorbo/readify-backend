@@ -3,6 +3,7 @@ package com.readify.search.infrastructure.domain.book
 import io.searchbox.client.JestClient
 import io.searchbox.indices.template.PutTemplate
 import mu.KotlinLogging
+import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 import java.io.IOException
 import java.nio.charset.StandardCharsets
@@ -11,6 +12,7 @@ import javax.annotation.PostConstruct
 
 private val logger = KotlinLogging.logger {}
 
+@Profile("!contract-test")
 @Component
 class ElasticSearchBookIndexTemplateInitializer(val client: JestClient) {
     @PostConstruct

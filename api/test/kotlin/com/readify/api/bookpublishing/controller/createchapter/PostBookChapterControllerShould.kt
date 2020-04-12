@@ -15,6 +15,7 @@ import io.restassured.RestAssured
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.jupiter.api.Test
 import java.time.format.DateTimeFormatter
+import java.util.UUID
 
 class PostBookChapterControllerShould : ContractTest() {
     @MockkBean
@@ -30,7 +31,22 @@ class PostBookChapterControllerShould : ContractTest() {
             .contentType("application/json")
             .and()
             .body(chapterBody(ChapterHttpRequestMother().validOne()))
-            .post("/v1/books/$bookId/chapters")
+            .post("/v1/authors/$authorId/books/$bookId/chapters")
+            .then()
+            .statusCode(401)
+    }
+
+    @Test
+    fun `returns not found when requester is not the author of the resource`() {
+        every { verifyAccessTokenService.execute(VerifyAccessTokenRequest("anytoken")) }
+            .returns(VerifyAccessTokenResponse(anotherAuthorId, "jkrowling", "jkrowling@gmail.com"))
+
+        RestAssured.given()
+            .`when`()
+            .contentType("application/json")
+            .and()
+            .body(chapterBody(ChapterHttpRequestMother().validOne()))
+            .post("/v1/authors/$authorId/books/$bookId/chapters")
             .then()
             .statusCode(401)
     }
@@ -39,9 +55,9 @@ class PostBookChapterControllerShould : ContractTest() {
     fun `return 404 when the requested book does not exists`() {
         val validRequest = ChapterHttpRequestMother().validOne()
         val serviceRequest =
-            CreateChapterRequestMother().validOne("any-author-id", bookId)
+            CreateChapterRequestMother().validOne(authorId, bookId)
         every { verifyAccessTokenService.execute(VerifyAccessTokenRequest("anytoken")) }
-            .returns(VerifyAccessTokenResponse("any-author-id", "jkrowling", "jkrowling@gmail.com"))
+            .returns(VerifyAccessTokenResponse(authorId, "jkrowling", "jkrowling@gmail.com"))
         every { createChapterService.execute(any()) } returns BookNotFoundResponse
 
         RestAssured.given()
@@ -51,7 +67,7 @@ class PostBookChapterControllerShould : ContractTest() {
             .header("Authorization", "Bearer anytoken")
             .and()
             .body(chapterBody(validRequest))
-            .post("/v1/books/$bookId/chapters")
+            .post("/v1/authors/$authorId/books/$bookId/chapters")
             .then()
             .statusCode(404)
 
@@ -62,9 +78,9 @@ class PostBookChapterControllerShould : ContractTest() {
     fun `return 404 when the requested book does not belong to requester author`() {
         val validRequest = ChapterHttpRequestMother().validOne()
         val serviceRequest =
-            CreateChapterRequestMother().validOne("any-author-id", bookId)
+            CreateChapterRequestMother().validOne(authorId, bookId)
         every { verifyAccessTokenService.execute(VerifyAccessTokenRequest("anytoken")) }
-            .returns(VerifyAccessTokenResponse("any-author-id", "jkrowling", "jkrowling@gmail.com"))
+            .returns(VerifyAccessTokenResponse(authorId, "jkrowling", "jkrowling@gmail.com"))
         every { createChapterService.execute(any()) } returns BookNotBelongToAuthorResponse
 
         RestAssured.given()
@@ -74,7 +90,7 @@ class PostBookChapterControllerShould : ContractTest() {
             .header("Authorization", "Bearer anytoken")
             .and()
             .body(chapterBody(validRequest))
-            .post("/v1/books/$bookId/chapters")
+            .post("/v1/authors/$authorId/books/$bookId/chapters")
             .then()
             .statusCode(404)
 
@@ -84,10 +100,10 @@ class PostBookChapterControllerShould : ContractTest() {
     @Test
     fun `return ok when chapter is created successfully`() {
         val validRequest = ChapterHttpRequestMother().validOne()
-        val serviceRequest = CreateChapterRequestMother().validOne("any-author-id", bookId)
-        val serviceResponse = ChapterCreatedResponseMother().createWith("any-author-id", bookId)
+        val serviceRequest = CreateChapterRequestMother().validOne(authorId, bookId)
+        val serviceResponse = ChapterCreatedResponseMother().createWith(authorId, bookId)
         every { verifyAccessTokenService.execute(VerifyAccessTokenRequest("anytoken")) }
-            .returns(VerifyAccessTokenResponse("any-author-id", "jkrowling", "jkrowling@gmail.com"))
+            .returns(VerifyAccessTokenResponse(authorId, "jkrowling", "jkrowling@gmail.com"))
         every { createChapterService.execute(any()) }
             .returns(serviceResponse)
 
@@ -98,7 +114,7 @@ class PostBookChapterControllerShould : ContractTest() {
             .header("Authorization", "Bearer anytoken")
             .and()
             .body(chapterBody(validRequest))
-            .post("/v1/books/$bookId/chapters")
+            .post("/v1/authors/$authorId/books/$bookId/chapters")
             .then()
             .statusCode(200)
             .body("id", equalTo(serviceResponse.id))
@@ -119,9 +135,9 @@ class PostBookChapterControllerShould : ContractTest() {
     @Test
     fun `return bad request when given currency is not supported`() {
         val validRequest = ChapterHttpRequestMother().unsupportedCurrency()
-        val serviceRequest = CreateChapterRequestMother().unsupportedCurrency("any-author-id", bookId)
+        val serviceRequest = CreateChapterRequestMother().unsupportedCurrency(authorId, bookId)
         every { verifyAccessTokenService.execute(VerifyAccessTokenRequest("anytoken")) }
-            .returns(VerifyAccessTokenResponse("any-author-id", "jkrowling", "jkrowling@gmail.com"))
+            .returns(VerifyAccessTokenResponse(authorId, "jkrowling", "jkrowling@gmail.com"))
         every { createChapterService.execute(serviceRequest) }
             .returns(InvalidCurrencyResponse)
 
@@ -132,7 +148,7 @@ class PostBookChapterControllerShould : ContractTest() {
             .header("Authorization", "Bearer anytoken")
             .and()
             .body(chapterBody(validRequest))
-            .post("/v1/books/$bookId/chapters")
+            .post("/v1/authors/$authorId/books/$bookId/chapters")
             .then()
             .statusCode(400)
             .body("code", equalTo("bookpublishing.currency_not_supported"))
@@ -151,7 +167,7 @@ class PostBookChapterControllerShould : ContractTest() {
             .header("Authorization", "Bearer anytoken")
             .and()
             .body(invalidChapterBody())
-            .post("/v1/books/$bookId/chapters")
+            .post("/v1/authors/$authorId/books/$bookId/chapters")
             .then()
             .statusCode(400)
     }
@@ -183,6 +199,8 @@ class PostBookChapterControllerShould : ContractTest() {
         """
 
     companion object {
-        private const val bookId = "any-book-id"
+        private val bookId = UUID.randomUUID().toString()
+        private val authorId = UUID.randomUUID().toString()
+        private val anotherAuthorId = UUID.randomUUID().toString()
     }
 }

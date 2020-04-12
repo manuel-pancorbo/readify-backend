@@ -28,18 +28,23 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/v1")
 class PatchBookChapterController(private val service: UpdateBookChapterService) {
-    @PatchMapping("/books/{bookId}/chapters/{chapterId}")
+    @PatchMapping("/authors/{authorId}/books/{bookId}/chapters/{chapterId}")
     fun updateChapter(
+        requester: Requester,
         @RequestBody httpRequest: PatchBookChapterHttpRequest,
         @PathVariable bookId: String,
         @PathVariable chapterId: String,
-        requester: Requester
+        @PathVariable authorId: String
     ): ResponseEntity<out Any> =
         when (requester) {
             is AnonymousUser -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
-            is LoggedUser -> service
-                .execute(httpRequest.toServiceRequest(requester, bookId, chapterId))
-                .toHttpResponse()
+            is LoggedUser ->
+                if (requester.id != authorId)
+                    notFound().build()
+                else
+                    service
+                        .execute(httpRequest.toServiceRequest(requester, bookId, chapterId))
+                        .toHttpResponse()
         }
 }
 

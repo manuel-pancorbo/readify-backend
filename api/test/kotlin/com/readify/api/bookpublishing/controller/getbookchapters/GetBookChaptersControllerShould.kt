@@ -3,7 +3,6 @@ package com.readify.api.bookpublishing.controller.getbookchapters
 import assertk.assertThat
 import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
-import com.jayway.jsonpath.JsonPath
 import com.ninjasquad.springmockk.MockkBean
 import com.readify.ContractTest
 import com.readify.authentication.application.service.verifyaccesstoken.VerifyAccessTokenRequest
@@ -14,13 +13,9 @@ import com.readify.bookpublishing.application.service.getbookchapters.GetBookCha
 import com.readify.bookpublishing.application.service.getbookchapters.GetBookChaptersService
 import io.mockk.every
 import io.restassured.RestAssured
-import org.hamcrest.Matchers.arrayWithSize
-import org.hamcrest.Matchers.equalTo
-import org.hamcrest.Matchers.hasItem
-import org.hamcrest.Matchers.hasItemInArray
-import org.hamcrest.Matchers.hasProperty
 import org.junit.jupiter.api.Test
 import java.time.format.DateTimeFormatter
+import java.util.UUID
 
 class GetBookChaptersControllerShould : ContractTest() {
     @MockkBean
@@ -35,7 +30,7 @@ class GetBookChaptersControllerShould : ContractTest() {
             .`when`()
             .contentType("application/json")
             .and()
-            .get("/v1/books/$bookId/chapters")
+            .get("/v1/authors/$authorId/books/$bookId/chapters")
             .then()
             .statusCode(401)
     }
@@ -53,7 +48,23 @@ class GetBookChaptersControllerShould : ContractTest() {
             .and()
             .header("Authorization", "Bearer anytoken")
             .and()
-            .get("/v1/books/$bookId/chapters")
+            .get("/v1/authors/$authorId/books/$bookId/chapters")
+            .then()
+            .statusCode(404)
+    }
+
+    @Test
+    fun `return 404 when the requester is not the resource author`() {
+        every { verifyAccessTokenService.execute(VerifyAccessTokenRequest("anytoken")) }
+            .returns(VerifyAccessTokenResponse(anotherAuthorId, "jkrowling", "jkrowling@gmail.com"))
+
+        RestAssured.given()
+            .`when`()
+            .contentType("application/json")
+            .and()
+            .header("Authorization", "Bearer anytoken")
+            .and()
+            .get("/v1/authors/$authorId/books/$bookId/chapters")
             .then()
             .statusCode(404)
     }
@@ -72,7 +83,7 @@ class GetBookChaptersControllerShould : ContractTest() {
             .and()
             .header("Authorization", "Bearer anytoken")
             .and()
-            .get("/v1/books/$bookId/chapters")
+            .get("/v1/authors/$authorId/books/$bookId/chapters")
             .then()
             .statusCode(200)
             .extract()
@@ -96,7 +107,8 @@ class GetBookChaptersControllerShould : ContractTest() {
     }
 
     companion object {
-        private const val bookId = "any-book-id"
-        private const val authorId = "any-author-id"
+        private val bookId = UUID.randomUUID().toString()
+        private val authorId = UUID.randomUUID().toString()
+        private val anotherAuthorId = UUID.randomUUID().toString()
     }
 }

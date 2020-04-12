@@ -14,6 +14,7 @@ import io.mockk.every
 import io.restassured.RestAssured
 import org.junit.jupiter.api.Test
 import java.time.format.DateTimeFormatter
+import java.util.UUID
 
 class GetAuthorBooksControllerShould : ContractTest() {
     @MockkBean
@@ -28,9 +29,24 @@ class GetAuthorBooksControllerShould : ContractTest() {
             .`when`()
             .contentType("application/json")
             .and()
-            .get("/v1/books")
+            .get("/v1/authors/$authorId/books")
             .then()
             .statusCode(401)
+    }
+
+    @Test
+    fun `returns not found when requestes is not the author of the resource`() {
+        every { verifyAccessTokenService.execute(VerifyAccessTokenRequest("anytoken")) }
+            .returns(VerifyAccessTokenResponse(anotherAuthorId, "jkrowling", "jkrowling@gmail.com"))
+
+        RestAssured.given()
+            .`when`()
+            .contentType("application/json")
+            .header("Authorization", "Bearer anytoken")
+            .and()
+            .get("/v1/authors/$authorId/books")
+            .then()
+            .statusCode(404)
     }
 
     @Test
@@ -47,7 +63,7 @@ class GetAuthorBooksControllerShould : ContractTest() {
             .and()
             .header("Authorization", "Bearer anytoken")
             .and()
-            .get("/v1/books")
+            .get("/v1/authors/$authorId/books")
             .then()
             .statusCode(200)
             .extract()
@@ -74,6 +90,7 @@ class GetAuthorBooksControllerShould : ContractTest() {
     }
 
     companion object {
-        private const val authorId = "any-author-id"
+        private val authorId = UUID.randomUUID().toString()
+        private val anotherAuthorId = UUID.randomUUID().toString()
     }
 }

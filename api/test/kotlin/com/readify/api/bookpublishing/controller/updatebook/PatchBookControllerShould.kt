@@ -33,7 +33,7 @@ class PatchBookControllerShould : ContractTest() {
             .contentType("application/json")
             .and()
             .body(updateBookBody())
-            .patch("/v1/books/$ANY_BOOK_ID")
+            .patch("/v1/authors/$ANY_AUTHOR_ID/books/$ANY_BOOK_ID")
             .then()
             .statusCode(401)
     }
@@ -51,7 +51,7 @@ class PatchBookControllerShould : ContractTest() {
             .header("Authorization", "Bearer anytoken")
             .and()
             .body(updateBookBody())
-            .patch("/v1/books/$ANY_BOOK_ID")
+            .patch("/v1/authors/$ANY_AUTHOR_ID/books/$ANY_BOOK_ID")
             .then()
             .statusCode(200)
             .body("id", equalTo(ANY_BOOK_ID))
@@ -80,7 +80,7 @@ class PatchBookControllerShould : ContractTest() {
             .header("Authorization", "Bearer anytoken")
             .and()
             .body(updateBookBody())
-            .patch("/v1/books/$ANY_BOOK_ID")
+            .patch("/v1/authors/$ANY_AUTHOR_ID/books/$ANY_BOOK_ID")
             .then()
             .statusCode(400)
             .body("code", equalTo("bookpublishing.percentage_completion"))
@@ -101,7 +101,24 @@ class PatchBookControllerShould : ContractTest() {
             .header("Authorization", "Bearer anytoken")
             .and()
             .body(updateBookBody())
-            .patch("/v1/books/$ANY_BOOK_ID")
+            .patch("/v1/authors/$ANY_AUTHOR_ID/books/$ANY_BOOK_ID")
+            .then()
+            .statusCode(404)
+    }
+
+    @Test
+    fun `returns 404 when requester is not the resource author`() {
+        every { verifyAccessTokenService.execute(VerifyAccessTokenRequest("anytoken")) }
+            .returns(VerifyAccessTokenResponse(ANOTHER_AUTHOR_ID, "jkrowling", "jkrowling@gmail.com"))
+
+        RestAssured.given()
+            .`when`()
+            .contentType("application/json")
+            .and()
+            .header("Authorization", "Bearer anytoken")
+            .and()
+            .body(updateBookBody())
+            .patch("/v1/authors/$ANY_AUTHOR_ID/books/$ANY_BOOK_ID")
             .then()
             .statusCode(404)
     }
@@ -119,7 +136,7 @@ class PatchBookControllerShould : ContractTest() {
             .header("Authorization", "Bearer anytoken")
             .and()
             .body(updateBookBody())
-            .patch("/v1/books/$ANY_BOOK_ID")
+            .patch("/v1/authors/$ANY_AUTHOR_ID/books/$ANY_BOOK_ID")
             .then()
             .statusCode(404)
     }
@@ -152,6 +169,7 @@ class PatchBookControllerShould : ContractTest() {
 
     companion object {
         private const val ANY_AUTHOR_ID = "any-author-id"
+        private const val ANOTHER_AUTHOR_ID = "another-author-id"
         private const val ANY_BOOK_ID = "8a956e9c-5a63-42f9-9afc-7a406ff48285"
         private const val ANY_TITLE = "Any title"
         private const val ANY_SUMMARY = "Any summary"

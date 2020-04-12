@@ -5,18 +5,19 @@ import com.readify.ContractTest
 import com.readify.authentication.application.service.verifyaccesstoken.VerifyAccessTokenRequest
 import com.readify.authentication.application.service.verifyaccesstoken.VerifyAccessTokenResponse
 import com.readify.authentication.application.service.verifyaccesstoken.VerifyAccessTokenService
-import com.readify.bookpublishing.application.service.createbook.BookCreatedSuccessfullyResponse
 import com.readify.bookpublishing.application.service.common.BookStatus
 import com.readify.bookpublishing.application.service.common.BookVisibility
-import com.readify.bookpublishing.application.service.createbook.InvalidCurrencyResponse
+import com.readify.bookpublishing.application.service.createbook.BookCreatedSuccessfullyResponse
 import com.readify.bookpublishing.application.service.createbook.CreateBookRequest
 import com.readify.bookpublishing.application.service.createbook.CreateBookService
+import com.readify.bookpublishing.application.service.createbook.InvalidCurrencyResponse
 import io.mockk.every
 import io.restassured.RestAssured
 import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.nullValue
 import org.junit.jupiter.api.Test
+import java.util.UUID
 
 class PostBookControllerShould : ContractTest() {
     @MockkBean(relaxed = true)
@@ -31,21 +32,37 @@ class PostBookControllerShould : ContractTest() {
             .`when`()
             .contentType("application/json")
             .and()
-            .body(bookBody("not-supported-currency"))
-            .post("/v1/books")
+            .body(bookBody())
+            .post("/v1/authors/$authorId/books")
             .then()
             .statusCode(401)
     }
 
     @Test
+    fun `returns 404 when requester is not the resource author`() {
+        every { verifyAccessTokenService.execute(VerifyAccessTokenRequest("anytoken")) }
+            .returns(VerifyAccessTokenResponse(anotherAuthorId, "jkrowling", "jkrowling@gmail.com"))
+
+        RestAssured.given()
+            .`when`()
+            .contentType("application/json")
+            .header("Authorization", "Bearer anytoken")
+            .and()
+            .body(bookBody())
+            .post("/v1/authors/$authorId/books")
+            .then()
+            .statusCode(404)
+    }
+
+    @Test
     fun `returns bad request when currency is not supported`() {
         every { verifyAccessTokenService.execute(VerifyAccessTokenRequest("anytoken")) }
-            .returns(VerifyAccessTokenResponse("any-author-id", "jkrowling", "jkrowling@gmail.com"))
+            .returns(VerifyAccessTokenResponse(authorId, "jkrowling", "jkrowling@gmail.com"))
 
         every {
             createBookService.execute(
                 CreateBookRequest(
-                    "any-author-id",
+                    authorId,
                     TITLE,
                     SUMMARY,
                     COVER,
@@ -63,7 +80,7 @@ class PostBookControllerShould : ContractTest() {
             .and()
             .header("Authorization", "Bearer anytoken")
             .body(bookBody(currency = "not-supported-currency"))
-            .post("/v1/books")
+            .post("/v1/authors/$authorId/books")
             .then()
             .statusCode(400)
             .body("code", equalTo("bookpublishing.currency_not_supported"))
@@ -74,11 +91,11 @@ class PostBookControllerShould : ContractTest() {
     @Test
     fun `returns ok when book has been successfully created`() {
         every { verifyAccessTokenService.execute(VerifyAccessTokenRequest("anytoken")) }
-            .returns(VerifyAccessTokenResponse("any-author-id", "jkrowling", "jkrowling@gmail.com"))
+            .returns(VerifyAccessTokenResponse(authorId, "jkrowling", "jkrowling@gmail.com"))
         every {
             createBookService.execute(
                 CreateBookRequest(
-                    "any-author-id",
+                    authorId,
                     TITLE,
                     SUMMARY,
                     COVER,
@@ -90,7 +107,7 @@ class PostBookControllerShould : ContractTest() {
         }
             .returns(
                 BookCreatedSuccessfullyResponse(
-                    "any-author-id", "any-id",
+                    authorId, "any-id",
                     TITLE,
                     SUMMARY,
                     COVER,
@@ -110,7 +127,7 @@ class PostBookControllerShould : ContractTest() {
             .and()
             .header("Authorization", "Bearer anytoken")
             .body(bookBody())
-            .post("/v1/books")
+            .post("/v1/authors/$authorId/books")
             .then()
             .statusCode(200)
             .body("id", equalTo("any-id"))
@@ -146,5 +163,7 @@ class PostBookControllerShould : ContractTest() {
         const val PRICE = 15f
         const val CURRENCY = "EUR"
         val tags = listOf("fantasy", "magic")
+        val authorId = UUID.randomUUID().toString()
+        val anotherAuthorId = UUID.randomUUID().toString()
     }
 }

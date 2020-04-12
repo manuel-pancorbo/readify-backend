@@ -28,25 +28,32 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/v1")
 class PatchBookController(private val updateBookService: UpdateBookService) {
-    @PatchMapping("/books/{bookId}")
+    @PatchMapping("/authors/{authorId}/books/{bookId}")
     fun createBook(
+        requester: Requester,
         @RequestBody httpRequest: PatchBookHttpRequest,
         @PathVariable bookId: String,
-        requester: Requester
+        @PathVariable authorId: String
     ): ResponseEntity<out Any> =
         when (requester) {
             is AnonymousUser -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
-            is LoggedUser -> updateBookService
-                .execute(httpRequest.toServiceRequest(requester, bookId))
-                .toHttpResponse()
+            is LoggedUser ->
+                if (requester.id != authorId)
+                    ResponseEntity.notFound().build()
+                else
+                    updateBookService
+                        .execute(httpRequest.toServiceRequest(requester, bookId))
+                        .toHttpResponse()
         }
 }
 
 private fun PatchBookHttpRequest.toServiceRequest(requester: LoggedUser, bookId: String) =
-    UpdateBookRequest(requester.id, bookId, title, summary, cover, tags ?: emptyList(), price?.amount, price?.currency,
-        visibility.toServiceVisibility(), completionPercentage)
+    UpdateBookRequest(
+        requester.id, bookId, title, summary, cover, tags ?: emptyList(), price?.amount, price?.currency,
+        visibility.toServiceVisibility(), completionPercentage
+    )
 
-private fun String?.toServiceVisibility() = when(this) {
+private fun String?.toServiceVisibility() = when (this) {
     "null" -> BookVisibility.NULL
     "restricted" -> BookVisibility.RESTRICTED
     "visible" -> BookVisibility.VISIBLE
