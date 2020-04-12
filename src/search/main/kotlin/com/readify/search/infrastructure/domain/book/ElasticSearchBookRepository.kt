@@ -64,8 +64,8 @@ class ElasticSearchBookRepository(private val client: JestClient) : BookReposito
 
     private fun buildQuery(searchCriteria: SearchCriteria) =
         boolQuery().also {
-            searchCriteria.tagFilter?.let { tag -> it.filter(termQuery("tag", tag.value)) }
-            searchCriteria.authorFilter?.let { author -> it.filter(termQuery("id", author.value)) }
+            searchCriteria.tagFilter?.let { tag -> it.filter(termQuery("tags", tag.value)) }
+            searchCriteria.authorFilter?.let { author -> it.filter(termQuery("authorId", author.value)) }
             searchCriteria.textFilter?.let { text ->
                 it.must(
                     multiMatchQuery(text.value)

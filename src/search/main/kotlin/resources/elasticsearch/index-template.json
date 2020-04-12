@@ -2,43 +2,45 @@
   "index_patterns": "books*",
   "version": 1,
   "mappings": {
-    "properties": {
-      "id": {
-        "type": "keyword"
-      },
-      "author": {
-        "type": "keyword"
-      },
-      "title": {
-        "type": "text",
-        "analyzer": "spanish_index_analyzer"
-      },
-      "summary": {
-        "type": "text",
-        "analyzer": "spanish_index_analyzer"
-      },
-      "cover": {
-        "type": "keyword"
-      },
-      "completionPercentage": {
-        "type": "integer"
-      },
-      "status": {
-        "type": "keyword"
-      },
-      "price": {
-        "properties": {
-          "amount": {
-            "type": "float"
-          },
-          "currency": {
-            "type": "keyword"
+    "_doc": {
+      "properties": {
+        "id": {
+          "type": "keyword"
+        },
+        "author": {
+          "type": "keyword"
+        },
+        "title": {
+          "type": "text",
+          "analyzer": "spanish_index_analyzer"
+        },
+        "summary": {
+          "type": "text",
+          "analyzer": "spanish_index_analyzer"
+        },
+        "cover": {
+          "type": "keyword"
+        },
+        "completionPercentage": {
+          "type": "integer"
+        },
+        "status": {
+          "type": "keyword"
+        },
+        "price": {
+          "properties": {
+            "amount": {
+              "type": "float"
+            },
+            "currency": {
+              "type": "keyword"
+            }
           }
+        },
+        "finishedAt": {
+          "type": "date",
+          "format": "strict_date_time"
         }
-      },
-      "finishedAt": {
-        "type": "date",
-        "format": "strict_date_time"
       }
     }
   },

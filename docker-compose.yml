@@ -13,7 +13,7 @@ services:
       - ./src/bookpublishing/main/kotlin/resources/book-publishing-init.sql:/docker-entrypoint-initdb.d/2-bookpublishing-init.sql
       - ./src/readerlibrary/main/kotlin/resources/reader-library-init.sql:/docker-entrypoint-initdb.d/3-reader-library-init.sql
   elasticsearch:
-    image: elasticsearch:7.6.0
+    image: elasticsearch:6.8.0
     ports:
       - "9200:9200"
     ulimits:
@@ -23,6 +23,6 @@ services:
     environment:
       - "discovery.type=single-node"
   kibana:
-    image: kibana:7.6.0
+    image: kibana:6.8.0
     ports:
       - "5601:5601"
