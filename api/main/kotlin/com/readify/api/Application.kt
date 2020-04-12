@@ -11,6 +11,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2
     "com.readify.authentication.infrastructure",
     "com.readify.bookpublishing.infrastructure",
     "com.readify.readerlibrary.infrastructure",
+    "com.readify.search.infrastructure",
     "com.readify.shared.infrastructure"
 ])
 class Application {

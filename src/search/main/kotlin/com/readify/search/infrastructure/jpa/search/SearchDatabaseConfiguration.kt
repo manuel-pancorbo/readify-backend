@@ -1,4 +1,4 @@
-package com.readify.readerlibrary.infrastructure.jpa.readerlibrary
+package com.readify.search.infrastructure.jpa.search
 
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.context.properties.ConfigurationProperties
@@ -17,28 +17,28 @@ import javax.sql.DataSource
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(
-    basePackages = ["com.readify.readerlibrary.infrastructure.jpa.readerlibrary"],
-    entityManagerFactoryRef = "readerLibraryEntityManagerFactory",
-    transactionManagerRef = "readerLibraryTransactionManager"
+    basePackages = ["com.readify.search.infrastructure.jpa.search"],
+    entityManagerFactoryRef = "searchEntityManagerFactory",
+    transactionManagerRef = "searchTransactionManager"
 )
-class ReaderLibraryDatabaseConfiguration {
-    @Bean("readerLibraryEntityManagerFactory")
+class SearchDatabaseConfiguration {
+    @Bean("searchEntityManagerFactory")
     fun entityManagerFactory(
         builder: EntityManagerFactoryBuilder,
-        @Qualifier("readerLibraryDataSource") dataSource: DataSource?
+        @Qualifier("searchDataSource") dataSource: DataSource?
     ): LocalContainerEntityManagerFactoryBean =
         builder
             .dataSource(dataSource)
-            .packages("com.readify.readerlibrary.infrastructure.jpa.readerlibrary")
-            .persistenceUnit("readerlibrary")
+            .packages("com.readify.search.infrastructure.jpa.search")
+            .persistenceUnit("search")
             .build()
 
-    @Bean("readerLibraryDataSource")
-    @ConfigurationProperties(prefix = "spring.readerlibrary")
+    @Bean("searchDataSource")
+    @ConfigurationProperties(prefix = "spring.search")
     fun userDataSource(): DataSource = DataSourceBuilder.create().build()
 
-    @Bean("readerLibraryTransactionManager")
+    @Bean("searchTransactionManager")
     fun userTransactionManager(
-        @Qualifier("readerLibraryEntityManagerFactory") entityManagerFactory: EntityManagerFactory
+        @Qualifier("searchEntityManagerFactory") entityManagerFactory: EntityManagerFactory
     ): PlatformTransactionManager = JpaTransactionManager(entityManagerFactory)
 }

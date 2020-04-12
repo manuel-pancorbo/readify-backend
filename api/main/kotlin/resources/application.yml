@@ -27,6 +27,22 @@ spring.bookpublishing.password: readify
 spring.bookpublishing.platform: postgres
 spring.bookpublishing.driver-class-name: org.postgresql.Driver
 
+
+# Book publishing Database
+spring.readerlibrary.jdbcUrl: jdbc:postgresql://localhost:5432/postgres?currentSchema=readerlibrary
+spring.readerlibrary.username: postgres
+spring.readerlibrary.password: readify
+spring.readerlibrary.platform: postgres
+spring.readerlibrary.driver-class-name: org.postgresql.Driver
+
+
+# Book publishing Database
+spring.search.jdbcUrl: jdbc:postgresql://localhost:5432/postgres?currentSchema=search
+spring.search.username: postgres
+spring.search.password: readify
+spring.search.platform: postgres
+spring.search.driver-class-name: org.postgresql.Driver
+
 authentication:
   hmac256:
     secret: "secret"
