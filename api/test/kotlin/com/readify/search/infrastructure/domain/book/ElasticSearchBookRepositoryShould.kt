@@ -4,13 +4,14 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
 import com.readify.IntegrationTest
+import com.readify.shared.domain.clock.Clock
 import io.searchbox.client.JestClient
 import io.searchbox.core.Get
 import io.searchbox.indices.DeleteIndex
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import java.time.format.DateTimeFormatter
+import java.time.ZonedDateTime
 import java.util.UUID
 
 class ElasticSearchBookRepositoryShould : IntegrationTest() {
@@ -45,7 +46,7 @@ class ElasticSearchBookRepositoryShould : IntegrationTest() {
         assertThat(actual.price.currency).isEqualTo(book.price.currency.toString().toLowerCase())
         assertThat(actual.completionPercentage).isEqualTo(book.completionPercentage.value)
         assertThat(actual.status).isEqualTo(book.status.toString().toLowerCase())
-        assertThat(actual.finishedAt).isEqualTo(book.finishedAt?.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME))
+        assertThat(Clock().fromUtc(ZonedDateTime.parse(actual.finishedAt))).isEqualTo(book.finishedAt)
     }
 
     companion object {

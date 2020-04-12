@@ -2,6 +2,7 @@ package com.readify.search.infrastructure.domain.book
 
 import com.readify.search.domain.book.Book
 import com.readify.search.domain.book.BookRepository
+import com.readify.shared.domain.clock.Clock
 import io.searchbox.client.JestClient
 import io.searchbox.core.Index
 import java.time.format.DateTimeFormatter
@@ -30,5 +31,6 @@ private fun Book.toElasticSearchBook() =
     ElasticSearchBook(
         bookId.value, authorId.value, title.value, cover.value, summary.value, tags.value,
         ElasticSearchMoney(price.amount, price.currency.toString().toLowerCase()), completionPercentage.value,
-        status.toString().toLowerCase(), finishedAt?.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+        status.toString().toLowerCase(),
+        finishedAt?.let { Clock().toUtc(it).format(DateTimeFormatter.ISO_ZONED_DATE_TIME) }
     )

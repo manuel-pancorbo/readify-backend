@@ -17,6 +17,7 @@ abstract class IntegrationTest {
         val docker: Unit = KotlinDockerComposeContainer(File("docker-compose.yml"))
             .withLocalCompose(true)
             .withExposedService("postgresql", 5432, Wait.defaultWaitStrategy())
+            .withExposedService("elasticsearch", 9200, Wait.defaultWaitStrategy())
             .start()
     }
 }
