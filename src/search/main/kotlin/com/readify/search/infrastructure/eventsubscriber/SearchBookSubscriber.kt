@@ -12,7 +12,7 @@ import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Service
 
 @Service
-class BookSubscriber(private val addBookService: AddBookService) {
+class SearchBookSubscriber(private val addBookService: AddBookService) {
     @EventListener
     fun on(event: BookCreated) =
         event

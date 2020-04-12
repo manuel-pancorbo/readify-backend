@@ -1,4 +1,3 @@
 dependencies {
-
-compile 'io.searchbox:jest:5.3.4'
+    implementation 'io.searchbox:jest:6.3.1'
 }
