@@ -2,14 +2,14 @@ package com.readify.search.infrastructure.domain.book
 
 import com.readify.search.domain.book.Book
 import com.readify.search.domain.book.BookRepository
+import com.readify.search.domain.book.BookSearchResult
+import com.readify.search.domain.book.Filter
 import com.readify.shared.domain.clock.Clock
 import io.searchbox.client.JestClient
 import io.searchbox.core.Index
 import java.time.format.DateTimeFormatter
 
-class ElasticSearchBookRepository(
-    private val client: JestClient
-) : BookRepository {
+class ElasticSearchBookRepository(private val client: JestClient) : BookRepository {
     override fun save(book: Book) {
         client.execute(
             Index.Builder(book.toElasticSearchBook())
@@ -19,6 +19,10 @@ class ElasticSearchBookRepository(
                 .id(book.bookId.value)
                 .build()
         )
+    }
+
+    override fun search(filters: List<Filter>): BookSearchResult {
+        TODO("Not yet implemented")
     }
 
     companion object {

@@ -5,9 +5,9 @@ import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
 import com.ninjasquad.springmockk.MockkBean
 import com.readify.ContractTest
-import com.readify.application.service.searchbooks.SearchBooksRequest
-import com.readify.application.service.searchbooks.SearchBooksResponse
-import com.readify.application.service.searchbooks.SearchBooksService
+import com.readify.search.application.service.searchbooks.SearchBooksRequest
+import com.readify.search.application.service.searchbooks.SearchBooksResponse
+import com.readify.search.application.service.searchbooks.SearchBooksService
 import com.readify.authentication.application.service.verifyaccesstoken.VerifyAccessTokenService
 import io.mockk.every
 import io.restassured.RestAssured
@@ -24,8 +24,12 @@ class GetSearchBooksControllerShould : ContractTest() {
 
     @Test
     fun `return 200 with empty list when no books have been found`() {
-        val serviceRequest = SearchBooksRequest(text = "no-matching-query")
-        every { service.execute(serviceRequest) } returns SearchBooksResponse(0, emptyList())
+        val serviceRequest =
+            SearchBooksRequest(text = "no-matching-query")
+        every { service.execute(serviceRequest) } returns SearchBooksResponse(
+            0,
+            emptyList()
+        )
 
         val httpResponse = RestAssured.given()
             .`when`()
@@ -47,8 +51,15 @@ class GetSearchBooksControllerShould : ContractTest() {
     @Test
     fun `return 200 with found books`() {
         val authorId = UUID.randomUUID().toString()
-        val serviceRequest = SearchBooksRequest(text = "harry", tag = "fantasy", authorId = authorId)
-        val serviceResponse = SearchBooksResponse(1, listOf(ApplicationBookMother().finishedOne()))
+        val serviceRequest = SearchBooksRequest(
+            text = "harry",
+            tag = "fantasy",
+            authorId = authorId
+        )
+        val serviceResponse = SearchBooksResponse(
+            1,
+            listOf(ApplicationBookMother().finishedOne())
+        )
         every { service.execute(serviceRequest) } returns serviceResponse
 
         val httpResponse = RestAssured.given()

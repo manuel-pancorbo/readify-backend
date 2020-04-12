@@ -2,9 +2,9 @@ package com.readify.api.search.controller
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.readify.api.bookpublishing.controller.common.HttpMoney
-import com.readify.application.service.searchbooks.SearchBooksRequest
-import com.readify.application.service.searchbooks.SearchBooksResponse
-import com.readify.application.service.searchbooks.SearchBooksService
+import com.readify.search.application.service.searchbooks.SearchBooksRequest
+import com.readify.search.application.service.searchbooks.SearchBooksResponse
+import com.readify.search.application.service.searchbooks.SearchBooksService
 import com.readify.search.application.service.common.ApplicationBook
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -22,7 +22,13 @@ class GetSearchBooksController(private val service: SearchBooksService) {
         @RequestParam(name = "tag") tag: String?,
         @RequestParam(name = "author") author: String?
     ): ResponseEntity<out Any> =
-        service.execute(SearchBooksRequest(text, tag, author)).toHttpResponse()
+        service.execute(
+            SearchBooksRequest(
+                text,
+                tag,
+                author
+            )
+        ).toHttpResponse()
 }
 
 private fun SearchBooksResponse.toHttpResponse() =
