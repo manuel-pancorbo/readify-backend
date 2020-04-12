@@ -24,15 +24,14 @@ class DomainEventFactory {
         fun bookCreated(book: InProgressBook) =
             BookCreated(
                 book.id.value, book.authorId.value, book.title.value, book.cover.value, book.summary.value,
-                book.tags.value, book.price, book.completionPercentage.value, book.visibility,
-                Status.IN_PROGRESS
+                book.tags.value, book.price, book.completionPercentage.value, book.visibility
             )
 
         fun bookFinished(book: FinishedBook) =
             BookFinished(
                 book.id.value, book.authorId.value, book.title.value, book.cover.value, book.summary.value,
                 book.tags.value, book.price, book.completionPercentage.value, book.visibility,
-                Status.IN_PROGRESS, book.finishedAt
+                book.finishedAt
             )
     }
 }

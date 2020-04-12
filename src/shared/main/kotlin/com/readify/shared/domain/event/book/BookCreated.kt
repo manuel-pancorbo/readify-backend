@@ -1,6 +1,5 @@
 package com.readify.shared.domain.event.book
 
-import com.readify.shared.domain.book.Status
 import com.readify.shared.domain.book.Visibility
 import com.readify.shared.domain.event.DomainEvent
 import com.readify.shared.domain.money.Money
@@ -16,6 +15,5 @@ data class BookCreated(
     val price: Money,
     val completionPercentage: Int,
     val visibility: Visibility,
-    val status: Status,
     override val occurredOn: LocalDateTime = LocalDateTime.now()
 ) : DomainEvent(occurredOn)

@@ -17,7 +17,6 @@ data class BookFinished(
     val price: Money,
     val completionPercentage: Int,
     val visibility: Visibility,
-    val status: Status,
     val finishedAt: ZonedDateTime,
     override val occurredOn: LocalDateTime = LocalDateTime.now()
 ) : DomainEvent(occurredOn)

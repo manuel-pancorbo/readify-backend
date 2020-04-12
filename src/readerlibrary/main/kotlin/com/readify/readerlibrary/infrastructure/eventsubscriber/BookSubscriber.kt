@@ -9,6 +9,7 @@ import com.readify.readerlibrary.domain.book.Cover
 import com.readify.readerlibrary.domain.book.Summary
 import com.readify.readerlibrary.domain.book.Tags
 import com.readify.readerlibrary.domain.book.Title
+import com.readify.shared.domain.book.Status
 import com.readify.shared.domain.book.Visibility
 import com.readify.shared.domain.event.book.BookCreated
 import com.readify.shared.domain.event.book.BookFinished
@@ -33,7 +34,7 @@ class BookSubscriber(private val bookRepository: BookRepository) {
                         Tags(it.tags),
                         it.price,
                         CompletionPercentage(it.completionPercentage),
-                        it.status,
+                        Status.IN_PROGRESS,
                         null
                     )
                 )
@@ -54,7 +55,7 @@ class BookSubscriber(private val bookRepository: BookRepository) {
                         Tags(it.tags),
                         it.price,
                         CompletionPercentage(it.completionPercentage),
-                        it.status,
+                        Status.FINISHED,
                         it.finishedAt
                     )
                 )
