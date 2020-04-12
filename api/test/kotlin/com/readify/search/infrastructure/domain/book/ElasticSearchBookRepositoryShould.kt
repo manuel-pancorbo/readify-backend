@@ -4,6 +4,7 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
 import com.readify.IntegrationTest
+import com.readify.search.domain.book.SearchCriteria
 import com.readify.shared.domain.clock.Clock
 import io.searchbox.client.JestClient
 import io.searchbox.core.Get
@@ -47,6 +48,17 @@ class ElasticSearchBookRepositoryShould : IntegrationTest() {
         assertThat(actual.completionPercentage).isEqualTo(book.completionPercentage.value)
         assertThat(actual.status).isEqualTo(book.status.toString())
         assertThat(Clock().fromUtc(ZonedDateTime.parse(actual.finishedAt))).isEqualTo(book.finishedAt)
+    }
+
+    @Test
+    fun `find a book`() {
+        val book = BookMother().finishedBook(bookId, authorId)
+        repository.save(book)
+
+        val searchResults = repository.search(SearchCriteria())
+
+        assertThat(searchResults.total).isEqualTo(1)
+        assertThat(searchResults.results[0]).isEqualTo(book)
     }
 
     companion object {

@@ -23,6 +23,7 @@ import org.elasticsearch.index.query.MultiMatchQueryBuilder.Type.CROSS_FIELDS
 import org.elasticsearch.index.query.MultiMatchQueryBuilder.Type.PHRASE
 import org.elasticsearch.index.query.Operator
 import org.elasticsearch.index.query.QueryBuilders.boolQuery
+import org.elasticsearch.index.query.QueryBuilders.matchQuery
 import org.elasticsearch.index.query.QueryBuilders.multiMatchQuery
 import org.elasticsearch.index.query.QueryBuilders.termQuery
 import org.elasticsearch.search.builder.SearchSourceBuilder
@@ -65,11 +66,11 @@ class ElasticSearchBookRepository(private val client: JestClient) : BookReposito
     private fun buildQuery(searchCriteria: SearchCriteria) =
         boolQuery().also {
             searchCriteria.tagFilter?.let { tag -> it.filter(termQuery("tags", tag.value)) }
-            searchCriteria.authorFilter?.let { author -> it.filter(termQuery("authorId", author.value)) }
+            searchCriteria.authorFilter?.let { author -> it.filter(matchQuery("authorId", author.value)) }
             searchCriteria.textFilter?.let { text ->
                 it.must(
                     multiMatchQuery(text.value)
-                        .field("title")
+                        .field("title", 2f)
                         .field("summary")
                         .type(CROSS_FIELDS)
                         .operator(Operator.OR)
@@ -77,7 +78,7 @@ class ElasticSearchBookRepository(private val client: JestClient) : BookReposito
 
                 it.should(
                     multiMatchQuery(text.value)
-                        .field("title")
+                        .field("title", 2f)
                         .field("summary")
                         .type(PHRASE)
                         .operator(Operator.OR)

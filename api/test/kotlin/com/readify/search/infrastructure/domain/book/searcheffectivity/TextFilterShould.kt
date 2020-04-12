@@ -44,7 +44,7 @@ class TextFilterShould : IntegrationTest() {
         assertThat(results.total).isEqualTo(2)
         assertThat(results.results).hasSize(2)
         assertThat(results.results[0].bookId.value).isEqualTo(greatBookId)
-        assertThat(results.results[0].bookId.value).isEqualTo(matchingBookId)
+        assertThat(results.results[1].bookId.value).isEqualTo(matchingBookId)
     }
 
     companion object {
