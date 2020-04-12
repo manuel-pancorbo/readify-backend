@@ -1,3 +1,4 @@
 dependencies {
     implementation 'io.searchbox:jest:6.3.1'
+    implementation 'org.elasticsearch:elasticsearch:7.6.0'
 }

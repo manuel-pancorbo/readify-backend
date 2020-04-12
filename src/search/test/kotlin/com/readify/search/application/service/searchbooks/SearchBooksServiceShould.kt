@@ -6,6 +6,7 @@ import com.readify.search.application.service.common.ApplicationBookStatus
 import com.readify.search.domain.book.AuthorFilter
 import com.readify.search.domain.book.BookRepository
 import com.readify.search.domain.book.BookSearchResult
+import com.readify.search.domain.book.SearchCriteria
 import com.readify.search.domain.book.TagFilter
 import com.readify.search.domain.book.TextFilter
 import io.mockk.every
@@ -20,9 +21,9 @@ class SearchBooksServiceShould {
     @Test
     fun `return books returned by repository`() {
         val request = SearchBooksRequest(text = "harry potter", tag = "fantasy", authorId = authorId)
-        val filters = listOf(TextFilter("harry potter"), TagFilter("fantasy"), AuthorFilter(authorId))
+        val searchCriteria = SearchCriteria(TextFilter("harry potter"), TagFilter("fantasy"), AuthorFilter(authorId))
         val searchResult = BookSearchResult(5, listOf(BookMother().finishedOne()))
-        every { bookRepository.search(filters) } returns searchResult
+        every { bookRepository.search(searchCriteria) } returns searchResult
 
         val response = service.execute(request)
 
@@ -35,7 +36,8 @@ class SearchBooksServiceShould {
         assertThat(response.results[0].tags).isEqualTo(searchResult.results[0].tags.value)
         assertThat(response.results[0].priceAmount).isEqualTo(searchResult.results[0].price.amount)
         assertThat(response.results[0].priceCurrency).isEqualTo(searchResult.results[0].price.currency.toString())
-        assertThat(response.results[0].completionPercentage).isEqualTo(searchResult.results[0].completionPercentage.value)
+        assertThat(response.results[0].completionPercentage)
+            .isEqualTo(searchResult.results[0].completionPercentage.value)
         assertThat(response.results[0].status).isEqualTo(ApplicationBookStatus.FINISHED)
         assertThat(response.results[0].finishedAt).isEqualTo(searchResult.results[0].finishedAt)
     }

@@ -40,3 +40,4 @@ stripe:
   secretKey: "sk_test_Q5cwflC6COQRLAixERlNCOXg00JszEtqVH"
 
 management.endpoints.web.exposure.include: httptrace
+logging.level.com.readify.search.infrastructure.domain.book.ElasticSearchBookRepository: DEBUG

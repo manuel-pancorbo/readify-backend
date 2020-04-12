@@ -43,9 +43,9 @@ class ElasticSearchBookRepositoryShould : IntegrationTest() {
         assertThat(actual.summary).isEqualTo(book.summary.value)
         assertThat(actual.tags).isEqualTo(book.tags.value)
         assertThat(actual.price.amount).isEqualTo(book.price.amount)
-        assertThat(actual.price.currency).isEqualTo(book.price.currency.toString().toLowerCase())
+        assertThat(actual.price.currency).isEqualTo(book.price.currency.toString())
         assertThat(actual.completionPercentage).isEqualTo(book.completionPercentage.value)
-        assertThat(actual.status).isEqualTo(book.status.toString().toLowerCase())
+        assertThat(actual.status).isEqualTo(book.status.toString())
         assertThat(Clock().fromUtc(ZonedDateTime.parse(actual.finishedAt))).isEqualTo(book.finishedAt)
     }
 
