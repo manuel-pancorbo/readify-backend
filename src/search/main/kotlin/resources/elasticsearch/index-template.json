@@ -18,9 +18,6 @@
           "type": "text",
           "analyzer": "spanish_index_analyzer"
         },
-        "tags": {
-          "type": "keyword"
-        },
         "cover": {
           "type": "keyword"
         },
