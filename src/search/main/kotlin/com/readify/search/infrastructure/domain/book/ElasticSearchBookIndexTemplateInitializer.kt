@@ -34,7 +34,7 @@ class ElasticSearchBookIndexTemplateInitializer(val client: JestClient) {
             .let { Scanner(it, StandardCharsets.UTF_8.name()).useDelimiter("\\A") }
             .takeIf { it.hasNext() }
             ?.next()
-            ?: throw IllegalArgumentException()
+            ?: throw IllegalAccessError()
 
     companion object {
         private const val TEMPLATE_NAME = "book-index-template"
