@@ -3,10 +3,10 @@ package com.readify.api.readerlibrary.controller.getreaderbooks
 import com.readify.authentication.domain.AnonymousUser
 import com.readify.authentication.domain.LoggedUser
 import com.readify.authentication.domain.Requester
+import com.readify.readerlibrary.application.service.common.LibraryBookResponse
 import com.readify.readerlibrary.application.service.getreaderbooks.GetReaderBooksRequest
 import com.readify.readerlibrary.application.service.getreaderbooks.GetReaderBooksResponse
 import com.readify.readerlibrary.application.service.getreaderbooks.GetReaderBooksService
-import com.readify.readerlibrary.application.service.getreaderbooks.LibraryBookResponse
 import com.readify.readerlibrary.application.service.getreaderbooks.ReaderBooksResponse
 import com.readify.readerlibrary.application.service.getreaderbooks.RequesterAndRequestedReaderAreDifferent
 import org.springframework.http.HttpStatus

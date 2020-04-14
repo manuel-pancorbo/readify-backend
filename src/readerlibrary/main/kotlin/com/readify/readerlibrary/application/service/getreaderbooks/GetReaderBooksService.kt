@@ -10,13 +10,12 @@ import com.readify.readerlibrary.domain.readerlibrary.LibraryWholeBook
 import com.readify.readerlibrary.domain.readerlibrary.ReaderLibraryRepository
 
 class GetReaderBooksService(private val repository: ReaderLibraryRepository) {
-    fun execute(request: GetReaderBooksRequest): GetReaderBooksResponse {
-        return request.takeIf { it.reader == it.requester }
+    fun execute(request: GetReaderBooksRequest) =
+        request.takeIf { it.reader == it.requester }
             ?.let { repository.findByReaderId(ReaderId(request.reader))?.library?.values }
             ?.map { it.toResponse() }
             ?.let { ReaderBooksResponse(it) }
             ?: RequesterAndRequestedReaderAreDifferent
-    }
 
 }
 
