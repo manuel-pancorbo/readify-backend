@@ -9,11 +9,11 @@ import com.readify.ContractTest
 import com.readify.authentication.application.service.verifyaccesstoken.VerifyAccessTokenRequest
 import com.readify.authentication.application.service.verifyaccesstoken.VerifyAccessTokenResponse
 import com.readify.authentication.application.service.verifyaccesstoken.VerifyAccessTokenService
+import com.readify.readerlibrary.application.service.common.LibraryBookResponse
+import com.readify.readerlibrary.application.service.common.LibraryBookTypeResponse.PARTIAL
+import com.readify.readerlibrary.application.service.common.LibraryBookTypeResponse.WHOLE
 import com.readify.readerlibrary.application.service.getreaderbooks.GetReaderBooksRequest
 import com.readify.readerlibrary.application.service.getreaderbooks.GetReaderBooksService
-import com.readify.readerlibrary.application.service.getreaderbooks.LibraryBookResponse
-import com.readify.readerlibrary.application.service.getreaderbooks.LibraryBookTypeResponse.PARTIAL
-import com.readify.readerlibrary.application.service.getreaderbooks.LibraryBookTypeResponse.WHOLE
 import com.readify.readerlibrary.application.service.getreaderbooks.ReaderBooksResponse
 import com.readify.readerlibrary.application.service.getreaderbooks.RequesterAndRequestedReaderAreDifferent
 import io.mockk.every
@@ -40,7 +40,7 @@ class GetReaderBooksControllerShould : ContractTest() {
     }
 
     @Test
-    fun `return 404 when reader is requesting payments of another reader`() {
+    fun `return 404 when reader is requesting books of another reader`() {
         val serviceRequest = GetReaderBooksRequest(anotherReaderId, readerId)
         every { verifyAccessTokenService.execute(VerifyAccessTokenRequest("anytoken")) }
             .returns(VerifyAccessTokenResponse(anotherReaderId, "jkrowling", "jkrowling@gmail.com"))
@@ -58,7 +58,7 @@ class GetReaderBooksControllerShould : ContractTest() {
     }
 
     @Test
-    fun `return ok with the list of payments`() {
+    fun `return ok with the list of books`() {
         val serviceRequest = GetReaderBooksRequest(readerId, readerId)
         val serviceResponse = ReaderBooksResponse(
             listOf(
