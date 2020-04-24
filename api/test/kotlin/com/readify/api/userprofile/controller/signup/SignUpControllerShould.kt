@@ -1,9 +1,9 @@
-package com.readify.api.userprofile.controller
+package com.readify.api.userprofile.controller.signup
 
 import com.ninjasquad.springmockk.MockkBean
 import com.readify.ContractTest
-import com.readify.userprofile.application.SignUpResponse
-import com.readify.userprofile.application.SignUpService
+import com.readify.userprofile.application.signup.SignUpResponse
+import com.readify.userprofile.application.signup.SignUpService
 import com.readify.userprofile.domain.user.EmailAlreadyRegisteredException
 import com.readify.userprofile.domain.user.UsernameAlreadyRegisteredException
 import io.mockk.every

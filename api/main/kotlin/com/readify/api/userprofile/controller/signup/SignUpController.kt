@@ -1,8 +1,8 @@
-package com.readify.api.userprofile.controller
+package com.readify.api.userprofile.controller.signup
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.readify.userprofile.application.SignUpRequest
-import com.readify.userprofile.application.SignUpService
+import com.readify.userprofile.application.signup.SignUpRequest
+import com.readify.userprofile.application.signup.SignUpService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody

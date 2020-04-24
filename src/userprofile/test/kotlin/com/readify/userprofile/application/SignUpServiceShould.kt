@@ -4,6 +4,9 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFailure
 import assertk.assertions.isInstanceOf
+import com.readify.userprofile.application.signup.SignUpRequest
+import com.readify.userprofile.application.signup.SignUpResponse
+import com.readify.userprofile.application.signup.SignUpService
 import com.readify.userprofile.domain.user.Email
 import com.readify.userprofile.domain.user.EmailAlreadyRegisteredException
 import com.readify.userprofile.domain.user.FullName
@@ -25,12 +28,15 @@ class SignUpServiceShould {
 
     private val userRepository: UserRepository = mockk(relaxed = true)
     private val userFactory: UserFactory = mockk()
-    private val signUpService = SignUpService(userFactory, userRepository)
+    private val signUpService =
+        SignUpService(userFactory, userRepository)
 
     @Test
     fun `throw exception when username is already registered`() {
-        val request = SignUpRequest("manuel.pancorbo", "manuel.pancorbo@gmail.com", "dummypass", "Manuel Pancorbo",
-            "any image", "https://manuel.pancorbo")
+        val request = SignUpRequest(
+            "manuel.pancorbo", "manuel.pancorbo@gmail.com", "dummypass", "Manuel Pancorbo",
+            "any image", "https://manuel.pancorbo"
+        )
         every {
             userFactory.create(
                 Username("manuel.pancorbo"),
@@ -50,8 +56,10 @@ class SignUpServiceShould {
 
     @Test
     fun `throw exception when mail is already registered`() {
-        val request = SignUpRequest("manu", "manuel.pancorbo@gmail.com", "dummypass", "Manuel Pancorbo",
-            "any image", "https://manuel.pancorbo")
+        val request = SignUpRequest(
+            "manu", "manuel.pancorbo@gmail.com", "dummypass", "Manuel Pancorbo",
+            "any image", "https://manuel.pancorbo"
+        )
         every {
             userFactory.create(
                 Username("manu"),
@@ -71,8 +79,10 @@ class SignUpServiceShould {
 
     @Test
     fun `sign up a valid user`() {
-        val request = SignUpRequest("manuel.pancorbo", "manuel.pancorbo@gmail.com", "dummypass", "Manuel Pancorbo",
-            "any image", "https://manuel.pancorbo")
+        val request = SignUpRequest(
+            "manuel.pancorbo", "manuel.pancorbo@gmail.com", "dummypass", "Manuel Pancorbo",
+            "any image", "https://manuel.pancorbo"
+        )
         val user = User(
             UserId(UUID.randomUUID().toString()),
             Username("manuel.pancorbo"),

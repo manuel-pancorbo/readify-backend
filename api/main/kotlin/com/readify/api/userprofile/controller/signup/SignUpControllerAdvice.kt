@@ -1,4 +1,4 @@
-package com.readify.api.userprofile.controller
+package com.readify.api.userprofile.controller.signup
 
 import com.readify.shared.infrastructure.controller.error.HttpErrorResponse
 import com.readify.userprofile.domain.user.EmailAlreadyRegisteredException

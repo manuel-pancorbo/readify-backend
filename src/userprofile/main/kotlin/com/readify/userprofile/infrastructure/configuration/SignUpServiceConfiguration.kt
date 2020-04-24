@@ -1,7 +1,7 @@
 package com.readify.userprofile.infrastructure.configuration
 
 import com.readify.shared.domain.event.bus.EventBus
-import com.readify.userprofile.application.SignUpService
+import com.readify.userprofile.application.signup.SignUpService
 import com.readify.userprofile.domain.user.UserFactory
 import com.readify.userprofile.infrastructure.jpa.user.JpaUserRepository
 import com.readify.userprofile.infrastructure.jpa.user.JpaUserDataSource

@@ -1,4 +1,4 @@
-package com.readify.userprofile.application
+package com.readify.userprofile.application.signup
 
 import com.readify.userprofile.domain.user.Email
 import com.readify.userprofile.domain.user.FullName
