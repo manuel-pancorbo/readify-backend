@@ -1,16 +1,15 @@
 package com.readify.userprofile.application.getuserprofileinformation
 
-class GetUserProfileInformationService {
-    fun execute(request: GetUserProfileInformationRequest): GetUserProfileInformationResponse {
-        TODO("Not yet implemented")
-    }
+import com.readify.userprofile.domain.user.User
+import com.readify.userprofile.domain.user.UserId
+import com.readify.userprofile.domain.user.UserRepository
 
+class GetUserProfileInformationService(private val repository: UserRepository) {
+    fun execute(request: GetUserProfileInformationRequest) =
+        repository.findById(UserId(request.userId))
+            ?.toResponse()
+            ?: UserNotFound
 }
 
-data class GetUserProfileInformationRequest(val userId: String)
-sealed class GetUserProfileInformationResponse
-object UserNotFound : GetUserProfileInformationResponse()
-data class UserInformationResponse(
-    val id: String, val username: String, val email: String, val fullName: String, val image: String?,
-    val website: String?
-) : GetUserProfileInformationResponse()
+private fun User.toResponse() =
+    UserInformationResponse(id.value, username.value, email.value, fullName.value, image?.value, website?.value)
