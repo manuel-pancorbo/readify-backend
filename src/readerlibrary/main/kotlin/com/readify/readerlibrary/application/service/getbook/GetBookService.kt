@@ -1,38 +1,33 @@
 package com.readify.readerlibrary.application.service.getbook
 
-import java.time.ZonedDateTime
+import com.readify.readerlibrary.domain.book.Book
+import com.readify.readerlibrary.domain.book.BookId
+import com.readify.readerlibrary.domain.book.BookRepository
+import com.readify.readerlibrary.domain.chapter.Chapter
+import com.readify.readerlibrary.domain.chapter.ChapterRepository
+import com.readify.shared.domain.book.Status
 
-class GetBookService {
-    fun execute(request: GetBookRequest): GetBookResponse {
-        TODO("Not yet implemented")
-    }
-
+class GetBookService(
+    private val bookRepository: BookRepository,
+    private val chapterRepository: ChapterRepository
+) {
+    fun execute(request: GetBookRequest) =
+        bookRepository.findById(BookId(request.id))
+            ?.let { it.toResponse(chapterRepository.findByBookId(it.id)) }
+            ?: BookNotFound
 }
 
-data class GetBookRequest(val id: String)
-sealed class GetBookResponse
-object BookNotFound : GetBookResponse()
-data class BookResponse(
-    val id: String,
-    val authorId: String,
-    val title: String,
-    val cover: String,
-    val summary: String,
-    val tags: List<String>,
-    val priceAmount: Float,
-    val priceCurrency: String,
-    val completionPercentage: Int,
-    val status: BookStatusResponse,
-    val chapters: List<ChapterResponse>,
-    val finishedAt: ZonedDateTime?
-) : GetBookResponse()
+private fun Book.toResponse(chapters: List<Chapter>) =
+    BookResponse(
+        id.value, authorId.value, title.value, cover.value, summary.value, tags.value, price.amount,
+        price.currency.toString(), completionPercentage.value, status.toResponse(), chapters.map { it.toResponse() },
+        finishedAt
+    )
 
-enum class BookStatusResponse { IN_PROGRESS, FINISHED }
-data class ChapterResponse(
-    val id: String,
-    val title: String,
-    val priceAmount: Float,
-    val priceCurrency: String,
-    val order: Int,
-    val excerpt: String?
-)
+private fun Status.toResponse() = when (this) {
+    Status.IN_PROGRESS -> BookStatusResponse.IN_PROGRESS
+    Status.FINISHED -> BookStatusResponse.FINISHED
+}
+
+private fun Chapter.toResponse() =
+    ChapterResponse(id.value, title.value, price.amount, price.currency.toString(), order.value, excerpt?.value)

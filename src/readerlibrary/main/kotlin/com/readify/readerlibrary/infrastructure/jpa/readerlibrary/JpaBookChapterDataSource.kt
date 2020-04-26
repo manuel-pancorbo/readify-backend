@@ -6,7 +6,9 @@ import javax.persistence.Entity
 import javax.persistence.Id
 import javax.persistence.Table
 
-interface ReaderLibraryJpaChapterDataSource : JpaRepository<JpaChapter, String>
+interface ReaderLibraryJpaChapterDataSource : JpaRepository<JpaChapter, String> {
+    fun findByBookId(bookId: String): List<JpaChapter>
+}
 
 @Entity
 @Table(name = "chapter", schema = "readerlibrary")

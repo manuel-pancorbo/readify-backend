@@ -24,6 +24,10 @@ class JpaChapterRepository(private val jpaChapterDataSource: ReaderLibraryJpaCha
         jpaChapterDataSource.findById(chapterId.value)
             .map { it.toDomain() }
             .orElse(null)
+
+    override fun findByBookId(bookId: BookId) =
+        jpaChapterDataSource.findByBookId(bookId.value)
+            .map { it.toDomain() }
 }
 
 private fun JpaChapter.toDomain() =
