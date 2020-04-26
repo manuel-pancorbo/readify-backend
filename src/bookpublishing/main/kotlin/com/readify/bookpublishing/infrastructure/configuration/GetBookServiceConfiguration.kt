@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-class GetBookServiceConfiguration {
+class GetAuthorBookServiceConfiguration {
     @Bean
-    fun getBookService(bookRepository: BookRepository) = GetAuthorBookService(bookRepository)
+    fun getAuthorBookService(bookRepository: BookRepository) = GetAuthorBookService(bookRepository)
 }
