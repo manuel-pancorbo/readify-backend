@@ -5,9 +5,9 @@ import com.readify.ContractTest
 import com.readify.authentication.application.service.verifyaccesstoken.VerifyAccessTokenRequest
 import com.readify.authentication.application.service.verifyaccesstoken.VerifyAccessTokenResponse
 import com.readify.authentication.application.service.verifyaccesstoken.VerifyAccessTokenService
-import com.readify.bookpublishing.application.service.getbook.BookNotFoundResponse
-import com.readify.bookpublishing.application.service.getbook.GetBookRequest
-import com.readify.bookpublishing.application.service.getbook.GetBookService
+import com.readify.bookpublishing.application.service.getbook.AuthorBookNotFoundResponse
+import com.readify.bookpublishing.application.service.getbook.GetAuthorBookRequest
+import com.readify.bookpublishing.application.service.getbook.GetAuthorBookService
 import io.mockk.every
 import io.restassured.RestAssured
 import org.hamcrest.CoreMatchers.equalTo
@@ -15,9 +15,9 @@ import org.junit.jupiter.api.Test
 import java.time.format.DateTimeFormatter
 import java.util.UUID
 
-class GetBookControllerShould : ContractTest() {
+class GetAuthorBookControllerShould : ContractTest() {
     @MockkBean
-    private lateinit var getBookService: GetBookService
+    private lateinit var getAuthorBookService: GetAuthorBookService
 
     @MockkBean(relaxed = true)
     private lateinit var verifyAccessTokenService: VerifyAccessTokenService
@@ -35,10 +35,10 @@ class GetBookControllerShould : ContractTest() {
 
     @Test
     fun `return 404 when the requested book does not exists`() {
-        val serviceRequest = GetBookRequest(authorId, bookId)
+        val serviceRequest = GetAuthorBookRequest(authorId, bookId)
         every { verifyAccessTokenService.execute(VerifyAccessTokenRequest("anytoken")) }
             .returns(VerifyAccessTokenResponse(authorId, "jkrowling", "jkrowling@gmail.com"))
-        every { getBookService.execute(serviceRequest) } returns BookNotFoundResponse
+        every { getAuthorBookService.execute(serviceRequest) } returns AuthorBookNotFoundResponse
 
         RestAssured.given()
             .`when`()
@@ -70,10 +70,10 @@ class GetBookControllerShould : ContractTest() {
     @Test
     fun `return ok when chapter is created successfully`() {
         val serviceResponse = GetBookResponseMother().anyBook(authorId, bookId)
-        val serviceRequest = GetBookRequest(authorId, bookId)
+        val serviceRequest = GetAuthorBookRequest(authorId, bookId)
         every { verifyAccessTokenService.execute(VerifyAccessTokenRequest("anytoken")) }
             .returns(VerifyAccessTokenResponse(authorId, "jkrowling", "jkrowling@gmail.com"))
-        every { getBookService.execute(serviceRequest) } returns serviceResponse
+        every { getAuthorBookService.execute(serviceRequest) } returns serviceResponse
 
         RestAssured.given()
             .`when`()

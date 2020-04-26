@@ -2,12 +2,12 @@ package com.readify.api.bookpublishing.controller.getbookdetails
 
 import com.readify.bookpublishing.application.service.common.BookStatus
 import com.readify.bookpublishing.application.service.common.BookVisibility
-import com.readify.bookpublishing.application.service.getbook.BookFoundResponse
+import com.readify.bookpublishing.application.service.getbook.AuthorBookFoundResponse
 import java.time.ZonedDateTime
 
 class GetBookResponseMother {
     fun anyBook(authorId: String, bookId: String) =
-        BookFoundResponse(
+        AuthorBookFoundResponse(
             authorId,
             bookId,
             TITLE,

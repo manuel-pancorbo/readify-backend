@@ -4,9 +4,9 @@ import com.readify.bookpublishing.application.service.common.BookStatus
 import com.readify.bookpublishing.application.service.common.BookVisibility
 import java.time.ZonedDateTime
 
-sealed class GetBookResponse
-object BookNotFoundResponse : GetBookResponse()
-data class BookFoundResponse(
+sealed class GetAuthorBookResponse
+object AuthorBookNotFoundResponse : GetAuthorBookResponse()
+data class AuthorBookFoundResponse(
     val authorId: String,
     val bookId: String,
     val title: String,
@@ -19,4 +19,4 @@ data class BookFoundResponse(
     val visibility: BookVisibility,
     val finishedAt: ZonedDateTime?,
     val completionPercentage: Int
-) : GetBookResponse()
+) : GetAuthorBookResponse()

@@ -10,21 +10,21 @@ import com.readify.bookpublishing.domain.book.FinishedBook
 import com.readify.bookpublishing.domain.book.InProgressBook
 import com.readify.shared.domain.book.Visibility
 
-class GetBookService(private val bookRepository: BookRepository) {
-    fun execute(request: GetBookRequest) =
-        bookRepository.findById(BookId(request.bookId))
-            ?.takeIf { it.isWrittenBy(AuthorId(request.authorId)) }
+class GetAuthorBookService(private val bookRepository: BookRepository) {
+    fun execute(requestAuthor: GetAuthorBookRequest) =
+        bookRepository.findById(BookId(requestAuthor.bookId))
+            ?.takeIf { it.isWrittenBy(AuthorId(requestAuthor.authorId)) }
             ?.toResponse()
-            ?: BookNotFoundResponse
+            ?: AuthorBookNotFoundResponse
 }
 
 private fun Book.toResponse() =
     when (this) {
-        is InProgressBook -> BookFoundResponse(
+        is InProgressBook -> AuthorBookFoundResponse(
             authorId.value, id.value, title.value, summary.value, cover.value, tags.value, price.amount,
             price.currency.toString(), BookStatus.IN_PROGRESS, visibility.toResponse(), null, completionPercentage.value
         )
-        is FinishedBook -> BookFoundResponse(
+        is FinishedBook -> AuthorBookFoundResponse(
             authorId.value, id.value, title.value, summary.value, cover.value, tags.value, price.amount,
             price.currency.toString(), BookStatus.FINISHED, visibility.toResponse(), finishedAt,
             completionPercentage.value

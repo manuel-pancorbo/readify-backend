@@ -2,7 +2,6 @@ package com.readify.bookpublishing.application.service.getbook
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import assertk.assertions.isNull
 import com.readify.bookpublishing.application.service.common.BookStatus
 import com.readify.bookpublishing.application.service.common.BookVisibility
 import com.readify.bookpublishing.domain.book.BookId
@@ -13,26 +12,26 @@ import io.mockk.mockk
 import org.junit.jupiter.api.Test
 import java.util.UUID
 
-class GetBookServiceShould {
+class GetAuthorBookServiceShould {
     private val bookRepository: BookRepository = mockk()
-    private val service = GetBookService(bookRepository)
+    private val service = GetAuthorBookService(bookRepository)
 
     @Test
     fun `return book not found when book does not exists`() {
         every { bookRepository.findById(BookId(bookId)) } returns null
 
-        val response = service.execute(GetBookRequest(authorId, bookId))
+        val response = service.execute(GetAuthorBookRequest(authorId, bookId))
 
-        assertThat(response).isEqualTo(BookNotFoundResponse)
+        assertThat(response).isEqualTo(AuthorBookNotFoundResponse)
     }
 
     @Test
     fun `return book not found when book does not belongs to requester author`() {
         every { bookRepository.findById(BookId(bookId)) } returns BookMother().inProgressBook(bookId, anotherAuthorId)
 
-        val response = service.execute(GetBookRequest(authorId, bookId))
+        val response = service.execute(GetAuthorBookRequest(authorId, bookId))
 
-        assertThat(response).isEqualTo(BookNotFoundResponse)
+        assertThat(response).isEqualTo(AuthorBookNotFoundResponse)
     }
 
     @Test
@@ -40,9 +39,9 @@ class GetBookServiceShould {
         val book = BookMother().finishedBook(bookId, authorId)
         every { bookRepository.findById(BookId(bookId)) } returns book
 
-        val response = service.execute(GetBookRequest(authorId, bookId))
+        val response = service.execute(GetAuthorBookRequest(authorId, bookId))
 
-        response as BookFoundResponse
+        response as AuthorBookFoundResponse
         assertThat(response.authorId).isEqualTo(book.authorId.value)
         assertThat(response.bookId).isEqualTo(book.id.value)
         assertThat(response.title).isEqualTo(book.title.value)

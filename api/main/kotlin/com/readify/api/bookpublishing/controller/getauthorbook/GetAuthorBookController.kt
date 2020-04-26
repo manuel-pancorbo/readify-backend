@@ -1,15 +1,15 @@
-package com.readify.api.bookpublishing.controller.getbook
+package com.readify.api.bookpublishing.controller.getauthorbook
 
 import com.readify.api.bookpublishing.controller.common.HttpBookResponse
 import com.readify.api.bookpublishing.controller.common.HttpMoney
 import com.readify.authentication.domain.AnonymousUser
 import com.readify.authentication.domain.LoggedUser
 import com.readify.authentication.domain.Requester
-import com.readify.bookpublishing.application.service.getbook.BookFoundResponse
-import com.readify.bookpublishing.application.service.getbook.BookNotFoundResponse
-import com.readify.bookpublishing.application.service.getbook.GetBookRequest
-import com.readify.bookpublishing.application.service.getbook.GetBookResponse
-import com.readify.bookpublishing.application.service.getbook.GetBookService
+import com.readify.bookpublishing.application.service.getbook.AuthorBookFoundResponse
+import com.readify.bookpublishing.application.service.getbook.AuthorBookNotFoundResponse
+import com.readify.bookpublishing.application.service.getbook.GetAuthorBookRequest
+import com.readify.bookpublishing.application.service.getbook.GetAuthorBookResponse
+import com.readify.bookpublishing.application.service.getbook.GetAuthorBookService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/v1")
-class GetBookController(private val service: GetBookService) {
+class GetAuthorBookController(private val service: GetAuthorBookService) {
     @GetMapping("/authors/{authorId}/books/{bookId}")
     fun getBook(
         requester: Requester,
@@ -32,14 +32,14 @@ class GetBookController(private val service: GetBookService) {
                 if (requester.id != authorId)
                     ResponseEntity.notFound().build()
                 else
-                    service.execute(GetBookRequest(requester.id, bookId)).toHttpResponse()
+                    service.execute(GetAuthorBookRequest(requester.id, bookId)).toHttpResponse()
         }
 }
 
-private fun GetBookResponse.toHttpResponse() =
+private fun GetAuthorBookResponse.toHttpResponse() =
     when (this) {
-        BookNotFoundResponse -> ResponseEntity.notFound().build<String>()
-        is BookFoundResponse -> ResponseEntity.ok(
+        AuthorBookNotFoundResponse -> ResponseEntity.notFound().build<String>()
+        is AuthorBookFoundResponse -> ResponseEntity.ok(
             HttpBookResponse(
                 bookId, authorId, title, summary, cover, tags, HttpMoney(priceAmount, priceCurrency),
                 status.toString().toLowerCase(), visibility.toString().toLowerCase(), completionPercentage, finishedAt
