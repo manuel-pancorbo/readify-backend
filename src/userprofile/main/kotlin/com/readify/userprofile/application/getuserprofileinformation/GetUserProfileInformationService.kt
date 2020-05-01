@@ -1,5 +1,6 @@
 package com.readify.userprofile.application.getuserprofileinformation
 
+import com.readify.userprofile.application.common.UserInformationResponse
 import com.readify.userprofile.domain.user.User
 import com.readify.userprofile.domain.user.UserId
 import com.readify.userprofile.domain.user.UserRepository
@@ -12,4 +13,13 @@ class GetUserProfileInformationService(private val repository: UserRepository) {
 }
 
 private fun User.toResponse() =
-    UserInformationResponse(id.value, username.value, email.value, fullName.value, image?.value, website?.value)
+    UserFoundResponse(
+        UserInformationResponse(
+            id.value,
+            username.value,
+            email.value,
+            fullName.value,
+            image?.value,
+            website?.value
+        )
+    )

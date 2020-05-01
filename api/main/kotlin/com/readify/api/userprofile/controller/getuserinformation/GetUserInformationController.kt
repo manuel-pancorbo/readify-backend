@@ -1,10 +1,10 @@
 package com.readify.api.userprofile.controller.getuserinformation
 
-import com.fasterxml.jackson.annotation.JsonProperty
+import com.readify.api.userprofile.controller.common.UserInformationHttpResponse
 import com.readify.userprofile.application.getuserprofileinformation.GetUserProfileInformationRequest
 import com.readify.userprofile.application.getuserprofileinformation.GetUserProfileInformationResponse
 import com.readify.userprofile.application.getuserprofileinformation.GetUserProfileInformationService
-import com.readify.userprofile.application.getuserprofileinformation.UserInformationResponse
+import com.readify.userprofile.application.getuserprofileinformation.UserFoundResponse
 import com.readify.userprofile.application.getuserprofileinformation.UserNotFound
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -26,16 +26,7 @@ class GetUserInformationController(private val service: GetUserProfileInformatio
 private fun GetUserProfileInformationResponse.toHttp() =
     when (this) {
         UserNotFound -> ResponseEntity.notFound().build()
-        is UserInformationResponse -> ResponseEntity.ok(
-            UserInformationHttpResponse(id, username, email, fullName, image, website)
+        is UserFoundResponse -> ResponseEntity.ok(
+            UserInformationHttpResponse(user.id, user.username, user.email, user.fullName, user.image, user.website)
         )
     }
-
-data class UserInformationHttpResponse(
-    @JsonProperty("id") val id: String,
-    @JsonProperty("username") val username: String,
-    @JsonProperty("email") val email: String,
-    @JsonProperty("fullName") val fullName: String,
-    @JsonProperty("image") val image: String?,
-    @JsonProperty("website") val website: String?
-)

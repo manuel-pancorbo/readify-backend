@@ -1,8 +1,7 @@
 package com.readify.userprofile.application.getuserprofileinformation
 
+import com.readify.userprofile.application.common.UserInformationResponse
+
 sealed class GetUserProfileInformationResponse
 object UserNotFound : GetUserProfileInformationResponse()
-data class UserInformationResponse(
-    val id: String, val username: String, val email: String, val fullName: String, val image: String?,
-    val website: String?
-) : GetUserProfileInformationResponse()
+data class UserFoundResponse(val user: UserInformationResponse) : GetUserProfileInformationResponse()

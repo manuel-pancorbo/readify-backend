@@ -31,14 +31,14 @@ class GetUserProfileInformationServiceShould {
 
         val response = service.execute(GetUserProfileInformationRequest(userId))
 
-        assertThat(response).isInstanceOf(UserInformationResponse::class)
-        response as UserInformationResponse
-        assertThat(response.id).isEqualTo(user.id.value)
-        assertThat(response.email).isEqualTo(user.email.value)
-        assertThat(response.username).isEqualTo(user.username.value)
-        assertThat(response.fullName).isEqualTo(user.fullName.value)
-        assertThat(response.image).isEqualTo(user.image?.value)
-        assertThat(response.website).isEqualTo(user.website?.value)
+        assertThat(response).isInstanceOf(UserFoundResponse::class)
+        response as UserFoundResponse
+        assertThat(response.user.id).isEqualTo(user.id.value)
+        assertThat(response.user.email).isEqualTo(user.email.value)
+        assertThat(response.user.username).isEqualTo(user.username.value)
+        assertThat(response.user.fullName).isEqualTo(user.fullName.value)
+        assertThat(response.user.image).isEqualTo(user.image?.value)
+        assertThat(response.user.website).isEqualTo(user.website?.value)
     }
 
     companion object {

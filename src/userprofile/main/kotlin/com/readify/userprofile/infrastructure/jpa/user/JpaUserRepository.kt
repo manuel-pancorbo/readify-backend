@@ -17,6 +17,9 @@ class JpaUserRepository(private val jpaJpaUserDataSource: JpaUserDataSource): Us
 
     override fun findById(userId: UserId): User? =
         jpaJpaUserDataSource.findById(userId.value).map { it.toDomain() }.orElse(null)
+
+    override fun findByIds(users: List<UserId>) =
+        jpaJpaUserDataSource.findByIdIsIn(users.map { it.value }).map { it.toDomain() }
 }
 
 private fun User.toJpa() = JpaUser(id.value, username.value, email.value, fullName.value, image?.value, website?.value)

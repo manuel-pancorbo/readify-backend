@@ -1,6 +1,7 @@
 package com.readify.userprofile.infrastructure.jpa.user
 
 import assertk.assertThat
+import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
 import assertk.assertions.isNull
@@ -81,15 +82,29 @@ class JpaUserRepositoryShould : IntegrationTest() {
     }
 
     @Test
+    fun `find an users by ids`() {
+        val userId = UserId(UUID.randomUUID().toString())
+        val anotherId = UserId(UUID.randomUUID().toString())
+        val user = anyUser(userId.value)
+        val anotherUser = anyUser(anotherId.value)
+        repository.save(user)
+        repository.save(anotherUser)
+
+        val actual = repository.findByIds(listOf(userId, anotherId))
+
+        assertThat(actual).hasSize(2)
+    }
+
+    @Test
     fun `return null when email does not belong to any user`() {
         val actual = repository.findByEmail("any-non-existent-email@gmail.com")
 
         assertThat(actual).isNull()
     }
 
-    private fun anyUser() =
+    private fun anyUser(id: String = UUID.randomUUID().toString()) =
         User(
-            UserId(UUID.randomUUID().toString()),
+            UserId(id),
             Username("any-username"),
             Email("any-email@gmail.com"),
             FullName("Any Fullname"),

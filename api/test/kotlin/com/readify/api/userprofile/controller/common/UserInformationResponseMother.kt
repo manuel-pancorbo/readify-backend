@@ -1,9 +1,16 @@
-package com.readify.api.userprofile.controller.getuserprofileinformation
+package com.readify.api.userprofile.controller.common
 
-import com.readify.userprofile.application.getuserprofileinformation.UserInformationResponse
+import com.readify.userprofile.application.common.UserInformationResponse
+
 
 class UserInformationResponseMother {
-    fun existentUser(id: String) = UserInformationResponse(id, username, email, fullName, image, website)
+    fun existentUser(id: String) = UserInformationResponse(id,
+        username,
+        email,
+        fullName,
+        image,
+        website
+    )
 
     companion object {
         private val username = "username"
