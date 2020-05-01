@@ -9,25 +9,32 @@ spring:
   profiles.active: dev
 
 # User Profile Database
-spring.datasource.jdbcUrl: jdbc:postgresql://localhost:5432/postgres?currentSchema=userprofiles
+spring.datasource.jdbcUrl: jdbc:postgresql://postgresql:5432/postgres?currentSchema=userprofiles
 spring.datasource.username: postgres
 spring.datasource.password: readify
 spring.datasource.platform: postgres
 spring.datasource.driver-class-name: org.postgresql.Driver
 
 # Authentication Database
-spring.authentication.jdbcUrl: jdbc:postgresql://localhost:5432/postgres?currentSchema=authentication
+spring.authentication.jdbcUrl: jdbc:postgresql://postgresql:5432/postgres?currentSchema=authentication
 spring.authentication.username: postgres
 spring.authentication.password: readify
 spring.authentication.platform: postgres
 spring.authentication.driver-class-name: org.postgresql.Driver
 
 # Book publishing Database
-spring.bookpublishing.jdbcUrl: jdbc:postgresql://localhost:5432/postgres?currentSchema=bookpublishing
+spring.bookpublishing.jdbcUrl: jdbc:postgresql://postgresql:5432/postgres?currentSchema=bookpublishing
 spring.bookpublishing.username: postgres
 spring.bookpublishing.password: readify
 spring.bookpublishing.platform: postgres
 spring.bookpublishing.driver-class-name: org.postgresql.Driver
+
+# Reader library Database
+spring.readerlibrary.jdbcUrl: jdbc:postgresql://postgresql:5432/postgres?currentSchema=readerlibrary
+spring.readerlibrary.username: postgres
+spring.readerlibrary.password: readify
+spring.readerlibrary.platform: postgres
+spring.readerlibrary.driver-class-name: org.postgresql.Driver
 
 authentication:
   hmac256:
@@ -41,3 +48,7 @@ stripe:
 
 management.endpoints.web.exposure.include: httptrace
 logging.level.com.readify.search.infrastructure.domain.book.ElasticSearchBookRepository: DEBUG
+
+elasticsearch:
+  host: "http://elasticsearch"
+  port: "9200"

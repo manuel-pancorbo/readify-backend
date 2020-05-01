@@ -34,7 +34,7 @@ class ReaderLibraryDatabaseConfiguration {
             .build()
 
     @Bean("readerLibraryDataSource")
-    @ConfigurationProperties(prefix = "spring.bookpublishing")
+    @ConfigurationProperties(prefix = "spring.readerlibrary")
     fun userDataSource(): DataSource = DataSourceBuilder.create().build()
 
     @Bean("readerLibraryTransactionManager")
