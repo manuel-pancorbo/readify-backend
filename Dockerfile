@@ -7,6 +7,8 @@ FROM openjdk:8-jre-slim
 
 EXPOSE 8000
 
+ENV SPRING_PROFILES_ACTIVE=prod
+
 RUN mkdir /app
 
 COPY --from=build /home/gradle/src/build/libs/*.jar /app/readify-backend.jar

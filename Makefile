@@ -1,10 +1,10 @@
 rebuild:
 	# force a rebuild by passing --no-cache
-	docker-compose up --build --no-cache
+	docker-compose up -f docker-compose-prod.yml --build --no-cache
 
 run:
 	# run as a (background) service
-	docker-compose up -d
+	docker-compose up -f docker-compose-prod.yml -d
 
 bash-app:
 	# run as a service and attach to it
@@ -12,8 +12,8 @@ bash-app:
 
 stop:
 	# run as a service and attach to it
-	docker-compose stop
+	docker-compose	docker-compose  -f docker-compose-prod.yml stop
 
 remove:
 	# run as a service and attach to it
-	docker-compose down
+	docker-compose	docker-compose  -f docker-compose-prod.yml down
