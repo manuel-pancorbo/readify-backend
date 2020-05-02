@@ -7,7 +7,8 @@ import com.readify.shared.domain.event.bus.EventBus
 class CompletePaymentService(private val paymentRepository: PaymentRepository, private val eventBus: EventBus) {
     fun execute(request: CompletePaymentRequest) =
         paymentRepository.findById(PaymentId(request.paymentId))
-            ?.also { paymentRepository.save(it.complete()) }
+            ?.complete()
+            ?.also { paymentRepository.save(it) }
             ?.also { eventBus.publish(it.pullDomainEvents()) }
             ?.let { PaymentCompletedResponse }
             ?: PaymentNotFoundResponse
