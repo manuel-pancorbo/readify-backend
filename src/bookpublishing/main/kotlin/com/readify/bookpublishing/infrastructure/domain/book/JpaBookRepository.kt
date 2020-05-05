@@ -16,6 +16,9 @@ import com.readify.bookpublishing.infrastructure.jpa.bookpublishing.JpaBookDataS
 import com.readify.bookpublishing.infrastructure.jpa.bookpublishing.JpaBookStatus
 import com.readify.bookpublishing.infrastructure.jpa.bookpublishing.JpaBookVisibility
 import com.readify.shared.domain.book.Visibility
+import com.readify.shared.domain.book.Visibility.NULL
+import com.readify.shared.domain.book.Visibility.RESTRICTED
+import com.readify.shared.domain.book.Visibility.VISIBLE
 import com.readify.shared.domain.clock.Clock
 import com.readify.shared.domain.money.Currency
 import com.readify.shared.domain.money.Money
@@ -50,18 +53,26 @@ private fun Book.toJpa() =
 
 private fun Visibility.toJpa() =
     when (this) {
-        Visibility.NULL -> JpaBookVisibility.NULL
-        Visibility.RESTRICTED -> JpaBookVisibility.RESTRICTED
-        Visibility.VISIBLE -> JpaBookVisibility.VISIBLE
+        NULL -> JpaBookVisibility.NULL
+        RESTRICTED -> JpaBookVisibility.RESTRICTED
+        VISIBLE -> JpaBookVisibility.VISIBLE
     }
 
 private fun JpaBook.toDomain() = when (status) {
     JpaBookStatus.IN_PROGRESS -> InProgressBook(
         BookId(id), AuthorId(authorId), Title(title), Cover(cover), Summary(summary),
-        Tags(tags), Money(priceAmount, Currency.valueOf(priceCurrency)), CompletionPercentage(completionPercentage)
+        Tags(tags), Money(priceAmount, Currency.valueOf(priceCurrency)), CompletionPercentage(completionPercentage),
+        visibility.toDomain()
     )
     JpaBookStatus.FINISHED -> FinishedBook(
         BookId(id), AuthorId(authorId), Title(title), Cover(cover), Summary(summary),
-        Tags(tags), Money(priceAmount, Currency.valueOf(priceCurrency)), Visibility.NULL, Clock().from(finishedAt!!)
+        Tags(tags), Money(priceAmount, Currency.valueOf(priceCurrency)), visibility.toDomain(),
+        Clock().from(finishedAt!!)
     )
+}
+
+private fun JpaBookVisibility.toDomain() = when(this) {
+    JpaBookVisibility.NULL -> NULL
+    JpaBookVisibility.RESTRICTED -> RESTRICTED
+    JpaBookVisibility.VISIBLE -> VISIBLE
 }
