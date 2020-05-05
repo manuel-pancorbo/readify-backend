@@ -39,7 +39,7 @@ class PatchBookController(private val updateBookService: UpdateBookService) {
             is AnonymousUser -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
             is LoggedUser ->
                 if (requester.id != authorId)
-                    ResponseEntity.notFound().build()
+                    notFound().build()
                 else
                     updateBookService
                         .execute(httpRequest.toServiceRequest(requester, bookId))
