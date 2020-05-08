@@ -15,9 +15,9 @@ class UpdateBookChapterService(private val chapterRepository: ChapterRepository,
         val chapter = chapterRepository.findByIdAndBookId(ChapterId(request.chapterId), BookId(request.bookId))
             ?: return BookChapterNotFoundResponse
         if (!chapter.sameAuthor(AuthorId(request.authorId))) return BookNotBelongToAuthorResponse
-        if (request.status != "published") return InvalidChapterStatusResponse
+        if (isStatusInvalid(request.status)) return InvalidChapterStatusResponse
 
-        return chapter.publishIfNeeded(eventBus)
+        return chapter.publishIfNeeded(eventBus, request)
             .update(request.title, request.content, request.order, request.excerpt)
             .also { eventBus.publish(it.pullDomainEvents()) }
             .also { chapterRepository.save(it) }
@@ -25,8 +25,10 @@ class UpdateBookChapterService(private val chapterRepository: ChapterRepository,
     }
 }
 
-private fun Chapter.publishIfNeeded(eventBus: EventBus) =
-    if (this is DraftChapter) {
+private fun isStatusInvalid(status: String?) = status !== null && !listOf("published", "draft").contains(status)
+
+private fun Chapter.publishIfNeeded(eventBus: EventBus, request: UpdateBookChapterRequest) =
+    if (this is DraftChapter && request.status == "published") {
         this.publish()
             .also { eventBus.publish(it.pullDomainEvents()) }
     } else {
