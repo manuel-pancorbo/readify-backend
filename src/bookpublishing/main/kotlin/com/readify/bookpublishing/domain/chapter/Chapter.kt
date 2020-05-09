@@ -18,7 +18,7 @@ sealed class Chapter(
     open val excerpt: Excerpt?
 ) : RootAggregate() {
     fun sameAuthor(anotherAuthorId: AuthorId) = authorId == anotherAuthorId
-    abstract fun update(title: String?, content: String?, order: Int?, excerpt: String?): Chapter
+    abstract fun update(title: String?, content: String?, order: Int?, excerpt: String?, price: Money?): Chapter
 
     companion object {
         fun create(title: Title, content: Content, price: Money, authorId: AuthorId, bookId: BookId, order: Order,
@@ -37,12 +37,13 @@ data class DraftChapter(
     override val authorId: AuthorId, override val bookId: BookId, override val modifiedAt: ZonedDateTime,
     override val order: Order, override val excerpt: Excerpt?
 ) : Chapter(id, title, content, price, authorId, bookId, modifiedAt, order, excerpt) {
-    override fun update(title: String?, content: String?, order: Int?, excerpt: String?) =
+    override fun update(title: String?, content: String?, order: Int?, excerpt: String?, price: Money?) =
         copy(
             title = title?.let { Title(it) } ?: this.title,
             content = content?.let { Content(it) } ?: this.content,
             order = order?.let { Order(order) } ?: this.order,
             excerpt = excerpt?.let { Excerpt(excerpt) } ?: this.excerpt,
+            price = price ?: this.price,
             modifiedAt = Clock().now()
         )
             .also {
@@ -68,12 +69,13 @@ data class PublishedChapter(
     override val authorId: AuthorId, override val bookId: BookId, override val modifiedAt: ZonedDateTime,
     override val order: Order, override val excerpt: Excerpt?, val publishedAt: ZonedDateTime = Clock().now()
 ) : Chapter(id, title, content, price, authorId, bookId, modifiedAt, order, excerpt) {
-    override fun update(title: String?, content: String?, order: Int?, excerpt: String?) =
+    override fun update(title: String?, content: String?, order: Int?, excerpt: String?, price: Money?) =
         copy(
             title = title?.let { Title(it) } ?: this.title,
             content = content?.let { Content(it) } ?: this.content,
             order = order?.let { Order(order) } ?: this.order,
             excerpt = excerpt?.let { Excerpt(excerpt) } ?: this.excerpt,
+            price = price ?: this.price,
             modifiedAt = Clock().now()
         )
             .also {

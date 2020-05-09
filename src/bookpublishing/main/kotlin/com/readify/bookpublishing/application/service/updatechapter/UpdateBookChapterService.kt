@@ -9,6 +9,8 @@ import com.readify.bookpublishing.domain.chapter.ChapterRepository
 import com.readify.bookpublishing.domain.chapter.DraftChapter
 import com.readify.bookpublishing.domain.chapter.PublishedChapter
 import com.readify.shared.domain.event.bus.EventBus
+import com.readify.shared.domain.money.Currency
+import com.readify.shared.domain.money.Money
 
 class UpdateBookChapterService(private val chapterRepository: ChapterRepository, private val eventBus: EventBus) {
     fun execute(request: UpdateBookChapterRequest): UpdateBookChapterResponse {
@@ -18,7 +20,7 @@ class UpdateBookChapterService(private val chapterRepository: ChapterRepository,
         if (isStatusInvalid(request.status)) return InvalidChapterStatusResponse
 
         return chapter.publishIfNeeded(eventBus, request)
-            .update(request.title, request.content, request.order, request.excerpt)
+            .update(request.title, request.content, request.order, request.excerpt, request.extractDomainPrice())
             .also { eventBus.publish(it.pullDomainEvents()) }
             .also { chapterRepository.save(it) }
             .toResponse()
@@ -26,6 +28,8 @@ class UpdateBookChapterService(private val chapterRepository: ChapterRepository,
 }
 
 private fun isStatusInvalid(status: String?) = status !== null && !listOf("published", "draft").contains(status)
+private fun UpdateBookChapterRequest.extractDomainPrice(): Money? =
+    if (priceAmount != null && priceCurrency != null) Money(priceAmount, Currency.valueOf(priceCurrency)) else null
 
 private fun Chapter.publishIfNeeded(eventBus: EventBus, request: UpdateBookChapterRequest) =
     if (this is DraftChapter && request.status == "published") {

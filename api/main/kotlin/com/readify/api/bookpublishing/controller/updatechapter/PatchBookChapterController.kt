@@ -62,12 +62,14 @@ private fun UpdateBookChapterResponse.toHttpResponse(): ResponseEntity<out Any> 
     }
 
 private fun PatchBookChapterHttpRequest.toServiceRequest(requester: LoggedUser, bookId: String, chapterId: String) =
-    UpdateBookChapterRequest(requester.id, bookId, chapterId, status, title, content, order, excerpt)
+    UpdateBookChapterRequest(requester.id, bookId, chapterId, status, title, content, order, excerpt, price?.amount,
+        price?.currency)
 
 data class PatchBookChapterHttpRequest(
     @JsonProperty("status") val status: String?,
     @JsonProperty("title") val title: String?,
     @JsonProperty("content") val content: String?,
     @JsonProperty("order") val order: Int?,
-    @JsonProperty("excerpt") val excerpt: String?
+    @JsonProperty("excerpt") val excerpt: String?,
+    @JsonProperty("price") val price: HttpMoney?
 )
