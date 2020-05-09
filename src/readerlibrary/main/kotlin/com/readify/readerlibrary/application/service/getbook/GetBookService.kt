@@ -13,7 +13,7 @@ class GetBookService(
 ) {
     fun execute(request: GetBookRequest) =
         bookRepository.findById(BookId(request.id))
-            ?.let { it.toResponse(chapterRepository.findByBookId(it.id)) }
+            ?.let { it.toResponse(chapterRepository.findByBookId(it.id).sortedBy { chapter -> chapter.order.value }) }
             ?: BookNotFound
 }
 
