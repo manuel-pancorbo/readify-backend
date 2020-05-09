@@ -17,6 +17,7 @@ class GetBookChaptersService(
         bookRepository.findById(BookId(request.bookId))
             ?.takeIf { it.isWrittenBy(AuthorId(request.authorId)) }
             ?.let { chapterRepository.findByBookId(it.id) }
+            ?.let {it.sortedBy { chapter -> chapter.order.value }}
             ?.let { BookChaptersResponse(it.map { chapter -> chapter.toResponse() }) }
             ?: BookNotFoundResponse
 
