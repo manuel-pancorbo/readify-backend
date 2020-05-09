@@ -21,7 +21,7 @@ private fun Payment.toResponse(): PaymentResponse {
     return when(this) {
         is BookPayment -> PaymentResponse(
             id.value, readerId.value, amount.amount, amount.currency.toString(), bookId.value, null, startedAt,
-            completedAt!!, PaymentTypeResponse.CHAPTER
+            completedAt!!, PaymentTypeResponse.BOOK
         )
         is ChapterPayment -> PaymentResponse(
             id.value, readerId.value, amount.amount, amount.currency.toString(), bookId.value, chapterId.value,
