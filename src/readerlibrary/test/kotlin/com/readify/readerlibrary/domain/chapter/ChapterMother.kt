@@ -8,9 +8,9 @@ import com.readify.shared.domain.money.Money
 import java.util.UUID
 
 class ChapterMother {
-    fun firstOne(authorId: String, bookId: String) =
+    fun firstOne(authorId: String, bookId: String, chapterId: String? = null) =
         Chapter(
-            ChapterId(UUID.randomUUID().toString()),
+            ChapterId(chapterId ?: UUID.randomUUID().toString()),
             Title(TITLE),
             Content(CONTENT),
             Money(PRICE_AMOUNT, Currency.EUR),
