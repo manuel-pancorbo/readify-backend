@@ -27,6 +27,11 @@ class JpaBookRepository(private val jpaBookDataSource: ReaderLibraryJpaBookDataS
             .map { it.toDomain() }
             .orElse(null)
     }
+
+    override fun findByIds(books: List<BookId>): List<Book> {
+        return jpaBookDataSource.findByIdIsIn(books.map { it.value })
+            .map { it.toDomain() }
+    }
 }
 
 private fun JpaBook.toDomain(): Book {

@@ -12,7 +12,9 @@ import javax.persistence.Enumerated
 import javax.persistence.Id
 import javax.persistence.Table
 
-interface ReaderLibraryJpaBookDataSource : JpaRepository<JpaBook, String>
+interface ReaderLibraryJpaBookDataSource : JpaRepository<JpaBook, String> {
+    fun findByIdIsIn(ids: List<String>): List<JpaBook>
+}
 
 @Entity
 @Table(name = "book", schema = "readerlibrary")

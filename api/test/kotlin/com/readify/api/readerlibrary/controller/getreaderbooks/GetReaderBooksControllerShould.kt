@@ -2,16 +2,12 @@ package com.readify.api.readerlibrary.controller.getreaderbooks
 
 import assertk.assertThat
 import assertk.assertions.hasSize
-import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import com.ninjasquad.springmockk.MockkBean
 import com.readify.ContractTest
 import com.readify.authentication.application.service.verifyaccesstoken.VerifyAccessTokenRequest
 import com.readify.authentication.application.service.verifyaccesstoken.VerifyAccessTokenResponse
 import com.readify.authentication.application.service.verifyaccesstoken.VerifyAccessTokenService
-import com.readify.readerlibrary.application.service.common.LibraryBookResponse
-import com.readify.readerlibrary.application.service.common.LibraryBookTypeResponse.PARTIAL
-import com.readify.readerlibrary.application.service.common.LibraryBookTypeResponse.WHOLE
 import com.readify.readerlibrary.application.service.getreaderbooks.GetReaderBooksRequest
 import com.readify.readerlibrary.application.service.getreaderbooks.GetReaderBooksService
 import com.readify.readerlibrary.application.service.getreaderbooks.ReaderBooksResponse
@@ -62,8 +58,8 @@ class GetReaderBooksControllerShould : ContractTest() {
         val serviceRequest = GetReaderBooksRequest(readerId, readerId)
         val serviceResponse = ReaderBooksResponse(
             listOf(
-                LibraryBookResponse(WHOLE, wholeBookId, emptyList()),
-                LibraryBookResponse(PARTIAL, partialBookId, someChapters)
+                BookResponseMother().createFinishedBook(wholeBookId),
+                BookResponseMother().createFinishedBook(partialBookId)
             )
         )
         every { verifyAccessTokenService.execute(VerifyAccessTokenRequest("anytoken")) }
@@ -85,13 +81,9 @@ class GetReaderBooksControllerShould : ContractTest() {
 
         assertThat(httpResponse.getList<String>("books")).hasSize(2)
         val httpWholeBook = httpResponse.getMap<String, String>("books[0]")
-        assertThat(httpWholeBook["type"]).isEqualTo(WHOLE.toString().toLowerCase())
         assertThat(httpWholeBook["id"]).isEqualTo(wholeBookId)
-        assertThat(httpResponse.getList<String>("books[0].chapters")).isEmpty()
         val httpPartialBook = httpResponse.getMap<String, String>("books[1]")
-        assertThat(httpPartialBook["type"]).isEqualTo(PARTIAL.toString().toLowerCase())
         assertThat(httpPartialBook["id"]).isEqualTo(partialBookId)
-        assertThat(httpResponse.getList<String>("books[1].chapters")).isEqualTo(someChapters)
     }
 
     companion object {
@@ -99,6 +91,5 @@ class GetReaderBooksControllerShould : ContractTest() {
         private val anotherReaderId = UUID.randomUUID().toString()
         private val wholeBookId = UUID.randomUUID().toString()
         private val partialBookId = UUID.randomUUID().toString()
-        private val someChapters = listOf(UUID.randomUUID().toString(), UUID.randomUUID().toString())
     }
 }

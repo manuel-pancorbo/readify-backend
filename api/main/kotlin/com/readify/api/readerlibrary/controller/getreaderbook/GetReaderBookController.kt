@@ -1,6 +1,6 @@
 package com.readify.api.readerlibrary.controller.getreaderbook
 
-import com.readify.api.readerlibrary.controller.getreaderbooks.LibraryBookHttpResponse
+import com.readify.api.readerlibrary.controller.getreaderbooks.BookHttpResponse
 import com.readify.authentication.domain.AnonymousUser
 import com.readify.authentication.domain.LoggedUser
 import com.readify.authentication.domain.Requester
@@ -44,3 +44,5 @@ private fun LibraryBookResponse.toHttpResponse() =
     LibraryBookHttpResponse(
         type.toString().toLowerCase(), id, chapters
     )
+
+data class LibraryBookHttpResponse(val type: String, val id: String, val chapters: List<String>)

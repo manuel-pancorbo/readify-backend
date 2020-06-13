@@ -3,11 +3,12 @@ package com.readify.readerlibrary.domain.book
 import com.readify.shared.domain.book.Status
 import com.readify.shared.domain.money.Currency
 import com.readify.shared.domain.money.Money
+import java.util.UUID
 
 class BookMother {
     fun inProgressBook(
         bookId: String,
-        authorId: String,
+        authorId: String = AUTHOR_ID,
         completionPercentage: Int = 0,
         title: String = TITLE,
         tags: List<String> = TAGS
@@ -28,5 +29,6 @@ class BookMother {
     companion object {
         private const val TITLE = "Harry Potter and the philosopher's stone"
         private val TAGS = listOf("fantasy", "magic")
+        private val AUTHOR_ID = UUID.randomUUID().toString()
     }
 }
