@@ -19,3 +19,9 @@ local.properties
 
 # Mac
 .DS_Store
+
+#Elasticsearch docker data
+elasticsearch-data
+
+#Postgres docker data
+postgres-data

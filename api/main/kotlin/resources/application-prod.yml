@@ -36,6 +36,9 @@ stripe:
   cancel: "payments/canceled"
   secretKey: "sk_test_Q5cwflC6COQRLAixERlNCOXg00JszEtqVH"
 
-elasticsearch:
+elastic:
   host: "http://elasticsearch"
   port: "9200"
+
+logging.level.com.readify.search.infrastructure.configuration.ElasticSearchBookRepositoryConfiguration: ERROR
+logging.level.com.readify.search.infrastructure.domain.book.ElasticSearchBookIndexTemplateInitializer: ERROR

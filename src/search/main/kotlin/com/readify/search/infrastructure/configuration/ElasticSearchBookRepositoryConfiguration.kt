@@ -11,10 +11,10 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 class ElasticSearchBookRepositoryConfiguration {
 
-    @Value("\${elasticsearch.host}")
+    @Value("\${elastic.host}")
     private lateinit var host: String
 
-    @Value("\${elasticsearch.port}")
+    @Value("\${elastic.port}")
     private lateinit var port: String
 
     @Bean

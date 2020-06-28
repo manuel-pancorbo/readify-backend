@@ -8,10 +8,7 @@ services:
     environment:
       POSTGRES_PASSWORD: readify
     volumes:
-      - ./src/userprofile/main/kotlin/resources/user-profile-init.sql:/docker-entrypoint-initdb.d/1-user-profiles-init.sql
-      - ./src/authentication/main/kotlin/resources/authentication-init.sql:/docker-entrypoint-initdb.d/2-authentication-init.sql
-      - ./src/bookpublishing/main/kotlin/resources/book-publishing-init.sql:/docker-entrypoint-initdb.d/2-bookpublishing-init.sql
-      - ./src/readerlibrary/main/kotlin/resources/reader-library-init.sql:/docker-entrypoint-initdb.d/3-reader-library-init.sql
+      - ./postgres-data:/var/lib/postgresql/data
   elasticsearch:
     image: elasticsearch:6.8.0
     ports:
@@ -22,12 +19,14 @@ services:
         hard: -1
     environment:
       - "discovery.type=single-node"
+    volumes:
+      - ./elasticsearch-data:/usr/share/elasticsearch/data
   kibana:
     image: kibana:6.8.0
     ports:
       - "5601:5601"
   application:
-    build: .
+    image: manuelpancorbo/readify-backend:0.0.11
     ports:
       - "8000:8000"
     depends_on:

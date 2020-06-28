@@ -46,6 +46,6 @@ stripe:
 management.endpoints.web.exposure.include: httptrace
 logging.level.com.readify.search.infrastructure.domain.book.ElasticSearchBookRepository: DEBUG
 
-elasticsearch:
+elastic:
   host: "http://localhost"
   port: "9200"
